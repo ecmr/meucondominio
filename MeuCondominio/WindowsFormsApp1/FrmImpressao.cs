@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using MeuCondominio.Model;
-
+using Microsoft.Reporting.WinForms;
 
 namespace MeuCondominio
 {
@@ -24,6 +24,12 @@ namespace MeuCondominio
             {
                 cboImpressora.Items.Add(printer);
             }
+
+            this.reportViewer1.ProcessingMode = Microsoft.Reporting.WinForms.ProcessingMode.Local;
+            LocalReport localReport = reportViewer1.LocalReport;
+            localReport.ReportPath = @"C:\reposit\meucondominio\MeuCondominio\WindowsFormsApp1\Relatorio\Report1.rdlc";
+
+
             this.reportViewer1.RefreshReport();
         }
 
