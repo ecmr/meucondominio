@@ -26,7 +26,7 @@ namespace MeuCondominio
             string sFone = string.Concat("&type=9&number=", morador.NumeroCelular);
             string sMsg = string.Concat("&msg=Cond. Resid. Aricanduva!",
                 Environment.NewLine, " Olá ", morador.NomeDestinatario, Environment.NewLine,
-                " Seu Sedex chegou e já está disponível para retirada na Adm até as 18 horas!", Environment.NewLine,
+                " Seu Sedex chegou e já está disponível para retirada na Adm até as 18 horas, Sabado até 12 horas!", Environment.NewLine,
                 "Att: Administração!");
 
             // Create a request using a URL that can receive a post.
@@ -93,7 +93,7 @@ namespace MeuCondominio
         public static void EnvioSms(Morador morador)
         {
             // Find your Account SID and Auth Token at twilio.com/console
-            // and set the environment variables. See http://twil.io/secure
+            // 
             // string accountSid = "ACbb8f1afad635225025b0b9265e3a3416"; // Environment.GetEnvironmentVariable("ACbb8f1afad635225025b0b9265e3a3416");
             // string authToken = "4466dbaca9b1489f1c70c1909f4e52b8"; // Environment.GetEnvironmentVariable("4466dbaca9b1489f1c70c1909f4e52b8");
 

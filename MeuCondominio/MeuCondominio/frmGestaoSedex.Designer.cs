@@ -38,7 +38,7 @@ namespace MeuCondominio
             this.cboApto = new System.Windows.Forms.ComboBox();
             this.cboBloco = new System.Windows.Forms.ComboBox();
             this.listViewMoradoresApto = new System.Windows.Forms.ListView();
-            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.lblMsgMorador = new System.Windows.Forms.Label();
             this.txtNomeMoraador = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -91,39 +91,39 @@ namespace MeuCondominio
             this.groupBox1.Controls.Add(this.txtEmail);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Location = new System.Drawing.Point(23, 39);
+            this.groupBox1.Location = new System.Drawing.Point(20, 34);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(578, 427);
+            this.groupBox1.Size = new System.Drawing.Size(495, 370);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Registrar";
             // 
             // txtCelular
             // 
-            this.txtCelular.Location = new System.Drawing.Point(10, 267);
+            this.txtCelular.Location = new System.Drawing.Point(9, 231);
             this.txtCelular.Mask = "(99) 00000-0000";
             this.txtCelular.Name = "txtCelular";
-            this.txtCelular.Size = new System.Drawing.Size(100, 23);
-            this.txtCelular.TabIndex = 19;
+            this.txtCelular.Size = new System.Drawing.Size(86, 20);
+            this.txtCelular.TabIndex = 5;
             this.txtCelular.Leave += new System.EventHandler(this.ValidarCelular);
             // 
             // ckbEntregue
             // 
             this.ckbEntregue.AutoSize = true;
-            this.ckbEntregue.Location = new System.Drawing.Point(434, 69);
+            this.ckbEntregue.Location = new System.Drawing.Point(372, 60);
             this.ckbEntregue.Name = "ckbEntregue";
-            this.ckbEntregue.Size = new System.Drawing.Size(73, 19);
-            this.ckbEntregue.TabIndex = 18;
+            this.ckbEntregue.Size = new System.Drawing.Size(69, 17);
+            this.ckbEntregue.TabIndex = 14;
             this.ckbEntregue.Text = "Entregue";
             this.ckbEntregue.UseVisualStyleBackColor = true;
             // 
             // cboApto
             // 
             this.cboApto.FormattingEnabled = true;
-            this.cboApto.Location = new System.Drawing.Point(137, 40);
+            this.cboApto.Location = new System.Drawing.Point(117, 35);
             this.cboApto.MaxLength = 3;
             this.cboApto.Name = "cboApto";
-            this.cboApto.Size = new System.Drawing.Size(121, 23);
+            this.cboApto.Size = new System.Drawing.Size(104, 21);
             this.cboApto.TabIndex = 2;
             this.cboApto.SelectedIndexChanged += new System.EventHandler(this.cboApto_SelectedIndexChanged);
             this.cboApto.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CarregaNomes);
@@ -131,10 +131,10 @@ namespace MeuCondominio
             // cboBloco
             // 
             this.cboBloco.FormattingEnabled = true;
-            this.cboBloco.Location = new System.Drawing.Point(10, 40);
+            this.cboBloco.Location = new System.Drawing.Point(9, 35);
             this.cboBloco.MaxLength = 2;
             this.cboBloco.Name = "cboBloco";
-            this.cboBloco.Size = new System.Drawing.Size(121, 23);
+            this.cboBloco.Size = new System.Drawing.Size(104, 21);
             this.cboBloco.TabIndex = 1;
             this.cboBloco.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cboBlocoKeyPress);
             // 
@@ -143,9 +143,9 @@ namespace MeuCondominio
             this.listViewMoradoresApto.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
             this.listViewMoradoresApto.HideSelection = false;
-            this.listViewMoradoresApto.Location = new System.Drawing.Point(10, 69);
+            this.listViewMoradoresApto.Location = new System.Drawing.Point(9, 60);
             this.listViewMoradoresApto.Name = "listViewMoradoresApto";
-            this.listViewMoradoresApto.Size = new System.Drawing.Size(394, 139);
+            this.listViewMoradoresApto.Size = new System.Drawing.Size(338, 121);
             this.listViewMoradoresApto.TabIndex = 3;
             this.listViewMoradoresApto.UseCompatibleStateImageBehavior = false;
             this.listViewMoradoresApto.View = System.Windows.Forms.View.List;
@@ -159,8 +159,8 @@ namespace MeuCondominio
             // lblMsgMorador
             // 
             this.lblMsgMorador.AutoSize = true;
-            this.lblMsgMorador.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.lblMsgMorador.Location = new System.Drawing.Point(10, 337);
+            this.lblMsgMorador.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.lblMsgMorador.Location = new System.Drawing.Point(9, 292);
             this.lblMsgMorador.Name = "lblMsgMorador";
             this.lblMsgMorador.Size = new System.Drawing.Size(280, 25);
             this.lblMsgMorador.TabIndex = 16;
@@ -169,131 +169,131 @@ namespace MeuCondominio
             // 
             // txtNomeMoraador
             // 
-            this.txtNomeMoraador.Location = new System.Drawing.Point(10, 228);
+            this.txtNomeMoraador.Location = new System.Drawing.Point(9, 198);
             this.txtNomeMoraador.Name = "txtNomeMoraador";
-            this.txtNomeMoraador.Size = new System.Drawing.Size(556, 23);
-            this.txtNomeMoraador.TabIndex = 15;
+            this.txtNomeMoraador.Size = new System.Drawing.Size(477, 20);
+            this.txtNomeMoraador.TabIndex = 4;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(137, 23);
+            this.label3.Location = new System.Drawing.Point(117, 20);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(77, 15);
+            this.label3.Size = new System.Drawing.Size(67, 13);
             this.label3.TabIndex = 2;
             this.label3.Text = "Apartamento";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(10, 22);
+            this.label2.Location = new System.Drawing.Point(9, 19);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(37, 15);
+            this.label2.Size = new System.Drawing.Size(34, 13);
             this.label2.TabIndex = 1;
             this.label2.Text = "Bloco";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(10, 210);
+            this.label1.Location = new System.Drawing.Point(9, 182);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(70, 15);
+            this.label1.Size = new System.Drawing.Size(63, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Destinatario";
             // 
             // txtEmail
             // 
-            this.txtEmail.Location = new System.Drawing.Point(10, 311);
+            this.txtEmail.Location = new System.Drawing.Point(9, 270);
             this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(556, 23);
-            this.txtEmail.TabIndex = 17;
+            this.txtEmail.Size = new System.Drawing.Size(477, 20);
+            this.txtEmail.TabIndex = 6;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(10, 293);
+            this.label7.Location = new System.Drawing.Point(9, 254);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(41, 15);
+            this.label7.Size = new System.Drawing.Size(35, 13);
             this.label7.TabIndex = 6;
             this.label7.Text = "E-mail";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(10, 249);
+            this.label6.Location = new System.Drawing.Point(9, 216);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(44, 15);
+            this.label6.Size = new System.Drawing.Size(39, 13);
             this.label6.TabIndex = 5;
             this.label6.Text = "Celular";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(608, 90);
+            this.label5.Location = new System.Drawing.Point(521, 78);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(51, 15);
+            this.label5.Size = new System.Drawing.Size(48, 13);
             this.label5.TabIndex = 4;
             this.label5.Text = "QRCode";
             // 
             // txtPrateleira
             // 
-            this.txtPrateleira.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.txtPrateleira.Location = new System.Drawing.Point(607, 218);
+            this.txtPrateleira.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.txtPrateleira.Location = new System.Drawing.Point(520, 189);
             this.txtPrateleira.Multiline = true;
             this.txtPrateleira.Name = "txtPrateleira";
-            this.txtPrateleira.Size = new System.Drawing.Size(120, 35);
-            this.txtPrateleira.TabIndex = 7;
+            this.txtPrateleira.Size = new System.Drawing.Size(103, 31);
+            this.txtPrateleira.TabIndex = 10;
             // 
             // txtQrcode
             // 
-            this.txtQrcode.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.txtQrcode.Location = new System.Drawing.Point(608, 108);
+            this.txtQrcode.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.txtQrcode.Location = new System.Drawing.Point(521, 94);
             this.txtQrcode.Multiline = true;
             this.txtQrcode.Name = "txtQrcode";
-            this.txtQrcode.Size = new System.Drawing.Size(327, 44);
-            this.txtQrcode.TabIndex = 5;
+            this.txtQrcode.Size = new System.Drawing.Size(281, 39);
+            this.txtQrcode.TabIndex = 8;
             // 
             // txtCodBarras
             // 
-            this.txtCodBarras.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.txtCodBarras.Location = new System.Drawing.Point(608, 57);
+            this.txtCodBarras.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.txtCodBarras.Location = new System.Drawing.Point(521, 49);
             this.txtCodBarras.Name = "txtCodBarras";
-            this.txtCodBarras.Size = new System.Drawing.Size(327, 29);
-            this.txtCodBarras.TabIndex = 4;
+            this.txtCodBarras.Size = new System.Drawing.Size(281, 29);
+            this.txtCodBarras.TabIndex = 7;
             this.txtCodBarras.TextChanged += new System.EventHandler(this.txtCodBarras_TextChanged);
             this.txtCodBarras.KeyDown += new System.Windows.Forms.KeyEventHandler(this.VerificarBanco);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(608, 39);
+            this.label4.Location = new System.Drawing.Point(521, 34);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(78, 15);
+            this.label4.Size = new System.Drawing.Size(70, 13);
             this.label4.TabIndex = 13;
             this.label4.Text = "CodigoBarras";
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(608, 200);
+            this.label8.Location = new System.Drawing.Point(521, 173);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(56, 15);
+            this.label8.Size = new System.Drawing.Size(51, 13);
             this.label8.TabIndex = 15;
             this.label8.Text = "Prateleira";
             // 
             // txtEtiquetaLocal
             // 
-            this.txtEtiquetaLocal.Location = new System.Drawing.Point(607, 174);
+            this.txtEtiquetaLocal.Location = new System.Drawing.Point(520, 151);
             this.txtEtiquetaLocal.Name = "txtEtiquetaLocal";
-            this.txtEtiquetaLocal.Size = new System.Drawing.Size(326, 23);
-            this.txtEtiquetaLocal.TabIndex = 6;
+            this.txtEtiquetaLocal.Size = new System.Drawing.Size(280, 20);
+            this.txtEtiquetaLocal.TabIndex = 9;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(608, 156);
+            this.label9.Location = new System.Drawing.Point(521, 135);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(81, 15);
+            this.label9.Size = new System.Drawing.Size(75, 13);
             this.label9.TabIndex = 17;
             this.label9.Text = "Etiqueta Local";
             // 
@@ -307,7 +307,8 @@ namespace MeuCondominio
             this.imprimirToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(986, 24);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
+            this.menuStrip1.Size = new System.Drawing.Size(845, 24);
             this.menuStrip1.TabIndex = 18;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -350,27 +351,27 @@ namespace MeuCondominio
             // reciboDeEntregaToolStripMenuItem
             // 
             this.reciboDeEntregaToolStripMenuItem.Name = "reciboDeEntregaToolStripMenuItem";
-            this.reciboDeEntregaToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.reciboDeEntregaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.reciboDeEntregaToolStripMenuItem.Text = "Recibo de entrega";
             this.reciboDeEntregaToolStripMenuItem.Click += new System.EventHandler(this.reciboDeEntregaToolStripMenuItem_Click);
             // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(752, 218);
+            this.checkBox1.Location = new System.Drawing.Point(645, 189);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(75, 19);
-            this.checkBox1.TabIndex = 9;
+            this.checkBox1.Size = new System.Drawing.Size(66, 17);
+            this.checkBox1.TabIndex = 11;
             this.checkBox1.Text = "Alimento";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // checkBox2
             // 
             this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(833, 218);
+            this.checkBox2.Location = new System.Drawing.Point(714, 189);
             this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(100, 19);
-            this.checkBox2.TabIndex = 10;
+            this.checkBox2.Size = new System.Drawing.Size(90, 17);
+            this.checkBox2.TabIndex = 12;
             this.checkBox2.Text = "Medicamento";
             this.checkBox2.UseVisualStyleBackColor = true;
             // 
@@ -381,19 +382,19 @@ namespace MeuCondominio
             this.groupBox2.Controls.Add(this.ckbMail);
             this.groupBox2.Controls.Add(this.ckbZap);
             this.groupBox2.Controls.Add(this.ckbSms);
-            this.groupBox2.Location = new System.Drawing.Point(610, 264);
+            this.groupBox2.Location = new System.Drawing.Point(523, 229);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(323, 100);
+            this.groupBox2.Size = new System.Drawing.Size(277, 87);
             this.groupBox2.TabIndex = 25;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "ENVIO";
             // 
             // btnEnviar
             // 
-            this.btnEnviar.Location = new System.Drawing.Point(186, 64);
+            this.btnEnviar.Location = new System.Drawing.Point(159, 55);
             this.btnEnviar.Name = "btnEnviar";
-            this.btnEnviar.Size = new System.Drawing.Size(97, 27);
-            this.btnEnviar.TabIndex = 8;
+            this.btnEnviar.Size = new System.Drawing.Size(83, 23);
+            this.btnEnviar.TabIndex = 13;
             this.btnEnviar.Text = "SALVAR";
             this.btnEnviar.UseVisualStyleBackColor = true;
             this.btnEnviar.Click += new System.EventHandler(this.btnEnviar_Click);
@@ -401,9 +402,9 @@ namespace MeuCondominio
             // cknTodos
             // 
             this.cknTodos.AutoSize = true;
-            this.cknTodos.Location = new System.Drawing.Point(42, 64);
+            this.cknTodos.Location = new System.Drawing.Point(36, 55);
             this.cknTodos.Name = "cknTodos";
-            this.cknTodos.Size = new System.Drawing.Size(57, 19);
+            this.cknTodos.Size = new System.Drawing.Size(56, 17);
             this.cknTodos.TabIndex = 14;
             this.cknTodos.Text = "Todos";
             this.cknTodos.UseVisualStyleBackColor = true;
@@ -411,9 +412,9 @@ namespace MeuCondominio
             // ckbMail
             // 
             this.ckbMail.AutoSize = true;
-            this.ckbMail.Location = new System.Drawing.Point(223, 25);
+            this.ckbMail.Location = new System.Drawing.Point(191, 22);
             this.ckbMail.Name = "ckbMail";
-            this.ckbMail.Size = new System.Drawing.Size(60, 19);
+            this.ckbMail.Size = new System.Drawing.Size(55, 17);
             this.ckbMail.TabIndex = 13;
             this.ckbMail.Text = "E-Mail";
             this.ckbMail.UseVisualStyleBackColor = true;
@@ -421,9 +422,9 @@ namespace MeuCondominio
             // ckbZap
             // 
             this.ckbZap.AutoSize = true;
-            this.ckbZap.Location = new System.Drawing.Point(119, 25);
+            this.ckbZap.Location = new System.Drawing.Point(102, 22);
             this.ckbZap.Name = "ckbZap";
-            this.ckbZap.Size = new System.Drawing.Size(81, 19);
+            this.ckbZap.Size = new System.Drawing.Size(76, 17);
             this.ckbZap.TabIndex = 12;
             this.ckbZap.Text = "WhatsApp";
             this.ckbZap.UseVisualStyleBackColor = true;
@@ -431,9 +432,9 @@ namespace MeuCondominio
             // ckbSms
             // 
             this.ckbSms.AutoSize = true;
-            this.ckbSms.Location = new System.Drawing.Point(42, 25);
+            this.ckbSms.Location = new System.Drawing.Point(36, 22);
             this.ckbSms.Name = "ckbSms";
-            this.ckbSms.Size = new System.Drawing.Size(49, 19);
+            this.ckbSms.Size = new System.Drawing.Size(49, 17);
             this.ckbSms.TabIndex = 11;
             this.ckbSms.Text = "SMS";
             this.ckbSms.UseVisualStyleBackColor = true;
@@ -446,9 +447,9 @@ namespace MeuCondominio
             // 
             // FrmGestaoSedex
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(986, 477);
+            this.ClientSize = new System.Drawing.Size(845, 413);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.checkBox1);
@@ -465,6 +466,7 @@ namespace MeuCondominio
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FrmGestaoSedex";
             this.Text = "Gestão de Sedex";
+            this.Load += new System.EventHandler(this.FrmGestaoSedex_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);

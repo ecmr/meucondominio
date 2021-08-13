@@ -149,7 +149,7 @@ namespace MeuCondominio.Dal
             {
                 using (var cmd = DbConnection().CreateCommand())
                 {
-                    cmd.CommandText = "SELECT * FROM Sedex Where CodigoBarraEtiqueta=" + CodigoBarras;
+                    cmd.CommandText = String.Concat("SELECT * FROM Sedex Where CodigoBarraEtiqueta=", CodigoBarras, " AND ReciboImpresso = 'N'");
                     da = new SQLiteDataAdapter(cmd.CommandText, DbConnection());
                     da.Fill(dt);
 
@@ -178,7 +178,8 @@ namespace MeuCondominio.Dal
                         DATACADASTRO IS NOT NULL 
                         AND DATAENVIOMENSAGEM IS NOT NULL 
                         AND DATAENTREGA IS NOT NULL 
-                        AND ENVIADOSMS = 'S' 
+                        AND ENVIADOSMS = 'S'
+                        AND ReciboImpresso = 'N'
                         ORDER BY 
                         Bloco, 
                         Apartamento;";
@@ -206,8 +207,8 @@ namespace MeuCondominio.Dal
             {
                 using (var cmd = DbConnection().CreateCommand())
                 {
-                    var query = @"INSERT INTO Sedex(IdMorador, Bloco , Apartamento , NomeDestinatario , Email , NumeroCelular , CodigoBarraEtiqueta , CodigoBarraEtiquetaLocal , LocalPrateleira, DataCadastro, DataEntrega, DataEnvioMensagem, Enviadosms, EnviadoZap, EnviadoTelegram, EnviadoEmail)
-                                    values ((SELECT MAX(IDMORADOR)+1 FROM SEDEX), @Bloco , @Apartamento , @NomeDestinatario , @Email , @NumeroCelular , @CodigoBarraEtiqueta , @CodigoBarraEtiquetaLocal , @LocalPrateleira, @DataCadastro, @DataEntrega, @DataEnvioMensagem, @Enviadosms, @EnviadoZap, @EnviadoTelegram, @EnviadoEmail)";
+                    var query = @"INSERT INTO Sedex(IdMorador, Bloco , Apartamento , NomeDestinatario , Email , NumeroCelular , CodigoBarraEtiqueta , CodigoBarraEtiquetaLocal , LocalPrateleira, DataCadastro, DataEntrega, DataEnvioMensagem, Enviadosms, EnviadoZap, EnviadoTelegram, EnviadoEmail, ReciboImpresso)
+                                    values ((SELECT MAX(IDMORADOR)+1 FROM SEDEX), @Bloco , @Apartamento , @NomeDestinatario , @Email , @NumeroCelular , @CodigoBarraEtiqueta , @CodigoBarraEtiquetaLocal , @LocalPrateleira, @DataCadastro, @DataEntrega, @DataEnvioMensagem, @Enviadosms, @EnviadoZap, @EnviadoTelegram, @EnviadoEmail, @ReciboImpresso)";
 
                     cmd.CommandText = query;
                     cmd.Parameters.AddWithValue("@Bloco", morador.Bloco);
@@ -225,7 +226,7 @@ namespace MeuCondominio.Dal
                     cmd.Parameters.AddWithValue("@EnviadoZap", morador.EnviadoZap);
                     cmd.Parameters.AddWithValue("@EnviadoTelegram", morador.EnviadoTelegram);
                     cmd.Parameters.AddWithValue("@EnviadoEmail", morador.EnviadoEmail);
-
+                    cmd.Parameters.AddWithValue("@ReciboImpresso", morador.ReciboImpresso);
 
                     cmd.ExecuteNonQuery();
 
@@ -259,7 +260,8 @@ namespace MeuCondominio.Dal
                 EnviadoEmail = @EnviadoEmail,
                 Enviadosms = @Enviadosms,
                 EnviadoTelegram = @EnviadoTelegram,
-                EnviadoZap = @EnviadoZap
+                EnviadoZap = @EnviadoZap,
+                ReciboImpresso = @ReciboImpresso
             Where IdMorador = @IdMorador";
 
             try
@@ -287,6 +289,7 @@ namespace MeuCondominio.Dal
                         cmd.Parameters.AddWithValue("@EnviadoZap", morador.EnviadoZap);
                         cmd.Parameters.AddWithValue("@EnviadoTelegram", morador.EnviadoTelegram);
                         cmd.Parameters.AddWithValue("@EnviadoEmail", morador.EnviadoEmail);
+                        cmd.Parameters.AddWithValue("@ReciboImpresso", morador.ReciboImpresso);
 
                         cmd.ExecuteNonQuery();
 
@@ -344,6 +347,7 @@ namespace MeuCondominio.Dal
                 morador.EnviadoZap = row.ItemArray[14].ToString();
                 morador.EnviadoTelegram = row.ItemArray[15].ToString();
                 morador.EnviadoEmail = row.ItemArray[16].ToString();
+                morador.ReciboImpresso = row.ItemArray[17].ToString();
 
                 moradores.Add(morador);
             }

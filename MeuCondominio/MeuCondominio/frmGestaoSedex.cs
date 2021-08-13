@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using MeuCondominio.Bus;
 using MeuCondominio.Model;
+using Microsoft.Reporting.WinForms;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -797,8 +798,6 @@ namespace MeuCondominio
         }
         private void cboApto_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //Morador morador = (Morador)moradoresBlocos.Where(ap => ap.Bloco.Equals(cboBloco.SelectedItem.ToString()) && ap.Apartamento.Equals(cboApto.SelectedItem.ToString()));
-
             listViewMoradoresApto.Items.Clear();
 
             for (int i = 0; i < moradoresBlocos.Count; i++)
@@ -933,9 +932,9 @@ namespace MeuCondominio
 
         private bool ValidarCamposPreGravar()
         {
-            if (string.IsNullOrEmpty(txtCodBarras.Text) ||
+            if ((string.IsNullOrEmpty(txtCodBarras.Text) ||
                 (string.IsNullOrEmpty(txtQrcode.Text)) ||
-                (string.IsNullOrEmpty(txtEtiquetaLocal.Text)) &&
+                (string.IsNullOrEmpty(txtEtiquetaLocal.Text))) &&
                 (string.IsNullOrEmpty(cboBloco.Text)) &&
                 (string.IsNullOrEmpty(cboApto.Text)) &&
                 (string.IsNullOrEmpty(txtNomeMoraador.Text)))
@@ -1047,6 +1046,7 @@ namespace MeuCondominio
             morador.EnviadoZap = ckbZap.Checked == true ? "S" : "N";
             morador.EnviadoTelegram = "N";
             morador.EnviadoEmail = ckbMail.Checked == true ? "S" : "N";
+            morador.ReciboImpresso = "N";
 
             SedexBus bus = new SedexBus();
 
@@ -1159,13 +1159,17 @@ namespace MeuCondominio
         private void reciboDeEntregaToolStripMenuItem_Click(object sender, EventArgs e)
         {
             List<Morador> ListaRecibo = new List<Morador>();
-
             SedexBus bus = new SedexBus();
             ListaRecibo = bus.RetornaListaParaRecibo();
 
             FrmImpressao frmImpressao = new FrmImpressao(ListaRecibo);
             frmImpressao.StartPosition = FormStartPosition.CenterScreen;
             frmImpressao.ShowDialog();
+        }
+
+        private void FrmGestaoSedex_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

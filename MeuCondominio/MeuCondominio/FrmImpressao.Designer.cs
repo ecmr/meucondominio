@@ -31,13 +31,18 @@ namespace MeuCondominio
         {
             this.components = new System.ComponentModel.Container();
             Microsoft.Reporting.WinForms.ReportDataSource reportDataSource1 = new Microsoft.Reporting.WinForms.ReportDataSource();
+            this.MoradorBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.cboImpressora = new System.Windows.Forms.ComboBox();
             this.btnImprimir = new System.Windows.Forms.Button();
             this.lblImprimir = new System.Windows.Forms.Label();
             this.reportViewer1 = new Microsoft.Reporting.WinForms.ReportViewer();
-            this.MoradorBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.chkVisualizaImpressao = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.MoradorBindingSource)).BeginInit();
             this.SuspendLayout();
+            // 
+            // MoradorBindingSource
+            // 
+            this.MoradorBindingSource.DataSource = typeof(MeuCondominio.Model.Morador);
             // 
             // cboImpressora
             // 
@@ -49,7 +54,7 @@ namespace MeuCondominio
             // 
             // btnImprimir
             // 
-            this.btnImprimir.Location = new System.Drawing.Point(258, 19);
+            this.btnImprimir.Location = new System.Drawing.Point(28, 57);
             this.btnImprimir.Name = "btnImprimir";
             this.btnImprimir.Size = new System.Drawing.Size(86, 38);
             this.btnImprimir.TabIndex = 1;
@@ -72,21 +77,29 @@ namespace MeuCondominio
             reportDataSource1.Value = this.MoradorBindingSource;
             this.reportViewer1.LocalReport.DataSources.Add(reportDataSource1);
             this.reportViewer1.LocalReport.ReportEmbeddedResource = "WindowsFormsApp1.Relatorio.Report1.rdlc";
-            this.reportViewer1.Location = new System.Drawing.Point(12, 63);
+            this.reportViewer1.Location = new System.Drawing.Point(12, 391);
             this.reportViewer1.Name = "reportViewer1";
             this.reportViewer1.ServerReport.BearerToken = null;
-            this.reportViewer1.Size = new System.Drawing.Size(396, 246);
+            this.reportViewer1.Size = new System.Drawing.Size(487, 52);
             this.reportViewer1.TabIndex = 3;
+            this.reportViewer1.Visible = false;
             // 
-            // MoradorBindingSource
+            // chkVisualizaImpressao
             // 
-            this.MoradorBindingSource.DataSource = typeof(MeuCondominio.Model.Morador);
+            this.chkVisualizaImpressao.AutoSize = true;
+            this.chkVisualizaImpressao.Location = new System.Drawing.Point(260, 34);
+            this.chkVisualizaImpressao.Name = "chkVisualizaImpressao";
+            this.chkVisualizaImpressao.Size = new System.Drawing.Size(70, 17);
+            this.chkVisualizaImpressao.TabIndex = 4;
+            this.chkVisualizaImpressao.Text = "Visualizar";
+            this.chkVisualizaImpressao.UseVisualStyleBackColor = true;
             // 
             // FrmImpressao
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(433, 455);
+            this.ClientSize = new System.Drawing.Size(511, 455);
+            this.Controls.Add(this.chkVisualizaImpressao);
             this.Controls.Add(this.reportViewer1);
             this.Controls.Add(this.lblImprimir);
             this.Controls.Add(this.btnImprimir);
@@ -109,5 +122,6 @@ namespace MeuCondominio
         private System.Windows.Forms.Label lblImprimir;
         private Microsoft.Reporting.WinForms.ReportViewer reportViewer1;
         private System.Windows.Forms.BindingSource MoradorBindingSource;
+        private System.Windows.Forms.CheckBox chkVisualizaImpressao;
     }
 }

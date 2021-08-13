@@ -1,6 +1,7 @@
 ﻿using MeuCondominio.Dal;
 using MeuCondominio.Model;
 using System.Collections.Generic;
+using System.Data;
 
 namespace MeuCondominio.Bus
 {

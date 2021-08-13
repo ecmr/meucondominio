@@ -21,5 +21,6 @@
         public string EnviadoZap { get; set; }
         public string EnviadoTelegram { get; set; }
         public string EnviadoEmail { get; set; }
+        public string ReciboImpresso { get; set; }
     }
 }
