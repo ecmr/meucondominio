@@ -51,10 +51,11 @@ namespace MeuCondominio
             this.cboImpressora.Name = "cboImpressora";
             this.cboImpressora.Size = new System.Drawing.Size(229, 21);
             this.cboImpressora.TabIndex = 0;
+            this.cboImpressora.Visible = false;
             // 
             // btnImprimir
             // 
-            this.btnImprimir.Location = new System.Drawing.Point(28, 57);
+            this.btnImprimir.Location = new System.Drawing.Point(105, 57);
             this.btnImprimir.Name = "btnImprimir";
             this.btnImprimir.Size = new System.Drawing.Size(86, 38);
             this.btnImprimir.TabIndex = 1;
@@ -87,7 +88,7 @@ namespace MeuCondominio
             // chkVisualizaImpressao
             // 
             this.chkVisualizaImpressao.AutoSize = true;
-            this.chkVisualizaImpressao.Location = new System.Drawing.Point(260, 34);
+            this.chkVisualizaImpressao.Location = new System.Drawing.Point(207, 69);
             this.chkVisualizaImpressao.Name = "chkVisualizaImpressao";
             this.chkVisualizaImpressao.Size = new System.Drawing.Size(70, 17);
             this.chkVisualizaImpressao.TabIndex = 4;

@@ -1,10 +1,11 @@
 ﻿using ClosedXML.Excel;
 using MeuCondominio.Bus;
 using MeuCondominio.Model;
-using Microsoft.Reporting.WinForms;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace MeuCondominio
@@ -141,7 +142,7 @@ namespace MeuCondominio
                         object valueNome = cNomeMorador.Value;
 
                         var cCelularMorador = row.Cell(4); // Celular
-                        object valueCelular = cCelularMorador.Value;
+                        object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
                         var cEmailMorador = row.Cell(6); // email
                         object valueEmail = cEmailMorador.Value;
@@ -193,7 +194,7 @@ namespace MeuCondominio
                         object valueNome = cNomeMorador.Value;
 
                         var cCelularMorador = row.Cell(4); // Celular
-                        object valueCelular = cCelularMorador.Value;
+                        object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
                         var cEmailMorador = row.Cell(6); // email
                         object valueEmail = cEmailMorador.Value;
@@ -244,7 +245,7 @@ namespace MeuCondominio
                         object valueNome = cNomeMorador.Value;
 
                         var cCelularMorador = row.Cell(4); // Celular
-                        object valueCelular = cCelularMorador.Value;
+                        object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
                         var cEmailMorador = row.Cell(6); // email
                         object valueEmail = cEmailMorador.Value;
@@ -295,7 +296,7 @@ namespace MeuCondominio
                         object valueNome = cNomeMorador.Value;
 
                         var cCelularMorador = row.Cell(4); // Celular
-                        object valueCelular = cCelularMorador.Value;
+                        object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
                         var cEmailMorador = row.Cell(6); // email
                         object valueEmail = cEmailMorador.Value;
@@ -346,7 +347,7 @@ namespace MeuCondominio
                         object valueNome = cNomeMorador.Value;
 
                         var cCelularMorador = row.Cell(4); // Celular
-                        object valueCelular = cCelularMorador.Value;
+                        object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
                         var cEmailMorador = row.Cell(6); // email
                         object valueEmail = cEmailMorador.Value;
@@ -398,7 +399,7 @@ namespace MeuCondominio
                         object valueNome = cNomeMorador.Value;
 
                         var cCelularMorador = row.Cell(4); // Celular
-                        object valueCelular = cCelularMorador.Value;
+                        object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
                         var cEmailMorador = row.Cell(6); // email
                         object valueEmail = cEmailMorador.Value;
@@ -450,7 +451,7 @@ namespace MeuCondominio
                         object valueNome = cNomeMorador.Value;
 
                         var cCelularMorador = row.Cell(4); // Celular
-                        object valueCelular = cCelularMorador.Value;
+                        object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
                         var cEmailMorador = row.Cell(6); // email
                         object valueEmail = cEmailMorador.Value;
@@ -502,7 +503,7 @@ namespace MeuCondominio
                         object valueNome = cNomeMorador.Value;
 
                         var cCelularMorador = row.Cell(4); // Celular
-                        object valueCelular = cCelularMorador.Value;
+                        object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
                         var cEmailMorador = row.Cell(6); // email
                         object valueEmail = cEmailMorador.Value;
@@ -554,7 +555,7 @@ namespace MeuCondominio
                         object valueNome = cNomeMorador.Value;
 
                         var cCelularMorador = row.Cell(4); // Celular
-                        object valueCelular = cCelularMorador.Value;
+                        object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
                         var cEmailMorador = row.Cell(6); // email
                         object valueEmail = cEmailMorador.Value;
@@ -607,7 +608,7 @@ namespace MeuCondominio
                         object valueNome = cNomeMorador.Value;
 
                         var cCelularMorador = row.Cell(4); // Celular
-                        object valueCelular = cCelularMorador.Value;
+                        object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
                         var cEmailMorador = row.Cell(6); // email
                         object valueEmail = cEmailMorador.Value;
@@ -660,7 +661,7 @@ namespace MeuCondominio
                         object valueNome = cNomeMorador.Value;
 
                         var cCelularMorador = row.Cell(4); // Celular
-                        object valueCelular = cCelularMorador.Value;
+                        object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
                         var cEmailMorador = row.Cell(6); // email
                         object valueEmail = cEmailMorador.Value;
@@ -713,7 +714,7 @@ namespace MeuCondominio
                         object valueNome = cNomeMorador.Value;
 
                         var cCelularMorador = row.Cell(4); // Celular
-                        object valueCelular = cCelularMorador.Value;
+                        object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
                         var cEmailMorador = row.Cell(6); // email
                         object valueEmail = cEmailMorador.Value;
@@ -765,7 +766,7 @@ namespace MeuCondominio
                         object valueNome = cNomeMorador.Value;
 
                         var cCelularMorador = row.Cell(4); // Celular
-                        object valueCelular = cCelularMorador.Value;
+                        object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
                         var cEmailMorador = row.Cell(6); // email
                         object valueEmail = cEmailMorador.Value;
@@ -827,8 +828,8 @@ namespace MeuCondominio
 
                 if (((sBloco >= 1) && (sBloco <= 13)) || e.KeyChar == 13)
                 {
-                    LimparTela();
-                    cboBloco.Text = sBloco.ToString().PadLeft(2, '0');
+                    //LimparTela();
+                    cboBloco.Text += sBloco; //sBloco.ToString().PadLeft(2, '0');
                     cboApto.Focus();
                 }
                 else
@@ -907,6 +908,7 @@ namespace MeuCondominio
                 txtNomeMoraador.Text = morador.NomeDestinatario;
                 txtCelular.Text = morador.NumeroCelular;
                 txtEmail.Text = morador.email;
+                IdMoradorSedex = morador.IdMorador;
             }
         }
         private void btnEnviar_Click(object sender, EventArgs e)
@@ -1034,7 +1036,9 @@ namespace MeuCondominio
             morador.NomeDestinatario = txtNomeMoraador.Text;
             morador.Bloco = cboBloco.Text;
             morador.Apartamento = cboApto.Text;
-            morador.NumeroCelular = txtCelular.Text;
+            txtCelular.Mask = "";
+            morador.NumeroCelular = SomenteNumeros(txtCelular.Text);
+            txtCelular.Mask = "(99) 00000-0000";
             morador.email = txtEmail.Text;
             morador.CodigoBarraEtiqueta = txtCodBarras.Text;
             morador.CodigoBarraEtiquetaLocal = txtEtiquetaLocal.Text;
@@ -1064,6 +1068,9 @@ namespace MeuCondominio
                 if (EnvioMensagem.EnvioSmsDev(morador))
                 {
                     morador.DataEnvioMensagem = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString());
+                    morador.IdMorador = IdMoradorSedex;
+                    sucesso = bus.AtualizarTelefone(morador);
+                    morador.IdMorador = 0;
                     sucesso = bus.Adicionar(morador);
                 }
             }
@@ -1092,7 +1099,7 @@ namespace MeuCondominio
             morador.NomeDestinatario = txtNomeMoraador.Text;
             morador.Bloco = cboBloco.Text;
             morador.Apartamento = cboApto.Text;
-            morador.NumeroCelular = txtCelular.Text;
+            morador.NumeroCelular = SomenteNumeros(txtCelular.Text);
             morador.email = txtEmail.Text;
             morador.CodigoBarraEtiqueta = txtCodBarras.Text;
             morador.CodigoBarraEtiquetaLocal = txtEtiquetaLocal.Text;
@@ -1170,6 +1177,23 @@ namespace MeuCondominio
         private void FrmGestaoSedex_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void cboBloco_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        public string SomenteNumeros(string texto)
+        {
+            Regex re = new Regex("[0-9]");
+            StringBuilder s = new StringBuilder();
+
+            foreach (Match m in re.Matches(texto))
+            {
+                s.Append(m.Value);
+            }
+            return s.ToString();
         }
     }
 }

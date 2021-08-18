@@ -142,20 +142,21 @@ namespace MeuCondominio.Dal
 
         public static Morador GetCliente(string CodigoBarras)
         {
-            SQLiteDataAdapter da = null;
-            DataTable dt = new DataTable();
-
             try
             {
+                var query = @"SELECT * FROM Sedex Where CodigoBarraEtiqueta=@CodigoBarraEtiqueta AND ReciboImpresso = 'N'";
+
                 using (var cmd = DbConnection().CreateCommand())
                 {
-                    cmd.CommandText = String.Concat("SELECT * FROM Sedex Where CodigoBarraEtiqueta=", CodigoBarras, " AND ReciboImpresso = 'N'");
-                    da = new SQLiteDataAdapter(cmd.CommandText, DbConnection());
-                    da.Fill(dt);
+                    cmd.CommandText = query;
+                    cmd.Parameters.AddWithValue("@CodigoBarraEtiqueta", CodigoBarras);
+                    cmd.Connection = DbConnection();
 
-                    if (dt.Rows.Count > 0)
+                    SQLiteDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.HasRows)
                     {
-                        var morador = PreencheMoradorDt(dt);
+                        var morador = PreencheMoradorDtReader(reader);
                         if (morador.Count > 0)
                             return morador[0];
                     }
@@ -177,7 +178,6 @@ namespace MeuCondominio.Dal
                         WHERE 
                         DATACADASTRO IS NOT NULL 
                         AND DATAENVIOMENSAGEM IS NOT NULL 
-                        AND DATAENTREGA IS NOT NULL 
                         AND ENVIADOSMS = 'S'
                         AND ReciboImpresso = 'N'
                         ORDER BY 
@@ -304,6 +304,42 @@ namespace MeuCondominio.Dal
             }
         }
 
+        public static bool UpdateTelefone(Morador morador)
+        {
+            var query = @"UPDATE SEDEX
+                SET NUMEROCELULAR = @NumeroCelular
+                WHERE
+                BLOCO = @Bloco
+                AND APARTAMENTO = @Apartamento
+                AND NOMEDESTINATARIO = @NomeDestinatario";
+
+            try
+            {
+                using (var cmd = new SQLiteCommand(DbConnection()))
+                {
+                    if (morador.IdMorador > 0)
+                    {
+                        cmd.CommandText = query;
+
+                        cmd.Parameters.AddWithValue("@Bloco", morador.Bloco);
+                        cmd.Parameters.AddWithValue("@Apartamento", morador.Apartamento);
+                        cmd.Parameters.AddWithValue("@NomeDestinatario", morador.NomeDestinatario);
+                        cmd.Parameters.AddWithValue("@NumeroCelular", morador.NumeroCelular);
+
+                        cmd.ExecuteNonQuery();
+
+                        return true;
+                    }
+                    return false;
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
         public static bool Delete(int Id)
         {
             try
@@ -321,6 +357,39 @@ namespace MeuCondominio.Dal
                 throw new Exception(ex.Message);
             }
         }
+
+
+        private static List<Morador> PreencheMoradorDtReader(SQLiteDataReader reader)
+        {
+            List<Morador> moradores = new List<Morador>();
+
+            while (reader.Read())
+            {
+                Morador morador = new Morador();
+
+                morador.IdMorador = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
+                morador.Bloco = reader.IsDBNull(1) ? "" : reader.GetString(1);
+                morador.Apartamento = reader.IsDBNull(2) ? "" : reader.GetString(2);
+                morador.NomeDestinatario = reader.IsDBNull(3) ? "" : reader.GetString(3);
+                morador.email = reader.IsDBNull(4) ? "" : reader.GetString(4);
+                morador.NumeroCelular = reader.IsDBNull(5) ? "" : reader.GetString(5);
+                morador.CodigoBarraEtiqueta = reader.IsDBNull(6) ? "" : reader.GetString(6);
+                morador.CodigoQRCode = reader.IsDBNull(7) ? "" : reader.GetString(7);
+                morador.CodigoBarraEtiquetaLocal = reader.IsDBNull(8) ? "" : reader.GetString(8);
+                morador.LocalPrateleira = reader.IsDBNull(9) ? 0 : int.Parse(reader.GetString(9));
+                morador.DataCadastro = reader.IsDBNull(10) ? "" : reader.GetString(10);
+                morador.DataEntrega = reader.IsDBNull(11) ? "" : reader.GetString(11);
+                morador.DataEnvioMensagem = reader.IsDBNull(12) ? "" : reader.GetString(12);
+                morador.Enviadosms = reader.IsDBNull(13) ? "" : reader.GetString(13);
+                morador.EnviadoZap = reader.IsDBNull(14) ? "" : reader.GetString(14);
+                morador.EnviadoTelegram = reader.IsDBNull(15) ? "" : reader.GetString(15);
+                morador.EnviadoEmail = reader.IsDBNull(16) ? "" : reader.GetString(16);
+                morador.ReciboImpresso = reader.IsDBNull(17) ? "" : reader.GetString(17);
+
+                moradores.Add(morador);
+            }
+            return moradores;
+        } 
 
         private static List<Morador> PreencheMoradorDt(DataTable data)
         {

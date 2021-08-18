@@ -136,6 +136,7 @@ namespace MeuCondominio
             this.cboBloco.Name = "cboBloco";
             this.cboBloco.Size = new System.Drawing.Size(104, 21);
             this.cboBloco.TabIndex = 1;
+            this.cboBloco.SelectedIndexChanged += new System.EventHandler(this.cboBloco_SelectedIndexChanged);
             this.cboBloco.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cboBlocoKeyPress);
             // 
             // listViewMoradoresApto
@@ -351,7 +352,7 @@ namespace MeuCondominio
             // reciboDeEntregaToolStripMenuItem
             // 
             this.reciboDeEntregaToolStripMenuItem.Name = "reciboDeEntregaToolStripMenuItem";
-            this.reciboDeEntregaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.reciboDeEntregaToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.reciboDeEntregaToolStripMenuItem.Text = "Recibo de entrega";
             this.reciboDeEntregaToolStripMenuItem.Click += new System.EventHandler(this.reciboDeEntregaToolStripMenuItem_Click);
             // 

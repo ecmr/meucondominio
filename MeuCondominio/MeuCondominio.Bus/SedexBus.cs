@@ -42,6 +42,11 @@ namespace MeuCondominio.Bus
             return DalHelper.Update(morador);
         }
 
+        public bool AtualizarTelefone(Morador morador)
+        {
+            return DalHelper.UpdateTelefone(morador);
+        }
+
         public bool Excluir(int idMorador)
         {
             return DalHelper.Delete(idMorador);
