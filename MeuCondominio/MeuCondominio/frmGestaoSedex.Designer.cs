@@ -238,6 +238,8 @@ namespace MeuCondominio
             // 
             // txtPrateleira
             // 
+            this.txtPrateleira.BackColor = System.Drawing.SystemColors.WindowFrame;
+            this.txtPrateleira.Enabled = false;
             this.txtPrateleira.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this.txtPrateleira.Location = new System.Drawing.Point(520, 189);
             this.txtPrateleira.Multiline = true;
@@ -247,6 +249,8 @@ namespace MeuCondominio
             // 
             // txtQrcode
             // 
+            this.txtQrcode.BackColor = System.Drawing.SystemColors.WindowFrame;
+            this.txtQrcode.Enabled = false;
             this.txtQrcode.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this.txtQrcode.Location = new System.Drawing.Point(521, 94);
             this.txtQrcode.Multiline = true;
@@ -284,6 +288,8 @@ namespace MeuCondominio
             // 
             // txtEtiquetaLocal
             // 
+            this.txtEtiquetaLocal.BackColor = System.Drawing.SystemColors.WindowFrame;
+            this.txtEtiquetaLocal.Enabled = false;
             this.txtEtiquetaLocal.Location = new System.Drawing.Point(520, 151);
             this.txtEtiquetaLocal.Name = "txtEtiquetaLocal";
             this.txtEtiquetaLocal.Size = new System.Drawing.Size(280, 20);
@@ -309,7 +315,7 @@ namespace MeuCondominio
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(845, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(833, 24);
             this.menuStrip1.TabIndex = 18;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -318,12 +324,14 @@ namespace MeuCondominio
             this.incluirToolStripMenuItem.Name = "incluirToolStripMenuItem";
             this.incluirToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.incluirToolStripMenuItem.Text = "Incluir";
+            this.incluirToolStripMenuItem.Visible = false;
             // 
             // cnsultarToolStripMenuItem
             // 
             this.cnsultarToolStripMenuItem.Name = "cnsultarToolStripMenuItem";
             this.cnsultarToolStripMenuItem.Size = new System.Drawing.Size(70, 20);
             this.cnsultarToolStripMenuItem.Text = "Consultar";
+            this.cnsultarToolStripMenuItem.Visible = false;
             this.cnsultarToolStripMenuItem.Click += new System.EventHandler(this.cnsultarToolStripMenuItem_Click);
             // 
             // salvarToolStripMenuItem
@@ -331,6 +339,7 @@ namespace MeuCondominio
             this.salvarToolStripMenuItem.Name = "salvarToolStripMenuItem";
             this.salvarToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
             this.salvarToolStripMenuItem.Text = "Salvar";
+            this.salvarToolStripMenuItem.Visible = false;
             this.salvarToolStripMenuItem.Click += new System.EventHandler(this.salvarToolStripMenuItem_Click);
             // 
             // carregarExcelToolStripMenuItem
@@ -338,6 +347,7 @@ namespace MeuCondominio
             this.carregarExcelToolStripMenuItem.Name = "carregarExcelToolStripMenuItem";
             this.carregarExcelToolStripMenuItem.Size = new System.Drawing.Size(94, 20);
             this.carregarExcelToolStripMenuItem.Text = "Carregar Excel";
+            this.carregarExcelToolStripMenuItem.Visible = false;
             this.carregarExcelToolStripMenuItem.Click += new System.EventHandler(this.carregarExcelToolStripMenuItem_Click);
             // 
             // imprimirToolStripMenuItem
@@ -409,6 +419,7 @@ namespace MeuCondominio
             this.cknTodos.TabIndex = 14;
             this.cknTodos.Text = "Todos";
             this.cknTodos.UseVisualStyleBackColor = true;
+            this.cknTodos.Visible = false;
             // 
             // ckbMail
             // 
@@ -419,6 +430,7 @@ namespace MeuCondominio
             this.ckbMail.TabIndex = 13;
             this.ckbMail.Text = "E-Mail";
             this.ckbMail.UseVisualStyleBackColor = true;
+            this.ckbMail.Visible = false;
             // 
             // ckbZap
             // 
@@ -429,6 +441,7 @@ namespace MeuCondominio
             this.ckbZap.TabIndex = 12;
             this.ckbZap.Text = "WhatsApp";
             this.ckbZap.UseVisualStyleBackColor = true;
+            this.ckbZap.Visible = false;
             // 
             // ckbSms
             // 
@@ -450,7 +463,7 @@ namespace MeuCondominio
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(845, 413);
+            this.ClientSize = new System.Drawing.Size(833, 413);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.checkBox1);
@@ -465,7 +478,10 @@ namespace MeuCondominio
             this.Controls.Add(this.txtPrateleira);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "FrmGestaoSedex";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Gestão de Sedex";
             this.Load += new System.EventHandler(this.FrmGestaoSedex_Load);
             this.groupBox1.ResumeLayout(false);

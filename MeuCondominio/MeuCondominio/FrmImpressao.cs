@@ -19,6 +19,8 @@ namespace MeuCondominio
 
         private void FrmImpressao_Load(object sender, EventArgs e)
         {
+            chkVisualizaImpressao.Checked = true;
+            chkVisualizaImpressao.Visible = false;
             foreach (var printer in System.Drawing.Printing.PrinterSettings.InstalledPrinters)
             {
                 cboImpressora.Items.Add(printer);
@@ -55,19 +57,22 @@ namespace MeuCondominio
                 {
                     PrintPreviewDialog ppdlg = new PrintPreviewDialog();
                     ppdlg.Document = doc;
-                    ppdlg.ShowDialog();
+                    DialogResult result = ppdlg.ShowDialog();
+
+                    if((result != DialogResult.Cancel) || (result != DialogResult.Abort) || (result != DialogResult.No))
+                    {
+                        Bus.SedexBus bus = new Bus.SedexBus();
+
+                        foreach (Morador morador in listPrint)
+                        {
+                            morador.ReciboImpresso = "S";
+                            bus.Atualizar(morador);
+                        }
+                    }
                 }
                 else
                 {
                     doc.Print();
-                }
-
-                Bus.SedexBus bus = new Bus.SedexBus();
-
-                foreach (Morador morador in listPrint)
-                {
-                    morador.ReciboImpresso = "S";
-                    bus.Atualizar(morador);
                 }
             }
         }
@@ -150,6 +155,11 @@ namespace MeuCondominio
             {
                 this.Texto = _texto;
             }
+        }
+
+        private void FrmImpressao_FormClosed(object sender, FormClosedEventArgs e)
+        {
+
         }
     }
 }

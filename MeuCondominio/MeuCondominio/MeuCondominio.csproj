@@ -213,6 +213,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Icones\print_property.ico" />
     <Content Include="Icones\ResAricanduva.ico" />
     <Content Include="ResAricanduva.ico" />
     <Content Include="SqlServerTypes\readme.htm" />

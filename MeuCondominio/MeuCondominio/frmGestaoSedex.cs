@@ -921,13 +921,64 @@ namespace MeuCondominio
                 return;
             }
 
-            if (ckbEntregue.Checked)
+            if (string.IsNullOrEmpty(txtCodBarras.Text) && (!ckbEntregue.Checked))
             {
+                DialogResult result = MessageBox.Show("Não tem encomenda para registrar, deseja apenas atualiar os dados do morador?", "ATENÇÃO!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.Yes)
+                    AtualizaMorador();
+            }
+            else if (ckbEntregue.Checked)
+            { 
                 RegistrarEntrega();
             }
             else
             {
                 Salvar();
+                timer1.Enabled = true;
+            }
+        }
+
+        private void AtualizaMorador()
+        {
+            Morador morador = new Morador();
+            morador.IdMorador = IdMoradorSedex;
+            morador.NomeDestinatario = txtNomeMoraador.Text;
+            morador.Bloco = cboBloco.Text;
+            morador.Apartamento = cboApto.Text;
+            txtCelular.Mask = "";
+            morador.NumeroCelular = SomenteNumeros(txtCelular.Text);
+            txtCelular.Mask = "(99) 00000-0000";
+            morador.email = txtEmail.Text;
+            //morador.CodigoBarraEtiqueta = txtCodBarras.Text;
+            //morador.CodigoBarraEtiquetaLocal = txtEtiquetaLocal.Text;
+            //int iPrateleira = string.IsNullOrEmpty(txtPrateleira.Text) ? 0 : int.Parse(txtPrateleira.Text);
+            //morador.LocalPrateleira = iPrateleira;
+            //morador.DataCadastro = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString());
+            //morador.DataEnvioMensagem = "";
+            //morador.Enviadosms = "N";
+            //morador.EnviadoZap = "N";
+            //morador.EnviadoTelegram = "N";
+            //morador.EnviadoEmail = "N";
+            morador.ReciboImpresso = "N";
+
+            SedexBus bus = new SedexBus();
+
+            bool sucesso = false;
+
+            if (IdMoradorSedex < 1)
+                sucesso = bus.Adicionar(morador);
+            else
+            sucesso = bus.Atualizar(morador);
+            
+            if (sucesso)
+            {
+                lblMsgMorador.Text = "Registro atualizado com sucesso!";
+                lblMsgMorador.Visible = true;
+                timer1.Enabled = true;
+            }
+            else
+            {
+                lblMsgMorador.Text = "Falha ao atualizar o registro";
                 timer1.Enabled = true;
             }
         }

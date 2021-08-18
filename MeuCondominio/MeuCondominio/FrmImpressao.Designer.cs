@@ -30,6 +30,7 @@ namespace MeuCondominio
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmImpressao));
             Microsoft.Reporting.WinForms.ReportDataSource reportDataSource1 = new Microsoft.Reporting.WinForms.ReportDataSource();
             this.MoradorBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.cboImpressora = new System.Windows.Forms.ComboBox();
@@ -55,9 +56,11 @@ namespace MeuCondominio
             // 
             // btnImprimir
             // 
-            this.btnImprimir.Location = new System.Drawing.Point(105, 57);
+            this.btnImprimir.Image = ((System.Drawing.Image)(resources.GetObject("btnImprimir.Image")));
+            this.btnImprimir.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnImprimir.Location = new System.Drawing.Point(60, 57);
             this.btnImprimir.Name = "btnImprimir";
-            this.btnImprimir.Size = new System.Drawing.Size(86, 38);
+            this.btnImprimir.Size = new System.Drawing.Size(93, 38);
             this.btnImprimir.TabIndex = 1;
             this.btnImprimir.Text = "Imprimir";
             this.btnImprimir.UseVisualStyleBackColor = true;
@@ -88,7 +91,7 @@ namespace MeuCondominio
             // chkVisualizaImpressao
             // 
             this.chkVisualizaImpressao.AutoSize = true;
-            this.chkVisualizaImpressao.Location = new System.Drawing.Point(207, 69);
+            this.chkVisualizaImpressao.Location = new System.Drawing.Point(170, 69);
             this.chkVisualizaImpressao.Name = "chkVisualizaImpressao";
             this.chkVisualizaImpressao.Size = new System.Drawing.Size(70, 17);
             this.chkVisualizaImpressao.TabIndex = 4;
@@ -99,7 +102,7 @@ namespace MeuCondominio
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(511, 455);
+            this.ClientSize = new System.Drawing.Size(282, 156);
             this.Controls.Add(this.chkVisualizaImpressao);
             this.Controls.Add(this.reportViewer1);
             this.Controls.Add(this.lblImprimir);
@@ -109,6 +112,7 @@ namespace MeuCondominio
             this.MinimizeBox = false;
             this.Name = "FrmImpressao";
             this.Text = "Impressora";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmImpressao_FormClosed);
             this.Load += new System.EventHandler(this.FrmImpressao_Load);
             ((System.ComponentModel.ISupportInitialize)(this.MoradorBindingSource)).EndInit();
             this.ResumeLayout(false);

@@ -120,4 +120,17 @@
   <metadata name="MoradorBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="btnImprimir.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFlSURBVDhPY0AHq1at+j9jxgysGCQHVYYbgBR9+/YNK6af
+        AbgAUQasX7sGqhwT4DQAFEBVVVX/u7t7/re0tGCl0fHGRdMhhoE4IM3Hz1wC04TwpEmT/m+c1vT/e6Xz
+        /5dZpv8ZCgsL/x84ehqM09PT8WKQ2tk9jf9/NBmANfdkh/1nAJm6c99BMA4ODsaJY2JiwU5/W6YE1rwx
+        yQ7sPbALtmzdDsYwxWFh4WANMI0gGmTRyRwrsGYQffTFcrAY2AWwlHbp5kMwvn73yf/Te7b+39xT8P/U
+        ob1gMRD9rz8YrHleU97/xYsXQwwAuQCWUBwcncBRBTIM5NT/86P/r83z/L9ixmSIvyeGg50OUw/SywDy
+        Bwwrq6iDDQCBoq5usKbfMyC2gmiQZpAmZD3gqEQGMAOyNv79P3M+xOa/XX5wp0OV4QYwA2AAlGBgoX7w
+        4EHiDIAFKgiD+H1VBeAEtHnzZjQDGBgAwZgczaQPR6UAAAAASUVORK5CYII=
+</value>
+  </data>
 </root>
