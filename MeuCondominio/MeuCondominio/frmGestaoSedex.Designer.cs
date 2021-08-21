@@ -65,15 +65,26 @@ namespace MeuCondominio
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.btnEnviar = new System.Windows.Forms.Button();
             this.cknTodos = new System.Windows.Forms.CheckBox();
+            this.btnEnviarSms = new System.Windows.Forms.Button();
             this.ckbMail = new System.Windows.Forms.CheckBox();
             this.ckbZap = new System.Windows.Forms.CheckBox();
             this.ckbSms = new System.Windows.Forms.CheckBox();
+            this.btnSalvar = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.btnExcluir = new System.Windows.Forms.Button();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.lstHistorico = new System.Windows.Forms.ListView();
+            this.DataSms = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.DataEntrega = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.Bloco = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.Apartamento = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.NomeMorador = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.EnviadoPara = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -110,7 +121,7 @@ namespace MeuCondominio
             // ckbEntregue
             // 
             this.ckbEntregue.AutoSize = true;
-            this.ckbEntregue.Location = new System.Drawing.Point(372, 60);
+            this.ckbEntregue.Location = new System.Drawing.Point(278, 35);
             this.ckbEntregue.Name = "ckbEntregue";
             this.ckbEntregue.Size = new System.Drawing.Size(69, 17);
             this.ckbEntregue.TabIndex = 14;
@@ -230,7 +241,7 @@ namespace MeuCondominio
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(521, 78);
+            this.label5.Location = new System.Drawing.Point(521, 68);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(48, 13);
             this.label5.TabIndex = 4;
@@ -241,7 +252,7 @@ namespace MeuCondominio
             this.txtPrateleira.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.txtPrateleira.Enabled = false;
             this.txtPrateleira.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this.txtPrateleira.Location = new System.Drawing.Point(520, 189);
+            this.txtPrateleira.Location = new System.Drawing.Point(520, 179);
             this.txtPrateleira.Multiline = true;
             this.txtPrateleira.Name = "txtPrateleira";
             this.txtPrateleira.Size = new System.Drawing.Size(103, 31);
@@ -252,7 +263,7 @@ namespace MeuCondominio
             this.txtQrcode.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.txtQrcode.Enabled = false;
             this.txtQrcode.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this.txtQrcode.Location = new System.Drawing.Point(521, 94);
+            this.txtQrcode.Location = new System.Drawing.Point(521, 84);
             this.txtQrcode.Multiline = true;
             this.txtQrcode.Name = "txtQrcode";
             this.txtQrcode.Size = new System.Drawing.Size(281, 39);
@@ -261,7 +272,7 @@ namespace MeuCondominio
             // txtCodBarras
             // 
             this.txtCodBarras.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.txtCodBarras.Location = new System.Drawing.Point(521, 49);
+            this.txtCodBarras.Location = new System.Drawing.Point(521, 39);
             this.txtCodBarras.Name = "txtCodBarras";
             this.txtCodBarras.Size = new System.Drawing.Size(281, 29);
             this.txtCodBarras.TabIndex = 7;
@@ -271,7 +282,7 @@ namespace MeuCondominio
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(521, 34);
+            this.label4.Location = new System.Drawing.Point(521, 24);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(70, 13);
             this.label4.TabIndex = 13;
@@ -280,7 +291,7 @@ namespace MeuCondominio
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(521, 173);
+            this.label8.Location = new System.Drawing.Point(521, 163);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(51, 13);
             this.label8.TabIndex = 15;
@@ -290,7 +301,7 @@ namespace MeuCondominio
             // 
             this.txtEtiquetaLocal.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.txtEtiquetaLocal.Enabled = false;
-            this.txtEtiquetaLocal.Location = new System.Drawing.Point(520, 151);
+            this.txtEtiquetaLocal.Location = new System.Drawing.Point(520, 141);
             this.txtEtiquetaLocal.Name = "txtEtiquetaLocal";
             this.txtEtiquetaLocal.Size = new System.Drawing.Size(280, 20);
             this.txtEtiquetaLocal.TabIndex = 9;
@@ -298,7 +309,7 @@ namespace MeuCondominio
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(521, 135);
+            this.label9.Location = new System.Drawing.Point(521, 125);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(75, 13);
             this.label9.TabIndex = 17;
@@ -315,7 +326,7 @@ namespace MeuCondominio
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(833, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(829, 24);
             this.menuStrip1.TabIndex = 18;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -369,7 +380,7 @@ namespace MeuCondominio
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(645, 189);
+            this.checkBox1.Location = new System.Drawing.Point(645, 179);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(66, 17);
             this.checkBox1.TabIndex = 11;
@@ -379,7 +390,7 @@ namespace MeuCondominio
             // checkBox2
             // 
             this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(714, 189);
+            this.checkBox2.Location = new System.Drawing.Point(714, 179);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(90, 17);
             this.checkBox2.TabIndex = 12;
@@ -388,27 +399,17 @@ namespace MeuCondominio
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.btnEnviar);
             this.groupBox2.Controls.Add(this.cknTodos);
+            this.groupBox2.Controls.Add(this.btnEnviarSms);
             this.groupBox2.Controls.Add(this.ckbMail);
             this.groupBox2.Controls.Add(this.ckbZap);
             this.groupBox2.Controls.Add(this.ckbSms);
-            this.groupBox2.Location = new System.Drawing.Point(523, 229);
+            this.groupBox2.Location = new System.Drawing.Point(523, 278);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(277, 87);
             this.groupBox2.TabIndex = 25;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "ENVIO";
-            // 
-            // btnEnviar
-            // 
-            this.btnEnviar.Location = new System.Drawing.Point(159, 55);
-            this.btnEnviar.Name = "btnEnviar";
-            this.btnEnviar.Size = new System.Drawing.Size(83, 23);
-            this.btnEnviar.TabIndex = 13;
-            this.btnEnviar.Text = "SALVAR";
-            this.btnEnviar.UseVisualStyleBackColor = true;
-            this.btnEnviar.Click += new System.EventHandler(this.btnEnviar_Click);
             // 
             // cknTodos
             // 
@@ -420,6 +421,17 @@ namespace MeuCondominio
             this.cknTodos.Text = "Todos";
             this.cknTodos.UseVisualStyleBackColor = true;
             this.cknTodos.Visible = false;
+            // 
+            // btnEnviarSms
+            // 
+            this.btnEnviarSms.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEnviarSms.Location = new System.Drawing.Point(153, 45);
+            this.btnEnviarSms.Name = "btnEnviarSms";
+            this.btnEnviarSms.Size = new System.Drawing.Size(118, 32);
+            this.btnEnviarSms.TabIndex = 26;
+            this.btnEnviarSms.Text = "Enviar SMS";
+            this.btnEnviarSms.UseVisualStyleBackColor = true;
+            this.btnEnviarSms.Click += new System.EventHandler(this.btnEnviarSms_Click);
             // 
             // ckbMail
             // 
@@ -453,17 +465,98 @@ namespace MeuCondominio
             this.ckbSms.Text = "SMS";
             this.ckbSms.UseVisualStyleBackColor = true;
             // 
+            // btnSalvar
+            // 
+            this.btnSalvar.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSalvar.Location = new System.Drawing.Point(696, 222);
+            this.btnSalvar.Name = "btnSalvar";
+            this.btnSalvar.Size = new System.Drawing.Size(101, 36);
+            this.btnSalvar.TabIndex = 13;
+            this.btnSalvar.Text = "SALVAR";
+            this.btnSalvar.UseVisualStyleBackColor = true;
+            this.btnSalvar.Click += new System.EventHandler(this.btnSalvar_Click);
+            // 
             // timer1
             // 
             this.timer1.Enabled = true;
             this.timer1.Interval = 3000;
             this.timer1.Tick += new System.EventHandler(this.LimparMensagem);
             // 
+            // btnExcluir
+            // 
+            this.btnExcluir.Enabled = false;
+            this.btnExcluir.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnExcluir.Location = new System.Drawing.Point(528, 222);
+            this.btnExcluir.Name = "btnExcluir";
+            this.btnExcluir.Size = new System.Drawing.Size(95, 36);
+            this.btnExcluir.TabIndex = 26;
+            this.btnExcluir.Text = "Excluir";
+            this.btnExcluir.UseVisualStyleBackColor = true;
+            this.btnExcluir.Click += new System.EventHandler(this.btnExcluir_Click);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.lstHistorico);
+            this.groupBox3.Location = new System.Drawing.Point(16, 410);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(784, 218);
+            this.groupBox3.TabIndex = 27;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Histórico";
+            // 
+            // lstHistorico
+            // 
+            this.lstHistorico.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.Bloco,
+            this.Apartamento,
+            this.NomeMorador,
+            this.EnviadoPara,
+            this.DataSms,
+            this.DataEntrega});
+            this.lstHistorico.Location = new System.Drawing.Point(6, 19);
+            this.lstHistorico.MultiSelect = false;
+            this.lstHistorico.Name = "lstHistorico";
+            this.lstHistorico.Size = new System.Drawing.Size(767, 193);
+            this.lstHistorico.TabIndex = 0;
+            this.lstHistorico.UseCompatibleStateImageBehavior = false;
+            this.lstHistorico.View = System.Windows.Forms.View.Details;
+            // 
+            // DataSms
+            // 
+            this.DataSms.Text = "Data Envio SMS";
+            this.DataSms.Width = 120;
+            // 
+            // DataEntrega
+            // 
+            this.DataEntrega.Text = "Data Enregue";
+            this.DataEntrega.Width = 120;
+            // 
+            // Bloco
+            // 
+            this.Bloco.Text = "Bloco";
+            // 
+            // Apartamento
+            // 
+            this.Apartamento.Text = "Apto";
+            // 
+            // NomeMorador
+            // 
+            this.NomeMorador.Text = "Morador";
+            this.NomeMorador.Width = 310;
+            // 
+            // EnviadoPara
+            // 
+            this.EnviadoPara.Text = "Núm. Enviado";
+            this.EnviadoPara.Width = 90;
+            // 
             // FrmGestaoSedex
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(833, 413);
+            this.ClientSize = new System.Drawing.Size(829, 640);
+            this.Controls.Add(this.groupBox3);
+            this.Controls.Add(this.btnExcluir);
+            this.Controls.Add(this.btnSalvar);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.checkBox1);
@@ -490,6 +583,7 @@ namespace MeuCondominio
             this.menuStrip1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -532,7 +626,7 @@ namespace MeuCondominio
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Button btnEnviar;
+        private System.Windows.Forms.Button btnSalvar;
         private System.Windows.Forms.CheckBox cknTodos;
         private System.Windows.Forms.CheckBox ckbMail;
         private System.Windows.Forms.CheckBox ckbZap;
@@ -542,6 +636,16 @@ namespace MeuCondominio
         private System.Windows.Forms.MaskedTextBox txtCelular;
         private System.Windows.Forms.ToolStripMenuItem imprimirToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reciboDeEntregaToolStripMenuItem;
+        private System.Windows.Forms.Button btnEnviarSms;
+        private System.Windows.Forms.Button btnExcluir;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.ListView lstHistorico;
+        private System.Windows.Forms.ColumnHeader DataSms;
+        private System.Windows.Forms.ColumnHeader DataEntrega;
+        private System.Windows.Forms.ColumnHeader Bloco;
+        private System.Windows.Forms.ColumnHeader Apartamento;
+        private System.Windows.Forms.ColumnHeader NomeMorador;
+        private System.Windows.Forms.ColumnHeader EnviadoPara;
     }
 }
 

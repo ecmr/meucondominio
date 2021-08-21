@@ -860,6 +860,8 @@ namespace MeuCondominio
         {
             try
             {
+                lstHistorico.Items.Clear();
+
                 if (string.IsNullOrEmpty(e.KeyChar.ToString()) || (string.IsNullOrEmpty(cboApto.Text)))
                     return;
 
@@ -878,6 +880,7 @@ namespace MeuCondominio
                     {
                         listViewMoradoresApto.Items.Add(morador.NomeDestinatario);
                     }
+                    CarregaHistorico(cboBloco.Text, cboApto.Text);
                 }
             }
             catch (Exception ex)
@@ -893,6 +896,8 @@ namespace MeuCondominio
         }
         private void listViewMoradoresApto_SelectedIndexChanged(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
+
             if (listViewMoradoresApto.SelectedItems.Count < 1)
                 return;
 
@@ -910,31 +915,29 @@ namespace MeuCondominio
                 txtEmail.Text = morador.email;
                 IdMoradorSedex = morador.IdMorador;
             }
-        }
-        private void btnEnviar_Click(object sender, EventArgs e)
-        {
-            if (!ValidarCamposPreGravar())
-            {
-                lblMsgMorador.Text = "Selecione um morador e coloque um codigo de barras!";
-                lblMsgMorador.Visible = true;
-                timer1.Enabled = true;
-                return;
-            }
-
-            if (string.IsNullOrEmpty(txtCodBarras.Text) && (!ckbEntregue.Checked))
-            {
-                DialogResult result = MessageBox.Show("Não tem encomenda para registrar, deseja apenas atualiar os dados do morador?", "ATENÇÃO!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (result == DialogResult.Yes)
-                    AtualizaMorador();
-            }
-            else if (ckbEntregue.Checked)
-            { 
-                RegistrarEntrega();
-            }
+            if (IdMoradorSedex > 0)
+                btnExcluir.Enabled = true;
             else
+                btnExcluir.Enabled = false;
+
+            Cursor.Current = Cursors.Default;
+        }
+
+        private void CarregaHistorico(string Bloco, string Apartamento)
+        {
+            lstHistorico.Items.Clear();
+            SedexBus sedexBus = new SedexBus();
+            List<Morador> moradores = sedexBus.GetHistoricoPorApartamento(Bloco, Apartamento);
+
+            foreach (Morador morador in moradores)
             {
-                Salvar();
-                timer1.Enabled = true;
+                ListViewItem item = new ListViewItem(morador.Bloco);
+                item.SubItems.Add(morador.Apartamento);
+                item.SubItems.Add(morador.NomeDestinatario);
+                item.SubItems.Add(morador.NumeroCelular);
+                item.SubItems.Add(morador.DataEnvioMensagem);
+                item.SubItems.Add(morador.DataEntrega);
+                lstHistorico.Items.Add(item);
             }
         }
 
@@ -949,16 +952,6 @@ namespace MeuCondominio
             morador.NumeroCelular = SomenteNumeros(txtCelular.Text);
             txtCelular.Mask = "(99) 00000-0000";
             morador.email = txtEmail.Text;
-            //morador.CodigoBarraEtiqueta = txtCodBarras.Text;
-            //morador.CodigoBarraEtiquetaLocal = txtEtiquetaLocal.Text;
-            //int iPrateleira = string.IsNullOrEmpty(txtPrateleira.Text) ? 0 : int.Parse(txtPrateleira.Text);
-            //morador.LocalPrateleira = iPrateleira;
-            //morador.DataCadastro = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString());
-            //morador.DataEnvioMensagem = "";
-            //morador.Enviadosms = "N";
-            //morador.EnviadoZap = "N";
-            //morador.EnviadoTelegram = "N";
-            //morador.EnviadoEmail = "N";
             morador.ReciboImpresso = "N";
 
             SedexBus bus = new SedexBus();
@@ -979,10 +972,10 @@ namespace MeuCondominio
             else
             {
                 lblMsgMorador.Text = "Falha ao atualizar o registro";
+                lblMsgMorador.Visible = true;
                 timer1.Enabled = true;
             }
         }
-
         private bool ValidarCamposPreGravar()
         {
             if ((string.IsNullOrEmpty(txtCodBarras.Text) ||
@@ -997,7 +990,6 @@ namespace MeuCondominio
 
             return true;
         }
-
         private void LimparMensagem(object sender, EventArgs e)
         {
             LimparTela();
@@ -1022,29 +1014,28 @@ namespace MeuCondominio
             if (!string.IsNullOrEmpty(morador.DataEntrega))
             {
                 lblMsgMorador.Text = string.Concat("Entregue em: ", morador.DataEntrega, Environment.NewLine, "Enviado por: ");
-                if (morador.Enviadosms == "S")
+                if (morador.EnviadoPorSMS == "S")
                     lblMsgMorador.Text += " -SMS- ";
-                if (morador.EnviadoZap == "S")
+                if (morador.EnviadoPorZAP == "S")
                     lblMsgMorador.Text += " -WhatsApp- ";
-                if (morador.EnviadoTelegram == "S")
+                if (morador.EnviadoPorTELEGRAM == "S")
                     lblMsgMorador.Text += " -Telegram- ";
-                if (morador.EnviadoEmail == "S")
+                if (morador.EnviadoPorEMAIL == "S")
                     lblMsgMorador.Text += " -E-Mail- ";
             }
             if (!string.IsNullOrEmpty(morador.DataEnvioMensagem))
             {
                 lblMsgMorador.Text = string.Concat("Enviado em: ", morador.DataEnvioMensagem, Environment.NewLine, "Enviado por: ");
-                if (morador.Enviadosms == "S")
+                if (morador.EnviadoPorSMS == "S")
                     lblMsgMorador.Text += " -SMS- ";
-                if (morador.EnviadoZap == "S")
+                if (morador.EnviadoPorZAP == "S")
                     lblMsgMorador.Text += " -WhatsApp- ";
-                if (morador.EnviadoTelegram == "S")
+                if (morador.EnviadoPorTELEGRAM == "S")
                     lblMsgMorador.Text += " -Telegram- ";
-                if (morador.EnviadoEmail == "S")
+                if (morador.EnviadoPorEMAIL == "S")
                     lblMsgMorador.Text += " -E-Mail- ";
             }
         }
-
         private void LimparTela()
         {
             lblMsgMorador.Text = "";
@@ -1061,7 +1052,6 @@ namespace MeuCondominio
             txtQrcode.Text = string.Empty;
             ckbEntregue.Checked = false;
         }
-
         private void VerificarBanco(object sender, KeyEventArgs e)
         {
             if (e.KeyCode != Keys.Enter)
@@ -1073,7 +1063,6 @@ namespace MeuCondominio
                 CarregarTelaPosConsulta(morador);
             }
         }
-
         private void ImprimirComprovanteEntrega()
         {
             //TODO: Imprimir comprovante em impressora termica
@@ -1096,49 +1085,24 @@ namespace MeuCondominio
             int iPrateleira = string.IsNullOrEmpty(txtPrateleira.Text) ? 0 : int.Parse(txtPrateleira.Text);
             morador.LocalPrateleira = iPrateleira;
             morador.DataCadastro = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString());
-            morador.DataEnvioMensagem = "";
-            morador.Enviadosms = ckbSms.Checked == true ? "S" : "N";
-            morador.EnviadoZap = ckbZap.Checked == true ? "S" : "N";
-            morador.EnviadoTelegram = "N";
-            morador.EnviadoEmail = ckbMail.Checked == true ? "S" : "N";
             morador.ReciboImpresso = "N";
 
             SedexBus bus = new SedexBus();
 
             bool sucesso = false;
 
-            if (cknTodos.Checked)
-            {
-                sucesso = EnvioMensagem.EnvioSmsDev(morador);
-                EnvioMensagem.EnvioEmail();
-                EnvioMensagem.EnvioZap(morador);
-                return;
-            }
-            else if (ckbSms.Checked)
-            {
-                if (EnvioMensagem.EnvioSmsDev(morador))
-                {
-                    morador.DataEnvioMensagem = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString());
-                    morador.IdMorador = IdMoradorSedex;
-                    sucesso = bus.AtualizarTelefone(morador);
-                    morador.IdMorador = 0;
-                    sucesso = bus.Adicionar(morador);
-                }
-            }
-            else if (ckbMail.Checked)
-                EnvioMensagem.EnvioEmail();
-            else if (ckbZap.Checked)
-                EnvioMensagem.EnvioZap(morador);
+            morador.IdMorador = IdMoradorSedex;
+            sucesso = bus.AtualizarTelefone(morador);
+            morador.IdMorador = 0;
+            sucesso = bus.Adicionar(morador);
 
-            // EnvioMensagem.EnvioSms(morador);
-            // EnvioMensagem.EnvioSmsTeste(morador);
             if (!sucesso)
             {
-                lblMsgMorador.Text = "Erro no envio da mensagem, envie manualmente!";
+                lblMsgMorador.Text = "Erro ao salvar registro!";
             }
             else
             {
-                lblMsgMorador.Text = "Mensagem enviada com sucesso!";
+                lblMsgMorador.Text = "Registro salvo com sucesso!";
             }
             lblMsgMorador.Visible = true;
 
@@ -1159,10 +1123,10 @@ namespace MeuCondominio
             morador.DataCadastro = sDataCadastro;
             morador.DataEntrega = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString());
             morador.DataEnvioMensagem = sDataEnvioMensagem;
-            morador.Enviadosms = ckbSms.Checked == true ? "S" : "N";
-            morador.EnviadoZap = ckbZap.Checked == true ? "S" : "N";
-            morador.EnviadoTelegram = "N";
-            morador.EnviadoEmail = ckbMail.Checked == true ? "S" : "N";
+            morador.EnviadoPorSMS = ckbSms.Checked == true ? "S" : "N";
+            morador.EnviadoPorZAP = ckbZap.Checked == true ? "S" : "N";
+            morador.EnviadoPorTELEGRAM = "N";
+            morador.EnviadoPorEMAIL = ckbMail.Checked == true ? "S" : "N";
 
             SedexBus bus = new SedexBus();
             if (bus.Atualizar(morador))
@@ -1245,6 +1209,107 @@ namespace MeuCondominio
                 s.Append(m.Value);
             }
             return s.ToString();
+        }
+
+        private void btnEnviarSms_Click(object sender, EventArgs e)
+        {
+            ///TODO: LISTAR TUDO COM DATAEMVIADO NULL
+            SedexBus sedexBus = new SedexBus();
+            List<Morador> listSms = sedexBus.RetornaListaParaEnvioSms();
+
+            foreach ( Morador morador in listSms)
+            {
+                morador.DataEnvioMensagem = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString());
+                morador.EnviadoPorSMS = "S";
+
+                if (EnvioMensagem.EnvioSmsDev(morador))
+                {
+                    if (sedexBus.Atualizar(morador))
+                    {
+                        lblMsgMorador.Visible = true;
+                        lblMsgMorador.Text = $"enviado para {morador.NomeDestinatario} com sucesso!";
+                        lblMsgMorador.Refresh();
+                    }
+                }
+            }
+            lblMsgMorador.Text = $"Enviado para {listSms.Count} moradores com sucesso!";
+            timer1.Enabled = true;
+        }
+
+        private void btnSalvar_Click(object sender, EventArgs e)
+        {
+            if (!ValidarCamposPreGravar())
+            {
+                lblMsgMorador.Text = "Selecione um morador e coloque um codigo de barras!";
+                lblMsgMorador.Visible = true;
+                timer1.Enabled = true;
+                return;
+            }
+
+            if (string.IsNullOrEmpty(txtCodBarras.Text) && (!ckbEntregue.Checked))
+            {
+                DialogResult result = MessageBox.Show("Não tem encomenda para registrar, deseja apenas atualiar os dados do morador?", "ATENÇÃO!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.Yes)
+                    AtualizaMorador();
+            }
+            else if (ckbEntregue.Checked)
+            {
+                RegistrarEntrega();
+            }
+            else
+            {
+                Salvar();
+                timer1.Enabled = true;
+            }
+        }
+
+        private void btnExcluir_Click(object sender, EventArgs e)
+        {
+            if (IdMoradorSedex < 1)
+            {
+                lblMsgMorador.Text = "Selecione um morador para exclui-lo!";
+                lblMsgMorador.Visible = true;
+                timer1.Enabled = true;
+                return;
+            }
+
+            SedexBus sedexBus = new SedexBus();
+
+            Morador morador = sedexBus.Consultar(IdMoradorSedex);
+
+            DialogResult result;
+
+            if (morador.IdMorador < 1)
+            {
+                result = MessageBox.Show("Deseja realmente excluir o registro selecionado?", "ATENÇÃO!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            }
+            else
+            {
+                result = MessageBox.Show($"Deseja realmente excluir {morador.NomeDestinatario} ?", "ATENÇÃO!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            }
+
+            if (result == DialogResult.No)
+                return;
+
+            if (sedexBus.Excluir(IdMoradorSedex))
+            {
+                lblMsgMorador.Text = "Morador excluído com sucesso!";
+                lblMsgMorador.Visible = true;
+                timer1.Enabled = true;
+                btnExcluir.Enabled = false;
+                cboBloco.Focus();
+                return;
+            }
+            else
+            {
+                lblMsgMorador.Text = "Falha ao exluir o morador, avise o administrador do sistema!";
+                lblMsgMorador.Visible = true;
+                timer1.Enabled = true;
+                btnExcluir.Enabled = false;
+                cboBloco.Focus();
+                return;
+            }
+            
         }
     }
 }

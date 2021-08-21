@@ -949,20 +949,20 @@
           <DataField>EncomendaMedicamento</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="EnviadoEmail">
-          <DataField>EnviadoEmail</DataField>
+        <Field Name="EnviadoPorEMAIL">
+          <DataField>EnviadoPorEMAIL</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="Enviadosms">
-          <DataField>Enviadosms</DataField>
+        <Field Name="EnviadoPorSMS">
+          <DataField>EnviadoPorSMS</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="EnviadoTelegram">
-          <DataField>EnviadoTelegram</DataField>
+        <Field Name="EnviadoPorTELEGRAM">
+          <DataField>EnviadoPorTELEGRAM</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="EnviadoZap">
-          <DataField>EnviadoZap</DataField>
+        <Field Name="EnviadoPorZAP">
+          <DataField>EnviadoPorZAP</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="IdMorador">

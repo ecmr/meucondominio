@@ -27,6 +27,11 @@ namespace MeuCondominio.Bus
             return DalHelper.GetClientes(pBloco, pApto, pNomeMorador);
         }
 
+        public List<Morador> RetornaListaParaEnvioSms()
+        {
+            return DalHelper.GetSedexParaEnvioSms();
+        }
+
         public List<Morador> RetornaListaParaRecibo()
         {
             return DalHelper.GetSedexParaAssinatura();
@@ -52,5 +57,9 @@ namespace MeuCondominio.Bus
             return DalHelper.Delete(idMorador);
         }
 
+        public List<Morador> GetHistoricoPorApartamento(string bloco, string apartamento)
+        {
+            return DalHelper.GetHistoricoPorApartamento(bloco, apartamento);
+        }
     }
 }

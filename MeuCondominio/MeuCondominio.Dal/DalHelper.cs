@@ -47,7 +47,7 @@ namespace MeuCondominio.Dal
             {
                 using (var cmd = DbConnection().CreateCommand())
                 {
-                    cmd.CommandText = "CREATE TABLE IF NOT EXISTS Sedex(IdMorador int, Bloco Varchar(2), Apartamento Varchar(3), NomeDestinatario Varchar(100), Email Varchar(100), NumeroCelular Varchar(11), CodigoBarraEtiqueta Varchar(50), CodigoBarraEtiquetaLocal Varchar(50), LocalPrateleira Varchar(3)), DataEnvioMensagem VARCHAR(20), Enviadosms VARCHAR(1), EnviadoZap VARCHAR(1), EnviadoTelegram VARCHAR(1), EnviadoEmail VARCHAR(1)";
+                    cmd.CommandText = "CREATE TABLE IF NOT EXISTS Sedex(IdMorador int, Bloco Varchar(2), Apartamento Varchar(3), NomeDestinatario Varchar(100), Email Varchar(100), NumeroCelular Varchar(11), CodigoBarraEtiqueta Varchar(50), CodigoBarraEtiquetaLocal Varchar(50), LocalPrateleira Varchar(3)), DataEnvioMensagem VARCHAR(20), EnviadoPorSMS VARCHAR(1), EnviadoPorZAP VARCHAR(1), EnviadoPorTELEGRAM VARCHAR(1), EnviadoPorEMAIL VARCHAR(1)";
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -169,6 +169,43 @@ namespace MeuCondominio.Dal
             }
         }
 
+        public static List<Morador> GetSedexParaEnvioSms()
+        {
+            try
+            {
+                List<Morador> listaMoradores;
+                var query = @"SELECT IdMorador, Bloco, Apartamento, NomeDestinatario, Email, NumeroCelular, 
+                    CodigoBarraEtiqueta, CodigoBarraEtiquetaLocal, CodigoQRCode, 
+                    LocalPrateleira, DataCadastro, DataEnvioMensagem, DataEntrega, 
+                    EnviadoPorEMAIL, EnviadoPorSMS, EnviadoPorTELEGRAM, EnviadoPorZAP, ReciboImpresso 
+                    FROM SEDEX 
+                    WHERE
+                    CODIGOBARRAETIQUETA IS NOT NULL
+                    AND ENVIADOPORSMS IS NULL
+                    AND DATAENVIOMENSAGEM IS NULL";
+
+                using (var cmd = DbConnection().CreateCommand())
+                {
+                    cmd.CommandText = query;
+                    cmd.Connection = DbConnection();
+
+                    SQLiteDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        listaMoradores = PreencheMoradorDtReader(reader);
+                        if (listaMoradores.Count > 0)
+                            return listaMoradores;
+                    }
+                    return new List<Morador>();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public static List<Morador> GetSedexParaAssinatura()
         {
             SQLiteDataAdapter da = null;
@@ -178,7 +215,7 @@ namespace MeuCondominio.Dal
                         WHERE 
                         DATACADASTRO IS NOT NULL 
                         AND DATAENVIOMENSAGEM IS NOT NULL 
-                        AND ENVIADOSMS = 'S'
+                        AND EnviadoPorSMS = 'S'
                         AND ReciboImpresso = 'N'
                         ORDER BY 
                         Bloco, 
@@ -207,8 +244,8 @@ namespace MeuCondominio.Dal
             {
                 using (var cmd = DbConnection().CreateCommand())
                 {
-                    var query = @"INSERT INTO Sedex(IdMorador, Bloco , Apartamento , NomeDestinatario , Email , NumeroCelular , CodigoBarraEtiqueta , CodigoBarraEtiquetaLocal , LocalPrateleira, DataCadastro, DataEntrega, DataEnvioMensagem, Enviadosms, EnviadoZap, EnviadoTelegram, EnviadoEmail, ReciboImpresso)
-                                    values ((SELECT MAX(IDMORADOR)+1 FROM SEDEX), @Bloco , @Apartamento , @NomeDestinatario , @Email , @NumeroCelular , @CodigoBarraEtiqueta , @CodigoBarraEtiquetaLocal , @LocalPrateleira, @DataCadastro, @DataEntrega, @DataEnvioMensagem, @Enviadosms, @EnviadoZap, @EnviadoTelegram, @EnviadoEmail, @ReciboImpresso)";
+                    var query = @"INSERT INTO Sedex(IdMorador, Bloco , Apartamento , NomeDestinatario , Email , NumeroCelular , CodigoBarraEtiqueta , CodigoBarraEtiquetaLocal , LocalPrateleira, DataCadastro, DataEntrega, DataEnvioMensagem, EnviadoPorSMS, EnviadoPorZAP, EnviadoPorTELEGRAM, EnviadoPorEMAIL, ReciboImpresso)
+                                    values ((SELECT MAX(IDMORADOR)+1 FROM SEDEX), @Bloco , @Apartamento , @NomeDestinatario , @Email , @NumeroCelular , @CodigoBarraEtiqueta , @CodigoBarraEtiquetaLocal , @LocalPrateleira, @DataCadastro, @DataEntrega, @DataEnvioMensagem, @EnviadoPorSMS, @EnviadoPorZAP, @EnviadoPorTELEGRAM, @EnviadoPorEMAIL, @ReciboImpresso)";
 
                     cmd.CommandText = query;
                     cmd.Parameters.AddWithValue("@Bloco", morador.Bloco);
@@ -222,10 +259,10 @@ namespace MeuCondominio.Dal
                     cmd.Parameters.AddWithValue("@DataCadastro", morador.DataCadastro);
                     cmd.Parameters.AddWithValue("@DataEntrega", morador.DataEntrega);
                     cmd.Parameters.AddWithValue("@DataEnvioMensagem", morador.DataEnvioMensagem);
-                    cmd.Parameters.AddWithValue("@Enviadosms", morador.Enviadosms);
-                    cmd.Parameters.AddWithValue("@EnviadoZap", morador.EnviadoZap);
-                    cmd.Parameters.AddWithValue("@EnviadoTelegram", morador.EnviadoTelegram);
-                    cmd.Parameters.AddWithValue("@EnviadoEmail", morador.EnviadoEmail);
+                    cmd.Parameters.AddWithValue("@EnviadoPorSMS", morador.EnviadoPorSMS);
+                    cmd.Parameters.AddWithValue("@EnviadoPorZAP", morador.EnviadoPorZAP);
+                    cmd.Parameters.AddWithValue("@EnviadoPorTELEGRAM", morador.EnviadoPorTELEGRAM);
+                    cmd.Parameters.AddWithValue("@EnviadoPorEMAIL", morador.EnviadoPorEMAIL);
                     cmd.Parameters.AddWithValue("@ReciboImpresso", morador.ReciboImpresso);
 
                     cmd.ExecuteNonQuery();
@@ -257,10 +294,10 @@ namespace MeuCondominio.Dal
                 DataCadastro = @DataCadastro,
                 DataEntrega = @DataEntrega,
                 DataEnvioMensagem = @DataEnvioMensagem,
-                EnviadoEmail = @EnviadoEmail,
-                Enviadosms = @Enviadosms,
-                EnviadoTelegram = @EnviadoTelegram,
-                EnviadoZap = @EnviadoZap,
+                EnviadoPorEMAIL = @EnviadoPorEMAIL,
+                EnviadoPorSMS = @EnviadoPorSMS,
+                EnviadoPorTELEGRAM = @EnviadoPorTELEGRAM,
+                EnviadoPorZAP = @EnviadoPorZAP,
                 ReciboImpresso = @ReciboImpresso
             Where IdMorador = @IdMorador";
 
@@ -285,10 +322,10 @@ namespace MeuCondominio.Dal
                         cmd.Parameters.AddWithValue("@DataCadastro", morador.DataCadastro);
                         cmd.Parameters.AddWithValue("@DataEntrega", morador.DataEntrega);
                         cmd.Parameters.AddWithValue("@DataEnvioMensagem", morador.DataEnvioMensagem);
-                        cmd.Parameters.AddWithValue("@Enviadosms", morador.Enviadosms);
-                        cmd.Parameters.AddWithValue("@EnviadoZap", morador.EnviadoZap);
-                        cmd.Parameters.AddWithValue("@EnviadoTelegram", morador.EnviadoTelegram);
-                        cmd.Parameters.AddWithValue("@EnviadoEmail", morador.EnviadoEmail);
+                        cmd.Parameters.AddWithValue("@EnviadoPorSMS", morador.EnviadoPorSMS);
+                        cmd.Parameters.AddWithValue("@EnviadoPorZAP", morador.EnviadoPorZAP);
+                        cmd.Parameters.AddWithValue("@EnviadoPorTELEGRAM", morador.EnviadoPorTELEGRAM);
+                        cmd.Parameters.AddWithValue("@EnviadoPorEMAIL", morador.EnviadoPorEMAIL);
                         cmd.Parameters.AddWithValue("@ReciboImpresso", morador.ReciboImpresso);
 
                         cmd.ExecuteNonQuery();
@@ -358,6 +395,46 @@ namespace MeuCondominio.Dal
             }
         }
 
+        public static List<Morador> GetHistoricoPorApartamento(string pBloco, string pApartamento)
+        {
+            List<Morador> HistoricoSedex;
+
+            var query = @"Select IDMORADOR, BLOCO, APARTAMENTO, NOMEDESTINATARIO, EMAIL, NUMEROCELULAR, CODIGOBARRAETIQUETA, CODIGOQRCODE, CODIGOBARRAETIQUETA, LOCALPRATELEIRA,
+                DATACADASTRO, DATAENTREGA, DATAENVIOMENSAGEM, ENVIADOPORSMS, ENVIADOPORZAP, ENVIADOPORTELEGRAM, ENVIADOPOREMAIL, RECIBOIMPRESSO
+                FROM SEDEX
+                WHERE
+                    1 = 1
+                AND BLOCO = @BLOCO
+                AND APARTAMENTO = @APARTAMENTO
+                AND ENVIADOPORSMS = 'S'
+                AND DATAENVIOMENSAGEM IS NOT NULL";
+
+            try
+            {
+                using (var cmd = DbConnection().CreateCommand())
+                {
+                    cmd.CommandText = query;
+                    cmd.Parameters.AddWithValue("@BLOCO", pBloco);
+                    cmd.Parameters.AddWithValue("@APARTAMENTO", pApartamento);
+                    cmd.Connection = DbConnection();
+
+                    SQLiteDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        HistoricoSedex = PreencheMoradorDtReader(reader);
+                        if (HistoricoSedex.Count > 0)
+                            return HistoricoSedex;
+                    }
+                    return new List<Morador>();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
 
         private static List<Morador> PreencheMoradorDtReader(SQLiteDataReader reader)
         {
@@ -380,12 +457,11 @@ namespace MeuCondominio.Dal
                 morador.DataCadastro = reader.IsDBNull(10) ? "" : reader.GetString(10);
                 morador.DataEntrega = reader.IsDBNull(11) ? "" : reader.GetString(11);
                 morador.DataEnvioMensagem = reader.IsDBNull(12) ? "" : reader.GetString(12);
-                morador.Enviadosms = reader.IsDBNull(13) ? "" : reader.GetString(13);
-                morador.EnviadoZap = reader.IsDBNull(14) ? "" : reader.GetString(14);
-                morador.EnviadoTelegram = reader.IsDBNull(15) ? "" : reader.GetString(15);
-                morador.EnviadoEmail = reader.IsDBNull(16) ? "" : reader.GetString(16);
+                morador.EnviadoPorSMS = reader.IsDBNull(13) ? "" : reader.GetString(13);
+                morador.EnviadoPorZAP = reader.IsDBNull(14) ? "" : reader.GetString(14);
+                morador.EnviadoPorTELEGRAM = reader.IsDBNull(15) ? "" : reader.GetString(15);
+                morador.EnviadoPorEMAIL = reader.IsDBNull(16) ? "" : reader.GetString(16);
                 morador.ReciboImpresso = reader.IsDBNull(17) ? "" : reader.GetString(17);
-
                 moradores.Add(morador);
             }
             return moradores;
@@ -412,10 +488,10 @@ namespace MeuCondominio.Dal
                 morador.DataCadastro = row.ItemArray[10].ToString();
                 morador.DataEntrega = row.ItemArray[11].ToString();
                 morador.DataEnvioMensagem = row.ItemArray[12].ToString();
-                morador.Enviadosms = row.ItemArray[13].ToString();
-                morador.EnviadoZap = row.ItemArray[14].ToString();
-                morador.EnviadoTelegram = row.ItemArray[15].ToString();
-                morador.EnviadoEmail = row.ItemArray[16].ToString();
+                morador.EnviadoPorSMS = row.ItemArray[13].ToString();
+                morador.EnviadoPorZAP = row.ItemArray[14].ToString();
+                morador.EnviadoPorTELEGRAM = row.ItemArray[15].ToString();
+                morador.EnviadoPorEMAIL = row.ItemArray[16].ToString();
                 morador.ReciboImpresso = row.ItemArray[17].ToString();
 
                 moradores.Add(morador);

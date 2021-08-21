@@ -17,10 +17,10 @@
         public string DataCadastro { get; set; }
         public string DataEntrega { get; set; }
         public string DataEnvioMensagem { get; set; }
-        public string Enviadosms { get; set; }
-        public string EnviadoZap { get; set; }
-        public string EnviadoTelegram { get; set; }
-        public string EnviadoEmail { get; set; }
+        public string EnviadoPorSMS { get; set; }
+        public string EnviadoPorZAP { get; set; }
+        public string EnviadoPorTELEGRAM { get; set; }
+        public string EnviadoPorEMAIL { get; set; }
         public string ReciboImpresso { get; set; }
     }
 }
