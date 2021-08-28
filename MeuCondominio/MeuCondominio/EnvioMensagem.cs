@@ -16,10 +16,18 @@ namespace MeuCondominio
         /// 
         /// </summary>
         /// <param name="morador"></param>
-        public static bool EnvioSmsDev(Morador morador)
+        public static bool EnvioSmsDev(Morador morador, string pKey)
         {
             string sHost = "https://api.smsdev.com.br/v1/send?key=";
-            string sKey = "I6GJF7FHCF6O1J8Z4M0V7SNR75MN6STOQ4NGSNFAWH8Z1OH6FHD5ZL7QC36L0962KU5T6NA038U9G5YMN0T6E0F28U2SWMDGBET8CS7JQ8FGR5DZ3ZSEAL5SO8M39NGF";
+            string sKey = string.Empty;
+
+            //Chave Edinei - meu celular
+            if (pKey == "Desenvolvedor")
+                sKey = "I6GJF7FHCF6O1J8Z4M0V7SNR75MN6STOQ4NGSNFAWH8Z1OH6FHD5ZL7QC36L0962KU5T6NA038U9G5YMN0T6E0F28U2SWMDGBET8CS7JQ8FGR5DZ3ZSEAL5SO8M39NGF";
+            else if (pKey == "Adminstração")
+                sKey = "GYU1CWX2T3JUTGUJ7XT6OSE0NORTYAM7L4UF447UG9QQYDIA7X2LR5Y3NMVA7JAE8D9XL1DN7KWN6WAULTFPGKA9QQPBOH9PN0OKFWYEHZ9X29Y8FB0O4KNZ4Z99INCV";
+
+
             string sFone = string.Concat("&type=9&number=", morador.NumeroCelular);
             string sMsg = string.Concat("&msg=Cond. Resid. Aricanduva!",
                 Environment.NewLine, " Olá ", morador.NomeDestinatario, Environment.NewLine,

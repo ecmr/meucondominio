@@ -29,19 +29,21 @@ namespace MeuCondominio
 
         private void btnImprimir_Click(object sender, EventArgs e)
         {
-            String[] textoToPrint = new string[listPrint.Count];
+            String[] textoToPrint = new string[listPrint.Count*3];
+
+            int x = 0;
 
             for (int i = 0; i < listPrint.Count; i++)
             {
-                if (listPrint.Count > 1)
-                {
-                    textoToPrint[i] += ("Bloco:" + listPrint[i].Bloco + " Apto: " + listPrint[i].Apartamento).PadRight(18, ' ');
-                    textoToPrint[i] += (" Cod: " + listPrint[i].CodigoBarraEtiqueta).PadRight(19, ' ');
-                    textoToPrint[i] += ("Nome:_____________");  //  + listPrint[i].NomeDestinatario.Substring(0, 13)
-                    textoToPrint[i] += " Data:__/__/______";
-                    textoToPrint[i] += " Ass:______________";
-                }
-            }
+                textoToPrint[x] += ("BL:" + listPrint[i].Bloco + " Apto: " + listPrint[i].Apartamento).PadRight(16, ' ');
+                textoToPrint[x] += ("Cod: " + listPrint[i].CodigoBarraEtiqueta).PadRight(22, ' ');
+                textoToPrint[x] += ("Nome:_____________");
+                textoToPrint[x] += " Data:__/__/____";
+                textoToPrint[x] += " Ass:_________________";
+                x++;
+                textoToPrint[x] += (" ").PadRight(150, ' ');
+                x++;
+             }
 
             PrintDocument doc = new ImprimirDocumento(textoToPrint);
             doc.PrintPage += this.Doc_PrintPage;

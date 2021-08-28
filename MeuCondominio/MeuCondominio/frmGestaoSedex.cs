@@ -826,7 +826,7 @@ namespace MeuCondominio
 
                 int sBloco = int.Parse(e.KeyChar.ToString());
 
-                if (((sBloco >= 1) && (sBloco <= 13)) || e.KeyChar == 13)
+                if (((sBloco >= 0) && (sBloco <= 13)) || e.KeyChar == 13)
                 {
                     //LimparTela();
                     cboBloco.Text += sBloco; //sBloco.ToString().PadLeft(2, '0');
@@ -1213,6 +1213,12 @@ namespace MeuCondominio
 
         private void btnEnviarSms_Click(object sender, EventArgs e)
         {
+            if ((!rdbAdminstracao.Checked) && (!rdbDesenvolvedor.Checked))
+            {
+                MessageBox.Show("Selecione qual chave sedex que deseja usar!");
+                return;
+            }
+            string pChaveDesenvi = rdbAdminstracao.Checked ? "Administração" : "Desenvolvedor";
             ///TODO: LISTAR TUDO COM DATAEMVIADO NULL
             SedexBus sedexBus = new SedexBus();
             List<Morador> listSms = sedexBus.RetornaListaParaEnvioSms();
@@ -1222,7 +1228,7 @@ namespace MeuCondominio
                 morador.DataEnvioMensagem = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString());
                 morador.EnviadoPorSMS = "S";
 
-                if (EnvioMensagem.EnvioSmsDev(morador))
+                if (EnvioMensagem.EnvioSmsDev(morador, pChaveDesenvi))
                 {
                     if (sedexBus.Atualizar(morador))
                     {

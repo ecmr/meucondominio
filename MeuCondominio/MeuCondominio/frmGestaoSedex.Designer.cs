@@ -75,16 +75,20 @@ namespace MeuCondominio
             this.btnExcluir = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.lstHistorico = new System.Windows.Forms.ListView();
-            this.DataSms = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.DataEntrega = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Bloco = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Apartamento = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.NomeMorador = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.EnviadoPara = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.DataSms = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.DataEntrega = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.rdbAdminstracao = new System.Windows.Forms.RadioButton();
+            this.rdbDesenvolvedor = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -513,6 +517,7 @@ namespace MeuCondominio
             this.EnviadoPara,
             this.DataSms,
             this.DataEntrega});
+            this.lstHistorico.HideSelection = false;
             this.lstHistorico.Location = new System.Drawing.Point(6, 19);
             this.lstHistorico.MultiSelect = false;
             this.lstHistorico.Name = "lstHistorico";
@@ -520,16 +525,6 @@ namespace MeuCondominio
             this.lstHistorico.TabIndex = 0;
             this.lstHistorico.UseCompatibleStateImageBehavior = false;
             this.lstHistorico.View = System.Windows.Forms.View.Details;
-            // 
-            // DataSms
-            // 
-            this.DataSms.Text = "Data Envio SMS";
-            this.DataSms.Width = 120;
-            // 
-            // DataEntrega
-            // 
-            this.DataEntrega.Text = "Data Enregue";
-            this.DataEntrega.Width = 120;
             // 
             // Bloco
             // 
@@ -549,11 +544,55 @@ namespace MeuCondominio
             this.EnviadoPara.Text = "Núm. Enviado";
             this.EnviadoPara.Width = 90;
             // 
+            // DataSms
+            // 
+            this.DataSms.Text = "Data Envio SMS";
+            this.DataSms.Width = 120;
+            // 
+            // DataEntrega
+            // 
+            this.DataEntrega.Text = "Data Enregue";
+            this.DataEntrega.Width = 120;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.rdbDesenvolvedor);
+            this.groupBox4.Controls.Add(this.rdbAdminstracao);
+            this.groupBox4.Location = new System.Drawing.Point(528, 371);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(274, 33);
+            this.groupBox4.TabIndex = 28;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Chave Sedex";
+            // 
+            // rdbAdminstracao
+            // 
+            this.rdbAdminstracao.AutoSize = true;
+            this.rdbAdminstracao.Location = new System.Drawing.Point(51, 11);
+            this.rdbAdminstracao.Name = "rdbAdminstracao";
+            this.rdbAdminstracao.Size = new System.Drawing.Size(91, 17);
+            this.rdbAdminstracao.TabIndex = 0;
+            this.rdbAdminstracao.TabStop = true;
+            this.rdbAdminstracao.Text = "Administração";
+            this.rdbAdminstracao.UseVisualStyleBackColor = true;
+            // 
+            // rdbDesenvolvedor
+            // 
+            this.rdbDesenvolvedor.AutoSize = true;
+            this.rdbDesenvolvedor.Location = new System.Drawing.Point(148, 11);
+            this.rdbDesenvolvedor.Name = "rdbDesenvolvedor";
+            this.rdbDesenvolvedor.Size = new System.Drawing.Size(97, 17);
+            this.rdbDesenvolvedor.TabIndex = 1;
+            this.rdbDesenvolvedor.TabStop = true;
+            this.rdbDesenvolvedor.Text = "Desenvolvedor";
+            this.rdbDesenvolvedor.UseVisualStyleBackColor = true;
+            // 
             // FrmGestaoSedex
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(829, 640);
+            this.ClientSize = new System.Drawing.Size(829, 660);
+            this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.btnExcluir);
             this.Controls.Add(this.btnSalvar);
@@ -584,6 +623,8 @@ namespace MeuCondominio
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -646,6 +687,9 @@ namespace MeuCondominio
         private System.Windows.Forms.ColumnHeader Apartamento;
         private System.Windows.Forms.ColumnHeader NomeMorador;
         private System.Windows.Forms.ColumnHeader EnviadoPara;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.RadioButton rdbDesenvolvedor;
+        private System.Windows.Forms.RadioButton rdbAdminstracao;
     }
 }
 
