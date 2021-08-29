@@ -25,6 +25,9 @@ namespace MeuCondominio
             {
                 cboImpressora.Items.Add(printer);
             }
+            this.Visible = false;
+            this.btnImprimir_Click(sender, e);
+            this.Close();
         }
 
         private void btnImprimir_Click(object sender, EventArgs e)
@@ -77,6 +80,8 @@ namespace MeuCondominio
                     doc.Print();
                 }
             }
+
+            this.Visible = false;
         }
 
         private void Doc_PrintPage(object sender, PrintPageEventArgs e)

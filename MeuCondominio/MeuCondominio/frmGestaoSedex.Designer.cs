@@ -82,8 +82,8 @@ namespace MeuCondominio
             this.DataSms = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.DataEntrega = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.rdbAdminstracao = new System.Windows.Forms.RadioButton();
             this.rdbDesenvolvedor = new System.Windows.Forms.RadioButton();
+            this.rdbAdminstracao = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -377,8 +377,9 @@ namespace MeuCondominio
             // reciboDeEntregaToolStripMenuItem
             // 
             this.reciboDeEntregaToolStripMenuItem.Name = "reciboDeEntregaToolStripMenuItem";
-            this.reciboDeEntregaToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.reciboDeEntregaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.reciboDeEntregaToolStripMenuItem.Text = "Recibo de entrega";
+            this.reciboDeEntregaToolStripMenuItem.Visible = false;
             this.reciboDeEntregaToolStripMenuItem.Click += new System.EventHandler(this.reciboDeEntregaToolStripMenuItem_Click);
             // 
             // checkBox1
@@ -565,17 +566,6 @@ namespace MeuCondominio
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Chave Sedex";
             // 
-            // rdbAdminstracao
-            // 
-            this.rdbAdminstracao.AutoSize = true;
-            this.rdbAdminstracao.Location = new System.Drawing.Point(51, 11);
-            this.rdbAdminstracao.Name = "rdbAdminstracao";
-            this.rdbAdminstracao.Size = new System.Drawing.Size(91, 17);
-            this.rdbAdminstracao.TabIndex = 0;
-            this.rdbAdminstracao.TabStop = true;
-            this.rdbAdminstracao.Text = "Administração";
-            this.rdbAdminstracao.UseVisualStyleBackColor = true;
-            // 
             // rdbDesenvolvedor
             // 
             this.rdbDesenvolvedor.AutoSize = true;
@@ -587,11 +577,22 @@ namespace MeuCondominio
             this.rdbDesenvolvedor.Text = "Desenvolvedor";
             this.rdbDesenvolvedor.UseVisualStyleBackColor = true;
             // 
+            // rdbAdminstracao
+            // 
+            this.rdbAdminstracao.AutoSize = true;
+            this.rdbAdminstracao.Location = new System.Drawing.Point(51, 11);
+            this.rdbAdminstracao.Name = "rdbAdminstracao";
+            this.rdbAdminstracao.Size = new System.Drawing.Size(91, 17);
+            this.rdbAdminstracao.TabIndex = 0;
+            this.rdbAdminstracao.TabStop = true;
+            this.rdbAdminstracao.Text = "Administração";
+            this.rdbAdminstracao.UseVisualStyleBackColor = true;
+            // 
             // FrmGestaoSedex
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(829, 660);
+            this.ClientSize = new System.Drawing.Size(829, 410);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.btnExcluir);

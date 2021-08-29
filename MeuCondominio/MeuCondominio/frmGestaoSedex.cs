@@ -959,9 +959,12 @@ namespace MeuCondominio
             bool sucesso = false;
 
             if (IdMoradorSedex < 1)
+            {
+                morador.DataCadastro = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString());
                 sucesso = bus.Adicionar(morador);
+            }
             else
-            sucesso = bus.Atualizar(morador);
+                sucesso = bus.Atualizar(morador);
             
             if (sucesso)
             {
@@ -1175,7 +1178,13 @@ namespace MeuCondominio
 
         private void imprimirToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            List<Morador> ListaRecibo = new List<Morador>();
+            SedexBus bus = new SedexBus();
+            ListaRecibo = bus.RetornaListaParaRecibo();
 
+            FrmImpressao frmImpressao = new FrmImpressao(ListaRecibo);
+            frmImpressao.StartPosition = FormStartPosition.CenterScreen;
+            frmImpressao.ShowDialog();
         }
 
         private void reciboDeEntregaToolStripMenuItem_Click(object sender, EventArgs e)
