@@ -264,7 +264,7 @@ namespace MeuCondominio
             // 
             // txtQrcode
             // 
-            this.txtQrcode.BackColor = System.Drawing.SystemColors.WindowFrame;
+            this.txtQrcode.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.txtQrcode.Enabled = false;
             this.txtQrcode.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this.txtQrcode.Location = new System.Drawing.Point(521, 84);
@@ -377,7 +377,7 @@ namespace MeuCondominio
             // reciboDeEntregaToolStripMenuItem
             // 
             this.reciboDeEntregaToolStripMenuItem.Name = "reciboDeEntregaToolStripMenuItem";
-            this.reciboDeEntregaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.reciboDeEntregaToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.reciboDeEntregaToolStripMenuItem.Text = "Recibo de entrega";
             this.reciboDeEntregaToolStripMenuItem.Visible = false;
             this.reciboDeEntregaToolStripMenuItem.Click += new System.EventHandler(this.reciboDeEntregaToolStripMenuItem_Click);
