@@ -10,15 +10,23 @@ namespace MeuCondominio
     public partial class FrmImpressao : Form
     {
         List<Morador> listPrint;
+        PrintDocument print;
+        String[] textoToPrint;
 
         public FrmImpressao(List<Morador> moradores)
         {
             listPrint = moradores;
+            textoToPrint = new string[listPrint.Count * 3];
+            print = new ImprimirDocumento(textoToPrint);
+            print.EndPrint += new System.Drawing.Printing.PrintEventHandler(this.printDocument1_EndPrint);
+            
             InitializeComponent();
+            
         }
 
         private void FrmImpressao_Load(object sender, EventArgs e)
         {
+
             chkVisualizaImpressao.Checked = true;
             chkVisualizaImpressao.Visible = false;
             foreach (var printer in System.Drawing.Printing.PrinterSettings.InstalledPrinters)
@@ -32,56 +40,43 @@ namespace MeuCondominio
 
         private void btnImprimir_Click(object sender, EventArgs e)
         {
-            String[] textoToPrint = new string[listPrint.Count*3];
-
             int x = 0;
 
             for (int i = 0; i < listPrint.Count; i++)
             {
-                textoToPrint[x] += ("BL:" + listPrint[i].Bloco + " Apto: " + listPrint[i].Apartamento).PadRight(16, ' ');
-                textoToPrint[x] += ("Cod: " + listPrint[i].CodigoBarraEtiqueta).PadRight(22, ' ');
-                textoToPrint[x] += ("Nome:_____________");
-                textoToPrint[x] += " Data:__/__/____";
-                textoToPrint[x] += " Ass:_________________";
+                textoToPrint[x] += ("BL:" + listPrint[i].Bloco + " Apto: " + listPrint[i].Apartamento + " Cod: " + listPrint[i].CodigoBarraEtiqueta).PadRight(37, '_');
+                textoToPrint[x] += (" Nome:_____________ Data:__/__/____ Ass:_________________");
                 x++;
                 textoToPrint[x] += (" ").PadRight(150, ' ');
                 x++;
              }
 
-            PrintDocument doc = new ImprimirDocumento(textoToPrint);
-            doc.PrintPage += this.Doc_PrintPage;
-
+            print.PrintPage += this.Doc_PrintPage;
+            
             PrintDialog dialogo = new PrintDialog();
-            dialogo.Document = doc;
+            dialogo.Document = print;
 
             //  Se o usuário clicar em OK , imprime o documento
             if (dialogo.ShowDialog() == DialogResult.OK)
             {
-                //verifica se o usuário deseja visualizar a impressao
-                if (chkVisualizaImpressao.Checked)
-                {
-                    PrintPreviewDialog ppdlg = new PrintPreviewDialog();
-                    ppdlg.Document = doc;
-                    DialogResult result = ppdlg.ShowDialog();
-
-                    if((result != DialogResult.Cancel) || (result != DialogResult.Abort) || (result != DialogResult.No))
-                    {
-                        Bus.SedexBus bus = new Bus.SedexBus();
-
-                        foreach (Morador morador in listPrint)
-                        {
-                            morador.ReciboImpresso = "S";
-                            bus.Atualizar(morador);
-                        }
-                    }
-                }
-                else
-                {
-                    doc.Print();
-                }
+                print.DocumentName = "Assinaturas";
+                print.Print();
             }
 
             this.Visible = false;
+        }
+
+        private void printDocument1_EndPrint(object sender, System.Drawing.Printing.PrintEventArgs e)
+        {
+            {
+                Bus.SedexBus bus = new Bus.SedexBus();
+
+                foreach (Morador morador in listPrint)
+                {
+                    morador.ReciboImpresso = "S";
+                    bus.Atualizar(morador);
+                }
+            }
         }
 
         private void Doc_PrintPage(object sender, PrintPageEventArgs e)

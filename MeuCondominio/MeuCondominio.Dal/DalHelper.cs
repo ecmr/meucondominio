@@ -57,6 +57,58 @@ namespace MeuCondominio.Dal
             }
         }
 
+        public static Morador GetCliente(int id)
+        {
+            SQLiteDataAdapter da = null;
+            DataTable dt = new DataTable();
+
+            try
+            {
+                using (var cmd = DbConnection().CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM Sedex Where IdMorador=" + id;
+                    da = new SQLiteDataAdapter(cmd.CommandText, DbConnection());
+                    da.Fill(dt);
+
+                    var morador = PreencheMoradorDt(dt);
+                    return morador[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public static Morador GetCliente(string CodigoBarras)
+        {
+            try
+            {
+                var query = @"SELECT * FROM Sedex Where CodigoBarraEtiqueta=@CodigoBarraEtiqueta AND ReciboImpresso = 'N'";
+
+                using (var cmd = DbConnection().CreateCommand())
+                {
+                    cmd.CommandText = query;
+                    cmd.Parameters.AddWithValue("@CodigoBarraEtiqueta", CodigoBarras);
+                    cmd.Connection = DbConnection();
+
+                    SQLiteDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        var morador = PreencheMoradorDtReader(reader);
+                        if (morador.Count > 0)
+                            return morador[0];
+                    }
+                    return new Morador();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public static List<Morador> GetClientes()
         {
             SQLiteDataAdapter da = null;
@@ -117,39 +169,38 @@ namespace MeuCondominio.Dal
             }
         }
 
-        public static Morador GetCliente(int id)
-        {
-            SQLiteDataAdapter da = null;
-            DataTable dt = new DataTable();
-
-            try
-            {
-                using (var cmd = DbConnection().CreateCommand())
-                {
-                    cmd.CommandText = "SELECT * FROM Sedex Where IdMorador=" + id;
-                    da = new SQLiteDataAdapter(cmd.CommandText, DbConnection());
-                    da.Fill(dt);
-
-                    var morador = PreencheMoradorDt(dt);
-                    return morador[0];
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public static Morador GetCliente(string CodigoBarras)
+        public static List<Morador> GetClientes(Morador pmorador)
         {
             try
             {
-                var query = @"SELECT * FROM Sedex Where CodigoBarraEtiqueta=@CodigoBarraEtiqueta AND ReciboImpresso = 'N'";
+                var query = @"SELECT IDMORADOR, BLOCO, APARTAMENTO, NOMEDESTINATARIO, EMAIL, NUMEROCELULAR, CODIGOBARRAETIQUETA, CODIGOQRCODE, CODIGOBARRAETIQUETALOCAL, 
+                        LOCALPRATELEIRA, DATACADASTRO, DATAENTREGA, DATAENVIOMENSAGEM, ENVIADOPORSMS, ENVIADOPOREMAIL, ENVIADOPORTELEGRAM, ENVIADOPORZAP, RECIBOIMPRESSO
+                    FROM SEDEX 
+                    WHERE 
+                        1 = 1    
+                     AND BLOCO 						= @BLOCO
+                    AND APARTAMENTO 				= @APARTAMENTO
+                    AND NOMEDESTINATARIO 			= @NOMEDESTINATARIO
+                    AND EMAIL 						= @EMAIL
+                    AND NUMEROCELULAR 				= @NUMEROCELULAR
+                    AND CODIGOBARRAETIQUETA 		= @CODIGOBARRAETIQUETA
+                    AND LOCALPRATELEIRA 			= @LOCALPRATELEIRA
+                    AND RECIBOIMPRESSO 				= @RECIBOIMPRESSO
+                    ";
 
                 using (var cmd = DbConnection().CreateCommand())
                 {
                     cmd.CommandText = query;
-                    cmd.Parameters.AddWithValue("@CodigoBarraEtiqueta", CodigoBarras);
+
+                    cmd.Parameters.AddWithValue("@BLOCO", pmorador.Bloco);
+                    cmd.Parameters.AddWithValue("@APARTAMENTO", pmorador.Apartamento);
+                    cmd.Parameters.AddWithValue("@NOMEDESTINATARIO", pmorador.NomeDestinatario);
+                    cmd.Parameters.AddWithValue("@EMAIL", pmorador.email);
+                    cmd.Parameters.AddWithValue("@NUMEROCELULAR", pmorador.NumeroCelular);
+                    cmd.Parameters.AddWithValue("@CODIGOBARRAETIQUETA", pmorador.CodigoBarraEtiqueta);
+                    cmd.Parameters.AddWithValue("@LOCALPRATELEIRA", pmorador.LocalPrateleira);
+                    cmd.Parameters.AddWithValue("@RECIBOIMPRESSO", pmorador.ReciboImpresso);
+
                     cmd.Connection = DbConnection();
 
                     SQLiteDataReader reader = cmd.ExecuteReader();
@@ -158,9 +209,9 @@ namespace MeuCondominio.Dal
                     {
                         var morador = PreencheMoradorDtReader(reader);
                         if (morador.Count > 0)
-                            return morador[0];
+                            return morador;
                     }
-                    return new Morador();
+                    return new List<Morador>();
                 }
             }
             catch (Exception ex)
@@ -211,15 +262,19 @@ namespace MeuCondominio.Dal
             SQLiteDataAdapter da = null;
             DataTable dt = new DataTable();
 
-            var query = @"SELECT * FROM SEDEX 
-                        WHERE 
-                        DATACADASTRO IS NOT NULL 
-                        AND DATAENVIOMENSAGEM IS NOT NULL 
-                        AND EnviadoPorSMS = 'S'
-                        AND ReciboImpresso = 'N'
-                        ORDER BY 
-                        Bloco, 
-                        Apartamento;";
+            var query = @"SELECT distinct IdMorador, Bloco, Apartamento, NomeDestinatario, Email, NumeroCelular, CodigoBarraEtiqueta, CodigoQRCode, CodigoBarraEtiquetaLocal, LocalPrateleira, DataCadastro, 
+                            DataEntrega, DataEnvioMensagem, EnviadoPorSMS, EnviadoPorEMAIL, EnviadoPorZAP, EnviadoPorTELEGRAM, ReciboImpresso
+                            FROM SEDEX 
+                            WHERE 
+                            DATACADASTRO IS NOT NULL 
+                            AND DATAENVIOMENSAGEM IS NOT NULL 
+                            AND EnviadoPorSMS = 'S'
+                            AND ReciboImpresso = 'N'
+                            GROUP BY
+                                Bloco, Apartamento, NomeDestinatario, Email, NumeroCelular, CodigoBarraEtiqueta, CodigoQRCode, CodigoBarraEtiquetaLocal, LocalPrateleira, DataCadastro, 
+                                DataEntrega, DataEnvioMensagem, EnviadoPorSMS, EnviadoPorEMAIL, EnviadoPorZAP, EnviadoPorTELEGRAM, ReciboImpresso
+                            ORDER BY 
+                            Bloco, Apartamento;";
 
             try
             {

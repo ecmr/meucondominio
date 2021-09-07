@@ -131,6 +131,7 @@ namespace MeuCondominio
             this.ckbEntregue.TabIndex = 14;
             this.ckbEntregue.Text = "Entregue";
             this.ckbEntregue.UseVisualStyleBackColor = true;
+            this.ckbEntregue.Visible = false;
             // 
             // cboApto
             // 
@@ -573,13 +574,13 @@ namespace MeuCondominio
             this.rdbDesenvolvedor.Name = "rdbDesenvolvedor";
             this.rdbDesenvolvedor.Size = new System.Drawing.Size(97, 17);
             this.rdbDesenvolvedor.TabIndex = 1;
-            this.rdbDesenvolvedor.TabStop = true;
             this.rdbDesenvolvedor.Text = "Desenvolvedor";
             this.rdbDesenvolvedor.UseVisualStyleBackColor = true;
             // 
             // rdbAdminstracao
             // 
             this.rdbAdminstracao.AutoSize = true;
+            this.rdbAdminstracao.Checked = true;
             this.rdbAdminstracao.Location = new System.Drawing.Point(51, 11);
             this.rdbAdminstracao.Name = "rdbAdminstracao";
             this.rdbAdminstracao.Size = new System.Drawing.Size(91, 17);

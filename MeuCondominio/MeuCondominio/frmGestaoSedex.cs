@@ -861,13 +861,20 @@ namespace MeuCondominio
             try
             {
                 lstHistorico.Items.Clear();
+                listViewMoradoresApto.Items.Clear();
+                listViewMoradoresApto.Refresh();
+                txtNomeMoraador.Text = "";
+                txtCelular.Text = "";
+                txtEmail.Text = "";
+                txtCodBarras.Text = "";
+                IdMoradorSedex = 0;
 
                 if (string.IsNullOrEmpty(e.KeyChar.ToString()) || (string.IsNullOrEmpty(cboApto.Text)))
                     return;
 
                 string sApto = cboApto.Text;
 
-                if ((int.Parse(sApto) > 10) && (int.Parse(sApto) <= 104))
+                if ((int.Parse(sApto) > 0) && (int.Parse(sApto) <= 104))
                 {
                     listViewMoradoresApto.Items.Clear();
 
@@ -903,7 +910,13 @@ namespace MeuCondominio
 
             string nomeMorador = listViewMoradoresApto.SelectedItems[0].Text;
             string bloco = cboBloco.Text;
-            string apto = cboApto.Text.Substring(0, 1) == "0" ? cboApto.Text.Substring(1, 2) : cboApto.Text;
+
+            string apto = cboApto.Text;
+
+            if ((int.Parse(apto) > 0) && (int.Parse(apto) < 5))
+                apto = apto.PadLeft(2, '0');
+            else
+                apto = cboApto.Text.Substring(0, 1) == "0" ? cboApto.Text.Substring(1, 2) : cboApto.Text;
 
             SedexBus bus = new SedexBus();
             List<Morador> queryMoradores = bus.Consultar(bloco, apto, nomeMorador);
@@ -1096,7 +1109,18 @@ namespace MeuCondominio
 
             morador.IdMorador = IdMoradorSedex;
             sucesso = bus.AtualizarTelefone(morador);
+
+            var temcadastro = bus.Consultar(morador);
+
+            if (temcadastro.Count > 0)
+            {
+                lblMsgMorador.Text = "Registro* salvo com sucesso!";
+                lblMsgMorador.Visible = true;
+                return;
+            }
+
             morador.IdMorador = 0;
+
             sucesso = bus.Adicionar(morador);
 
             if (!sucesso)
@@ -1108,7 +1132,6 @@ namespace MeuCondominio
                 lblMsgMorador.Text = "Registro salvo com sucesso!";
             }
             lblMsgMorador.Visible = true;
-
         }
         private void RegistrarEntrega()
         {

@@ -27,6 +27,11 @@ namespace MeuCondominio.Bus
             return DalHelper.GetClientes(pBloco, pApto, pNomeMorador);
         }
 
+        public List<Morador> Consultar(Morador morador)
+        {
+            return DalHelper.GetClientes(morador);
+        }
+
         public List<Morador> RetornaListaParaEnvioSms()
         {
             return DalHelper.GetSedexParaEnvioSms();
