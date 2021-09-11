@@ -4,9 +4,11 @@ using MeuCondominio.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace MeuCondominio
 {
@@ -17,6 +19,7 @@ namespace MeuCondominio
         private string sDataCadastro;
         private string sDataEntrega;
         private string sDataEnvioMensagem;
+        private string sMensagemParaSms;
 
         private static string sLocalExcel = @"C:\Sedex Condominio\Excel\";
 
@@ -1243,6 +1246,31 @@ namespace MeuCondominio
             return s.ToString();
         }
 
+        private void LerXml()
+        {
+            var caminho = System.Environment.CurrentDirectory;
+
+
+            XDocument doc = XDocument.Load((CaminhoDadosXML(caminho) + @"\Configuracao.xml"));
+            var prods = from p in doc.Descendants("ValorMensagemSMS")
+                        select new
+                        {
+                            ValorMensagem = p.Element("valorMensagem").Value
+                        };
+            foreach (var p in prods)
+            {
+                sMensagemParaSms = String.Concat("Cond. Resid. Aricanduva!", Environment.NewLine, "Ola {Morador}", Environment.NewLine, p.ValorMensagem, Environment.NewLine, "Att: Administracao!");
+            }
+        }
+        public static string CaminhoDadosXML(string caminho)
+        {
+            if (caminho.IndexOf("\\bin\\Debug") != 0)
+            {
+                caminho = caminho.Replace("\\bin\\Debug", "");
+            }
+            return caminho;
+        }
+
         private void btnEnviarSms_Click(object sender, EventArgs e)
         {
             if ((!rdbAdminstracao.Checked) && (!rdbDesenvolvedor.Checked))
@@ -1255,12 +1283,16 @@ namespace MeuCondominio
             SedexBus sedexBus = new SedexBus();
             List<Morador> listSms = sedexBus.RetornaListaParaEnvioSms();
 
+            LerXml();
+
             foreach ( Morador morador in listSms)
             {
                 morador.DataEnvioMensagem = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString());
                 morador.EnviadoPorSMS = "S";
 
-                if (EnvioMensagem.EnvioSmsDev(morador, pChaveDesenvi))
+                var mensagemMorador = sMensagemParaSms.Replace("{Morador}", morador.NomeDestinatario);
+
+                if (EnvioMensagem.EnvioSmsDev(morador, mensagemMorador, pChaveDesenvi))
                 {
                     if (sedexBus.Atualizar(morador))
                     {
@@ -1348,6 +1380,13 @@ namespace MeuCondominio
                 return;
             }
             
+        }
+
+        private void mensagemSMSToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmConfiguracoes frmConfiguracoes = new FrmConfiguracoes();
+            frmConfiguracoes.Show();
+            // sMensagemParaSms
         }
     }
 }

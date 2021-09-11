@@ -84,6 +84,8 @@ namespace MeuCondominio
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.rdbDesenvolvedor = new System.Windows.Forms.RadioButton();
             this.rdbAdminstracao = new System.Windows.Forms.RadioButton();
+            this.configuraçõesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mensagemSMSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -327,7 +329,8 @@ namespace MeuCondominio
             this.cnsultarToolStripMenuItem,
             this.salvarToolStripMenuItem,
             this.carregarExcelToolStripMenuItem,
-            this.imprimirToolStripMenuItem});
+            this.imprimirToolStripMenuItem,
+            this.configuraçõesToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
@@ -589,6 +592,21 @@ namespace MeuCondominio
             this.rdbAdminstracao.Text = "Administração";
             this.rdbAdminstracao.UseVisualStyleBackColor = true;
             // 
+            // configuraçõesToolStripMenuItem
+            // 
+            this.configuraçõesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mensagemSMSToolStripMenuItem});
+            this.configuraçõesToolStripMenuItem.Name = "configuraçõesToolStripMenuItem";
+            this.configuraçõesToolStripMenuItem.Size = new System.Drawing.Size(96, 20);
+            this.configuraçõesToolStripMenuItem.Text = "Configurações";
+            // 
+            // mensagemSMSToolStripMenuItem
+            // 
+            this.mensagemSMSToolStripMenuItem.Name = "mensagemSMSToolStripMenuItem";
+            this.mensagemSMSToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.mensagemSMSToolStripMenuItem.Text = "Mensagem SMS";
+            this.mensagemSMSToolStripMenuItem.Click += new System.EventHandler(this.mensagemSMSToolStripMenuItem_Click);
+            // 
             // FrmGestaoSedex
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -692,6 +710,8 @@ namespace MeuCondominio
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.RadioButton rdbDesenvolvedor;
         private System.Windows.Forms.RadioButton rdbAdminstracao;
+        private System.Windows.Forms.ToolStripMenuItem configuraçõesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mensagemSMSToolStripMenuItem;
     }
 }
 
