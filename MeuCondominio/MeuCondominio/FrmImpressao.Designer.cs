@@ -31,12 +31,10 @@ namespace MeuCondominio
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmImpressao));
-            Microsoft.Reporting.WinForms.ReportDataSource reportDataSource1 = new Microsoft.Reporting.WinForms.ReportDataSource();
             this.MoradorBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.cboImpressora = new System.Windows.Forms.ComboBox();
             this.btnImprimir = new System.Windows.Forms.Button();
             this.lblImprimir = new System.Windows.Forms.Label();
-            this.reportViewer1 = new Microsoft.Reporting.WinForms.ReportViewer();
             this.chkVisualizaImpressao = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.MoradorBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -75,19 +73,6 @@ namespace MeuCondominio
             this.lblImprimir.TabIndex = 2;
             this.lblImprimir.Text = "Impressora";
             // 
-            // reportViewer1
-            // 
-            reportDataSource1.Name = "DataSet1";
-            reportDataSource1.Value = this.MoradorBindingSource;
-            this.reportViewer1.LocalReport.DataSources.Add(reportDataSource1);
-            this.reportViewer1.LocalReport.ReportEmbeddedResource = "WindowsFormsApp1.Relatorio.Report1.rdlc";
-            this.reportViewer1.Location = new System.Drawing.Point(12, 391);
-            this.reportViewer1.Name = "reportViewer1";
-            this.reportViewer1.ServerReport.BearerToken = null;
-            this.reportViewer1.Size = new System.Drawing.Size(487, 52);
-            this.reportViewer1.TabIndex = 3;
-            this.reportViewer1.Visible = false;
-            // 
             // chkVisualizaImpressao
             // 
             this.chkVisualizaImpressao.AutoSize = true;
@@ -104,7 +89,6 @@ namespace MeuCondominio
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(282, 156);
             this.Controls.Add(this.chkVisualizaImpressao);
-            this.Controls.Add(this.reportViewer1);
             this.Controls.Add(this.lblImprimir);
             this.Controls.Add(this.btnImprimir);
             this.Controls.Add(this.cboImpressora);
@@ -125,7 +109,6 @@ namespace MeuCondominio
         private System.Windows.Forms.ComboBox cboImpressora;
         private System.Windows.Forms.Button btnImprimir;
         private System.Windows.Forms.Label lblImprimir;
-        private Microsoft.Reporting.WinForms.ReportViewer reportViewer1;
         private System.Windows.Forms.BindingSource MoradorBindingSource;
         private System.Windows.Forms.CheckBox chkVisualizaImpressao;
     }
