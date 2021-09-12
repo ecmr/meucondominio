@@ -62,6 +62,8 @@ namespace MeuCondominio
             this.carregarExcelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imprimirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reciboDeEntregaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.configuraçõesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mensagemSMSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -84,8 +86,7 @@ namespace MeuCondominio
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.rdbDesenvolvedor = new System.Windows.Forms.RadioButton();
             this.rdbAdminstracao = new System.Windows.Forms.RadioButton();
-            this.configuraçõesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.mensagemSMSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testeTelegramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -330,7 +331,8 @@ namespace MeuCondominio
             this.salvarToolStripMenuItem,
             this.carregarExcelToolStripMenuItem,
             this.imprimirToolStripMenuItem,
-            this.configuraçõesToolStripMenuItem});
+            this.configuraçõesToolStripMenuItem,
+            this.testeTelegramToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
@@ -385,6 +387,21 @@ namespace MeuCondominio
             this.reciboDeEntregaToolStripMenuItem.Text = "Recibo de entrega";
             this.reciboDeEntregaToolStripMenuItem.Visible = false;
             this.reciboDeEntregaToolStripMenuItem.Click += new System.EventHandler(this.reciboDeEntregaToolStripMenuItem_Click);
+            // 
+            // configuraçõesToolStripMenuItem
+            // 
+            this.configuraçõesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mensagemSMSToolStripMenuItem});
+            this.configuraçõesToolStripMenuItem.Name = "configuraçõesToolStripMenuItem";
+            this.configuraçõesToolStripMenuItem.Size = new System.Drawing.Size(96, 20);
+            this.configuraçõesToolStripMenuItem.Text = "Configurações";
+            // 
+            // mensagemSMSToolStripMenuItem
+            // 
+            this.mensagemSMSToolStripMenuItem.Name = "mensagemSMSToolStripMenuItem";
+            this.mensagemSMSToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.mensagemSMSToolStripMenuItem.Text = "Mensagem SMS";
+            this.mensagemSMSToolStripMenuItem.Click += new System.EventHandler(this.mensagemSMSToolStripMenuItem_Click);
             // 
             // checkBox1
             // 
@@ -592,20 +609,12 @@ namespace MeuCondominio
             this.rdbAdminstracao.Text = "Administração";
             this.rdbAdminstracao.UseVisualStyleBackColor = true;
             // 
-            // configuraçõesToolStripMenuItem
+            // testeTelegramToolStripMenuItem
             // 
-            this.configuraçõesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mensagemSMSToolStripMenuItem});
-            this.configuraçõesToolStripMenuItem.Name = "configuraçõesToolStripMenuItem";
-            this.configuraçõesToolStripMenuItem.Size = new System.Drawing.Size(96, 20);
-            this.configuraçõesToolStripMenuItem.Text = "Configurações";
-            // 
-            // mensagemSMSToolStripMenuItem
-            // 
-            this.mensagemSMSToolStripMenuItem.Name = "mensagemSMSToolStripMenuItem";
-            this.mensagemSMSToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.mensagemSMSToolStripMenuItem.Text = "Mensagem SMS";
-            this.mensagemSMSToolStripMenuItem.Click += new System.EventHandler(this.mensagemSMSToolStripMenuItem_Click);
+            this.testeTelegramToolStripMenuItem.Name = "testeTelegramToolStripMenuItem";
+            this.testeTelegramToolStripMenuItem.Size = new System.Drawing.Size(96, 20);
+            this.testeTelegramToolStripMenuItem.Text = "Teste Telegram";
+            this.testeTelegramToolStripMenuItem.Click += new System.EventHandler(this.testeTelegramToolStripMenuItem_Click);
             // 
             // FrmGestaoSedex
             // 
@@ -712,6 +721,7 @@ namespace MeuCondominio
         private System.Windows.Forms.RadioButton rdbAdminstracao;
         private System.Windows.Forms.ToolStripMenuItem configuraçõesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mensagemSMSToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem testeTelegramToolStripMenuItem;
     }
 }
 

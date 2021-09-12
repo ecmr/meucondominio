@@ -1290,7 +1290,10 @@ namespace MeuCondominio
                 morador.DataEnvioMensagem = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString());
                 morador.EnviadoPorSMS = "S";
 
-                var mensagemMorador = sMensagemParaSms.Replace("{Morador}", morador.NomeDestinatario);
+
+                string[] firstName = morador.NomeDestinatario.Split(' ');
+
+                var mensagemMorador = sMensagemParaSms.Replace("{Morador}", firstName[0]);
 
                 if (EnvioMensagem.EnvioSmsDev(morador, mensagemMorador, pChaveDesenvi))
                 {
@@ -1387,6 +1390,12 @@ namespace MeuCondominio
             FrmConfiguracoes frmConfiguracoes = new FrmConfiguracoes();
             frmConfiguracoes.Show();
             // sMensagemParaSms
+        }
+
+        private void testeTelegramToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EnvioMensagem envio = new EnvioMensagem();
+            envio.TesteTelegram();
         }
     }
 }

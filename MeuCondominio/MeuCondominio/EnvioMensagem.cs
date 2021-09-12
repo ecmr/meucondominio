@@ -2,14 +2,20 @@
 using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
+using Telegram.Bot;
+using TeleSharp.TL;
+using TLSharp;
+using TLSharp.Core;
 
 namespace MeuCondominio
 {
     public class EnvioMensagem
     {
+
 
         #region Envio SMS DEV
         /// <summary>
@@ -33,10 +39,11 @@ namespace MeuCondominio
                 pMensagem = "Seu Sedex chegou e já está disponível para retirada na Adm até as 18 horas, Sabado até 12 horas!";
 
             string sFone = string.Concat("&type=9&number=", morador.NumeroCelular);
-            string sMsg = string.Concat("&msg=Cond. Resid. Aricanduva!",
-                Environment.NewLine, "Olá ", nomeMorador[0], Environment.NewLine,
-                pMensagem, Environment.NewLine,
-                "Att: Administração!");
+            //string sMsg = string.Concat("&msg=Cond. Resid. Aricanduva!",
+            //    Environment.NewLine, "Olá ", nomeMorador[0], Environment.NewLine,
+            //    pMensagem, Environment.NewLine,
+            //    "Att: Administração!");
+            string sMsg = string.Concat("&msg=", pMensagem);
 
             // Create a request using a URL that can receive a post.
             // "https://api.smsdev.com.br/v1/send?key=I6GJF7FHCF6O1J8Z4M0V7SNR75MN6STOQ4NGSNFAWH8Z1OH6FHD5ZL7QC36L0962KU5T6NA038U9G5YMN0T6E0F28U2SWMDGBET8CS7JQ8FGR5DZ3ZSEAL5SO8M39NGF&type=9&number=11969410446&msg=Teste"
@@ -182,6 +189,40 @@ namespace MeuCondominio
         }
         public static void EnvioEmail()
         { }
+
+        #region TELEGRAN
+        public async void TesteTelegram()
+        {
+            TelegramClient client;
+
+            client = new TelegramClient(8106364, "d1934a983b83df5e690abf9a52fe2d0a");
+                //"MIIBCgKCAQEAyMEdY1aR+sCR3ZSJrtztKTKqigvO/vBfqACJLZtS7QMgCGXJ6XIRyy7mx66W0/sOFa7/1mAZtEoIokDP3ShoqF4fVNb6XeqgQfaUHd8wJpDWHcR2OFwvplUUI1PLTktZ9uW2WE23b+ixNwJjJGwBDJPQEQFBE+vfmH0JP503wr5INS1poWg/j25sIWeYPHYeOrFp/eXaqhISP6G+q2IeTaWTXpwZj4LzXq5YOpk4bYEQ6mvRq7D1aHWfYmlEGepfaYR8Q0YqvvhYtMte3ITnuSJs171+GDqpdKcSwHnd6FudwGO4pcCOj4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB");
+            await client.ConnectAsync();
+
+            // Anna 11963198516
+
+            //For authentication you need to run following code
+            var hash = await client.SendCodeRequestAsync("+5511969410446");
+            var code = "92074"; // you can change code in debugger
+
+            var user = await client.MakeAuthAsync("+5511969410446", hash, code);
+
+            //You can call any method on authenticated user. For example, let's send message to a friend by his phone number:
+            //get available contacts
+            var result = await client.GetContactsAsync();
+
+            //find recipient in contacts
+            var user2 = result.Users
+                .Where(x => x.GetType() == typeof(TLUser))
+                .Cast<TLUser>()
+                .FirstOrDefault(x => x.FirstName == "Anna Clara"); //+5511963198516
+
+            //send message
+            var s = await client.SendMessageAsync(new TLInputPeerUser() { UserId = user2.Id }, "Teste Edinei");
+
+
+        }
+        #endregion
     }
     public class JSonSmsDev
     {

@@ -30,11 +30,11 @@ namespace MeuCondominio
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lblTextoFinal = new System.Windows.Forms.Label();
+            this.btnSalvar = new System.Windows.Forms.Button();
+            this.txtFinal = new System.Windows.Forms.TextBox();
             this.lblCaracteres = new System.Windows.Forms.Label();
             this.txtMensagemSms = new System.Windows.Forms.TextBox();
-            this.btnSalvar = new System.Windows.Forms.Button();
-            this.lblTextoFinal = new System.Windows.Forms.Label();
-            this.txtFinal = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -52,23 +52,14 @@ namespace MeuCondominio
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "texo para envio do SMS";
             // 
-            // lblCaracteres
+            // lblTextoFinal
             // 
-            this.lblCaracteres.AutoSize = true;
-            this.lblCaracteres.Location = new System.Drawing.Point(192, 97);
-            this.lblCaracteres.Name = "lblCaracteres";
-            this.lblCaracteres.Size = new System.Drawing.Size(0, 13);
-            this.lblCaracteres.TabIndex = 1;
-            // 
-            // txtMensagemSms
-            // 
-            this.txtMensagemSms.Location = new System.Drawing.Point(7, 20);
-            this.txtMensagemSms.Multiline = true;
-            this.txtMensagemSms.Name = "txtMensagemSms";
-            this.txtMensagemSms.Size = new System.Drawing.Size(332, 59);
-            this.txtMensagemSms.TabIndex = 0;
-            this.txtMensagemSms.MultilineChanged += new System.EventHandler(this.PreenchimentoSms);
-            this.txtMensagemSms.TextChanged += new System.EventHandler(this.PreenchimentoSms);
+            this.lblTextoFinal.AutoSize = true;
+            this.lblTextoFinal.Location = new System.Drawing.Point(619, 124);
+            this.lblTextoFinal.Name = "lblTextoFinal";
+            this.lblTextoFinal.Size = new System.Drawing.Size(59, 13);
+            this.lblTextoFinal.TabIndex = 2;
+            this.lblTextoFinal.Text = "Texto Final";
             // 
             // btnSalvar
             // 
@@ -80,15 +71,6 @@ namespace MeuCondominio
             this.btnSalvar.UseVisualStyleBackColor = true;
             this.btnSalvar.Click += new System.EventHandler(this.btnSalvar_Click);
             // 
-            // lblTextoFinal
-            // 
-            this.lblTextoFinal.AutoSize = true;
-            this.lblTextoFinal.Location = new System.Drawing.Point(619, 124);
-            this.lblTextoFinal.Name = "lblTextoFinal";
-            this.lblTextoFinal.Size = new System.Drawing.Size(59, 13);
-            this.lblTextoFinal.TabIndex = 2;
-            this.lblTextoFinal.Text = "Texto Final";
-            // 
             // txtFinal
             // 
             this.txtFinal.BackColor = System.Drawing.Color.AliceBlue;
@@ -99,6 +81,25 @@ namespace MeuCondominio
             this.txtFinal.Name = "txtFinal";
             this.txtFinal.Size = new System.Drawing.Size(333, 96);
             this.txtFinal.TabIndex = 3;
+            // 
+            // lblCaracteres
+            // 
+            this.lblCaracteres.AutoSize = true;
+            this.lblCaracteres.Location = new System.Drawing.Point(192, 97);
+            this.lblCaracteres.Name = "lblCaracteres";
+            this.lblCaracteres.Size = new System.Drawing.Size(0, 13);
+            this.lblCaracteres.TabIndex = 1;
+            // 
+            // txtMensagemSms
+            // 
+            this.txtMensagemSms.Location = new System.Drawing.Point(7, 20);
+            this.txtMensagemSms.MaxLength = 100;
+            this.txtMensagemSms.Multiline = true;
+            this.txtMensagemSms.Name = "txtMensagemSms";
+            this.txtMensagemSms.Size = new System.Drawing.Size(332, 59);
+            this.txtMensagemSms.TabIndex = 0;
+            this.txtMensagemSms.MultilineChanged += new System.EventHandler(this.PreenchimentoSms);
+            this.txtMensagemSms.TextChanged += new System.EventHandler(this.PreenchimentoSms);
             // 
             // FrmConfiguracoes
             // 
