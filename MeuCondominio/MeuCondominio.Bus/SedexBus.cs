@@ -1,4 +1,4 @@
-﻿using MeuCondominio.Dal;
+﻿using MeuCondominio.Model;
 using MeuCondominio.Model;
 using System.Collections.Generic;
 using System.Data;
@@ -17,14 +17,14 @@ namespace MeuCondominio.Bus
             return DalHelper.GetCliente(CodigoBarras);
         }
 
-        public List<Morador> Consultar(string pBloco, string pApto)
+        public List<Morador> Moradores(string pBloco, string pApto)
         {
-            return DalHelper.GetClientes(pBloco, pApto);
+            return DalHelper.GetMoradores(pBloco, pApto);
         }
 
-        public List<Morador> Consultar(string pBloco, string pApto, string pNomeMorador)
+        public Morador Consultar(string pBloco, string pApto, string pNomeMorador)
         {
-            return DalHelper.GetClientes(pBloco, pApto, pNomeMorador);
+            return DalHelper.GetMorador(pBloco, pApto, pNomeMorador);
         }
 
         public List<Morador> Consultar(Morador morador)
@@ -62,9 +62,31 @@ namespace MeuCondominio.Bus
             return DalHelper.Delete(idMorador);
         }
 
+        /// <summary>
+        /// Novo
+        /// </summary>
+        /// <param name="idMorador"></param>
+        /// <param name="bloco"></param>
+        /// <param name="apartamento"></param>
+        /// <returns></returns>
+        public List<SedexHistorico> GetHistoricoPorMorador(int idMorador)
+        {
+            return DalHelper.GetHistoricoPorMorador(idMorador);
+        }
+
+
+        /// <summary>
+        /// Excluir, substituido pelo GetHistoricoPorMorador(int idMorador)
+        /// </summary>
+        /// <param name="idMorador"></param>
+        /// <param name="bloco"></param>
+        /// <param name="apartamento"></param>
+        /// <returns></returns>
         public List<Morador> GetHistoricoPorApartamento(string bloco, string apartamento)
         {
-            return DalHelper.GetHistoricoPorApartamento(bloco, apartamento);
+            return DalHelper.GetHistoricoPorApartamento(string.Concat("BLOCO ", bloco), apartamento);
         }
+
+
     }
 }

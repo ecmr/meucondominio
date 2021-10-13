@@ -44,7 +44,7 @@ namespace MeuCondominio
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.txtEmail = new System.Windows.Forms.TextBox();
+            this.txtEmail1 = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -64,6 +64,7 @@ namespace MeuCondominio
             this.reciboDeEntregaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.configuraçõesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mensagemSMSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testeTelegramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -86,7 +87,6 @@ namespace MeuCondominio
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.rdbDesenvolvedor = new System.Windows.Forms.RadioButton();
             this.rdbAdminstracao = new System.Windows.Forms.RadioButton();
-            this.testeTelegramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -106,7 +106,7 @@ namespace MeuCondominio
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.txtEmail);
+            this.groupBox1.Controls.Add(this.txtEmail1);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Location = new System.Drawing.Point(20, 34);
@@ -221,12 +221,12 @@ namespace MeuCondominio
             this.label1.TabIndex = 0;
             this.label1.Text = "Destinatario";
             // 
-            // txtEmail
+            // txtEmail1
             // 
-            this.txtEmail.Location = new System.Drawing.Point(9, 270);
-            this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(477, 20);
-            this.txtEmail.TabIndex = 6;
+            this.txtEmail1.Location = new System.Drawing.Point(9, 270);
+            this.txtEmail1.Name = "txtEmail1";
+            this.txtEmail1.Size = new System.Drawing.Size(477, 20);
+            this.txtEmail1.TabIndex = 6;
             // 
             // label7
             // 
@@ -399,9 +399,16 @@ namespace MeuCondominio
             // mensagemSMSToolStripMenuItem
             // 
             this.mensagemSMSToolStripMenuItem.Name = "mensagemSMSToolStripMenuItem";
-            this.mensagemSMSToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.mensagemSMSToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
             this.mensagemSMSToolStripMenuItem.Text = "Mensagem SMS";
             this.mensagemSMSToolStripMenuItem.Click += new System.EventHandler(this.mensagemSMSToolStripMenuItem_Click);
+            // 
+            // testeTelegramToolStripMenuItem
+            // 
+            this.testeTelegramToolStripMenuItem.Name = "testeTelegramToolStripMenuItem";
+            this.testeTelegramToolStripMenuItem.Size = new System.Drawing.Size(96, 20);
+            this.testeTelegramToolStripMenuItem.Text = "Teste Telegram";
+            this.testeTelegramToolStripMenuItem.Click += new System.EventHandler(this.testeTelegramToolStripMenuItem_Click);
             // 
             // checkBox1
             // 
@@ -609,18 +616,11 @@ namespace MeuCondominio
             this.rdbAdminstracao.Text = "Administração";
             this.rdbAdminstracao.UseVisualStyleBackColor = true;
             // 
-            // testeTelegramToolStripMenuItem
-            // 
-            this.testeTelegramToolStripMenuItem.Name = "testeTelegramToolStripMenuItem";
-            this.testeTelegramToolStripMenuItem.Size = new System.Drawing.Size(96, 20);
-            this.testeTelegramToolStripMenuItem.Text = "Teste Telegram";
-            this.testeTelegramToolStripMenuItem.Click += new System.EventHandler(this.testeTelegramToolStripMenuItem_Click);
-            // 
             // FrmGestaoSedex
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(829, 410);
+            this.ClientSize = new System.Drawing.Size(829, 457);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.btnExcluir);
@@ -672,7 +672,7 @@ namespace MeuCondominio
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox txtEmail;
+        private System.Windows.Forms.TextBox txtEmail1;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label5;

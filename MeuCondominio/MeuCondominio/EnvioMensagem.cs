@@ -6,9 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
-using Telegram.Bot;
 using TeleSharp.TL;
-using TLSharp;
 using TLSharp.Core;
 
 namespace MeuCondominio
@@ -33,12 +31,12 @@ namespace MeuCondominio
             else if (pKey == "Administração")
                 sKey = "GYU1CWX2T3JUTGUJ7XT6OSE0NORTYAM7L4UF447UG9QQYDIA7X2LR5Y3NMVA7JAE8D9XL1DN7KWN6WAULTFPGKA9QQPBOH9PN0OKFWYEHZ9X29Y8FB0O4KNZ4Z99INCV";
 
-            string[] nomeMorador = morador.NomeDestinatario.Split(' ');
+            string[] nomeMorador = morador.NomeMorador.Split(' ');
 
             if (string.IsNullOrEmpty(pMensagem))
                 pMensagem = "Seu Sedex chegou e já está disponível para retirada na Adm até as 18 horas, Sabado até 12 horas!";
 
-            string sFone = string.Concat("&type=9&number=", morador.NumeroCelular);
+            string sFone = string.Concat("&type=9&number=", morador.Celular1);
             //string sMsg = string.Concat("&msg=Cond. Resid. Aricanduva!",
             //    Environment.NewLine, "Olá ", nomeMorador[0], Environment.NewLine,
             //    pMensagem, Environment.NewLine,
@@ -124,12 +122,12 @@ namespace MeuCondominio
             //    to: new Twilio.Types.PhoneNumber("+5511947971165")
             //);
 
-            ////string.Concat("+55", morador.NumeroCelular)
+            ////string.Concat("+55", morador.Celular1)
             //Console.WriteLine(message.Sid);
         }
         public static void EnvioSmsTeste(Morador morador)
         {
-            string toPhoneNumber = "+5511" + morador.NumeroCelular;
+            string toPhoneNumber = "+5511" + morador.Celular1;
             string login = "SeuLogin";
             string password = "SuaSenha";
             string compression = "assunto";
@@ -179,7 +177,7 @@ namespace MeuCondominio
             //TwilioClient.Init(accountSid, authToken);
 
             //var messageOptions = new CreateMessageOptions(
-            //    new PhoneNumber("whatsapp:+5511947971165")); // 55" + morador.NumeroCelular));
+            //    new PhoneNumber("whatsapp:+5511947971165")); // 55" + morador.Celular1));
             //messageOptions.From = new PhoneNumber("whatsapp:+14155238886");
             //messageOptions.Body = "Condominio Residencial Aricanduva. Sua camiseta do TIMÃO chegou! Já pode vir buscar.";
 
@@ -187,11 +185,11 @@ namespace MeuCondominio
             //Console.WriteLine(message.Body);
             #endregion
         }
-        public static void EnvioEmail()
+        public static void EnvioEmail1()
         { }
 
         #region TELEGRAN
-        public async void TesteTelegram()
+        public async void TesteTelegram(string sTelefone,string sMensagem)
         {
             TelegramClient client;
 
@@ -203,7 +201,12 @@ namespace MeuCondominio
 
             //For authentication you need to run following code
             var hash = await client.SendCodeRequestAsync("+5511969410446");
-            var code = "92074"; // you can change code in debugger
+
+
+
+
+
+            var code = "61968"; // you can change code in debugger
 
             var user = await client.MakeAuthAsync("+5511969410446", hash, code);
 
@@ -215,10 +218,16 @@ namespace MeuCondominio
             var user2 = result.Users
                 .Where(x => x.GetType() == typeof(TLUser))
                 .Cast<TLUser>()
-                .FirstOrDefault(x => x.FirstName == "Anna Clara"); //+5511963198516
+                .FirstOrDefault(x => x.Phone == "5511963198516"); //x.FirstName == "Anna Clara"); //+5511963198516
+
+
+            sMensagem = @"Cond. Resid. Aricanduva!" + Environment.NewLine;
+            sMensagem += "Olá " + user2.FirstName + Environment.NewLine;
+            sMensagem += "Seu Sedex chegou e está disponível para retirada na Adminstração de segunda a sexta das 9 as 18 horas e sábado das 9 as 12 horas! " + Environment.NewLine;
+            sMensagem += "Att: Administracao!";
 
             //send message
-            var s = await client.SendMessageAsync(new TLInputPeerUser() { UserId = user2.Id }, "Teste Edinei");
+            var s = await client.SendMessageAsync(new TLInputPeerUser() { UserId = user2.Id }, sMensagem);
 
 
         }
@@ -231,5 +240,9 @@ namespace MeuCondominio
         public string id { get; set; }
         public string descricao { get; set; }
     }
+
+
+
+
 
 }

@@ -937,8 +937,8 @@
           <DataField>DataEnvioMensagem</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="email">
-          <DataField>email</DataField>
+        <Field Name="Email1">
+          <DataField>Email1</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="EncomendaAlimento">
@@ -949,8 +949,8 @@
           <DataField>EncomendaMedicamento</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="EnviadoPorEMAIL">
-          <DataField>EnviadoPorEMAIL</DataField>
+        <Field Name="EnviadoPorEmail1">
+          <DataField>EnviadoPorEmail1</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="EnviadoPorSMS">
@@ -973,12 +973,12 @@
           <DataField>LocalPrateleira</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="NomeDestinatario">
-          <DataField>NomeDestinatario</DataField>
+        <Field Name="NomeMorador">
+          <DataField>NomeMorador</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="NumeroCelular">
-          <DataField>NumeroCelular</DataField>
+        <Field Name="Celular1">
+          <DataField>Celular1</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
       </Fields>

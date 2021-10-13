@@ -44,6 +44,8 @@
     <Compile Include="HelperModel.cs" />
     <Compile Include="Morador.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sedex.cs" />
+    <Compile Include="SedexHistorico.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

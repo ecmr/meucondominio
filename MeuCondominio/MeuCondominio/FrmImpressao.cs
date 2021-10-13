@@ -44,7 +44,8 @@ namespace MeuCondominio
 
             for (int i = 0; i < listPrint.Count; i++)
             {
-                textoToPrint[x] += ("BL:" + listPrint[i].Bloco + " Apto: " + listPrint[i].Apartamento + " Cod: " + listPrint[i].CodigoBarraEtiqueta).PadRight(37, '_');
+                //textoToPrint[x] += ("BL:" + listPrint[i].Bloco + " Apto: " + listPrint[i].Apartamento + " Cod: " + listPrint[i].CodigoBarraEtiqueta).PadRight(37, '_');
+                textoToPrint[x] += ("BL:" + listPrint[i].Bloco + " Apto: " + listPrint[i].Apartamento + " Cod: listPrint[i].CodigoBarraEtiqueta).PadRight(37, '_')");
                 textoToPrint[x] += (" Nome:_____________ Data:__/__/____ Ass:_________________");
                 x++;
                 textoToPrint[x] += (" ").PadRight(150, ' ');
@@ -73,7 +74,7 @@ namespace MeuCondominio
 
                 foreach (Morador morador in listPrint)
                 {
-                    morador.ReciboImpresso = "S";
+                   // morador.ReciboImpresso = "S";
                     bus.Atualizar(morador);
                 }
             }

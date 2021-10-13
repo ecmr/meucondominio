@@ -3,12 +3,22 @@ using MeuCondominio.Bus;
 using MeuCondominio.Model;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 using System.Xml.Linq;
+using TeleSharp.TL;
+using TLSharp.Core;
+using TLSharp.Core.Exceptions;
 
 namespace MeuCondominio
 {
@@ -20,6 +30,170 @@ namespace MeuCondominio
         private string sDataEntrega;
         private string sDataEnvioMensagem;
         private string sMensagemParaSms;
+        private string hash;
+        private string code;
+
+        #region testeTelegram
+        private string NumberToSendMessage { get; set; }
+        private string NumberToAuthenticate { get; set; }
+        private string CodeToAuthenticate { get; set; }
+        private string PasswordToAuthenticate { get; set; }
+        private string NotRegisteredNumberToSignUp { get; set; }
+        private string UserNameToSendMessage { get; set; }
+        private string NumberToGetUserFull { get; set; }
+        private string NumberToAddToChat { get; set; }
+        private string ApiHash { get; set; }
+        private int ApiId { get; set; }
+        class Assert
+        {
+            static internal void IsNotNull(object obj)
+            {
+                IsNotNullHanlder(obj);
+            }
+
+            static internal void IsTrue(bool cond)
+            {
+                IsTrueHandler(cond);
+            }
+        }
+
+        internal static Action<object> IsNotNullHanlder;
+        internal static Action<bool> IsTrueHandler;
+
+        protected void Init(Action<object> notNullHandler, Action<bool> trueHandler)
+        {
+            IsNotNullHanlder = notNullHandler;
+            IsTrueHandler = trueHandler;
+
+            // Setup your API settings and phone numbers in app.config
+            GatherTestConfiguration();
+        }
+
+        private TelegramClient NewClient()
+        {
+            try
+            {
+                return new TelegramClient(ApiId, ApiHash);
+            }
+            catch (MissingApiConfigurationException ex)
+            {
+                throw new Exception($"Please add your API settings to the `app.config` file. (More info: {MissingApiConfigurationException.InfoUrl})",
+                                    ex);
+            }
+        }
+
+        private void GatherTestConfiguration()
+        {
+            string appConfigMsgWarning = "{0} not configured in app.config! Some tests may fail.";
+
+            ApiHash = ConfigurationManager.AppSettings[nameof(ApiHash)];
+            if (string.IsNullOrEmpty(ApiHash))
+                Debug.WriteLine(appConfigMsgWarning, nameof(ApiHash));
+
+            var apiId = ConfigurationManager.AppSettings[nameof(ApiId)];
+            if (string.IsNullOrEmpty(apiId))
+                Debug.WriteLine(appConfigMsgWarning, nameof(ApiId));
+            else
+                ApiId = int.Parse(apiId);
+
+            NumberToAuthenticate = ConfigurationManager.AppSettings[nameof(NumberToAuthenticate)];
+            if (string.IsNullOrEmpty(NumberToAuthenticate))
+                Debug.WriteLine(appConfigMsgWarning, nameof(NumberToAuthenticate));
+
+            CodeToAuthenticate = ConfigurationManager.AppSettings[nameof(CodeToAuthenticate)];
+            if (string.IsNullOrEmpty(CodeToAuthenticate))
+                Debug.WriteLine(appConfigMsgWarning, nameof(CodeToAuthenticate));
+
+            PasswordToAuthenticate = ConfigurationManager.AppSettings[nameof(PasswordToAuthenticate)];
+            if (string.IsNullOrEmpty(PasswordToAuthenticate))
+                Debug.WriteLine(appConfigMsgWarning, nameof(PasswordToAuthenticate));
+
+            NotRegisteredNumberToSignUp = ConfigurationManager.AppSettings[nameof(NotRegisteredNumberToSignUp)];
+            if (string.IsNullOrEmpty(NotRegisteredNumberToSignUp))
+                Debug.WriteLine(appConfigMsgWarning, nameof(NotRegisteredNumberToSignUp));
+
+            UserNameToSendMessage = ConfigurationManager.AppSettings[nameof(UserNameToSendMessage)];
+            if (string.IsNullOrEmpty(UserNameToSendMessage))
+                Debug.WriteLine(appConfigMsgWarning, nameof(UserNameToSendMessage));
+
+            NumberToGetUserFull = ConfigurationManager.AppSettings[nameof(NumberToGetUserFull)];
+            if (string.IsNullOrEmpty(NumberToGetUserFull))
+                Debug.WriteLine(appConfigMsgWarning, nameof(NumberToGetUserFull));
+
+            NumberToAddToChat = ConfigurationManager.AppSettings[nameof(NumberToAddToChat)];
+            if (string.IsNullOrEmpty(NumberToAddToChat))
+                Debug.WriteLine(appConfigMsgWarning, nameof(NumberToAddToChat));
+        }
+
+        public virtual async Task AuthUser()
+        {
+            var client = NewClient();
+
+            await client.ConnectAsync();
+
+            var hash = await client.SendCodeRequestAsync(NumberToAuthenticate);
+            var code = CodeToAuthenticate; // you can change code in debugger too
+
+            if (String.IsNullOrWhiteSpace(code))
+            {
+                throw new Exception("CodeToAuthenticate is empty in the app.config file, fill it with the code you just got now by SMS/Telegram");
+            }
+
+            TLUser user = null;
+            try
+            {
+                user = await client.MakeAuthAsync(NumberToAuthenticate, hash, code);
+            }
+            catch (CloudPasswordNeededException ex)
+            {
+                var passwordSetting = await client.GetPasswordSetting();
+                var password = PasswordToAuthenticate;
+
+                user = await client.MakeAuthWithPasswordAsync(passwordSetting, password);
+            }
+            catch (InvalidPhoneCodeException ex)
+            {
+                throw new Exception("CodeToAuthenticate is wrong in the app.config file, fill it with the code you just got now by SMS/Telegram",
+                                    ex);
+            }
+            Assert.IsNotNull(user);
+            Assert.IsTrue(client.IsUserAuthorized());
+        }
+
+        public virtual async Task SendMessageTest()
+        {
+            NumberToSendMessage = ConfigurationManager.AppSettings[nameof(NumberToSendMessage)];
+            if (string.IsNullOrWhiteSpace(NumberToSendMessage))
+                throw new Exception($"Please fill the '{nameof(NumberToSendMessage)}' setting in app.config file first");
+
+            // this is because the contacts in the address come without the "+" prefix
+            var normalizedNumber = NumberToSendMessage.StartsWith("+") ?
+                NumberToSendMessage.Substring(1, NumberToSendMessage.Length - 1) :
+                NumberToSendMessage;
+
+            var client = NewClient();
+
+            await client.ConnectAsync();
+
+            var result = await client.GetContactsAsync();
+
+            var user = result.Users
+                .OfType<TLUser>()
+                .FirstOrDefault(x => x.Phone == normalizedNumber);
+
+            if (user == null)
+            {
+                throw new System.Exception("Number was not found in Contacts List of user: " + NumberToSendMessage);
+            }
+
+            await client.SendTypingAsync(new TLInputPeerUser() { UserId = user.Id });
+            Thread.Sleep(3000);
+            await client.SendMessageAsync(new TLInputPeerUser() { UserId = user.Id }, "TEST");
+        }
+        #endregion
+
+
+
 
         private static string sLocalExcel = @"C:\Sedex Condominio\Excel\";
 
@@ -147,14 +321,14 @@ namespace MeuCondominio
                         var cCelularMorador = row.Cell(4); // Celular
                         object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
-                        var cEmailMorador = row.Cell(6); // email
-                        object valueEmail = cEmailMorador.Value;
+                        var cEmail1Morador = row.Cell(6); // Email1
+                        object valueEmail1 = cEmail1Morador.Value;
 
                         morador.Bloco = "01";
                         morador.Apartamento = valueApto.ToString();
-                        morador.NomeDestinatario = valueNome.ToString();
-                        morador.NumeroCelular = valueCelular.ToString();
-                        morador.email = valueEmail.ToString();
+                        morador.NomeMorador = valueNome.ToString();
+                        morador.Celular1 = valueCelular.ToString();
+                        morador.Email1 = valueEmail1.ToString();
 
                         SedexBus bus = new SedexBus();
                         if (bus.Adicionar(morador))
@@ -199,14 +373,14 @@ namespace MeuCondominio
                         var cCelularMorador = row.Cell(4); // Celular
                         object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
-                        var cEmailMorador = row.Cell(6); // email
-                        object valueEmail = cEmailMorador.Value;
+                        var cEmail1Morador = row.Cell(6); // Email1
+                        object valueEmail1 = cEmail1Morador.Value;
 
                         morador.Bloco = "02";
                         morador.Apartamento = valueApto.ToString();
-                        morador.NomeDestinatario = valueNome.ToString();
-                        morador.NumeroCelular = valueCelular.ToString();
-                        morador.email = valueEmail.ToString();
+                        morador.NomeMorador = valueNome.ToString();
+                        morador.Celular1 = valueCelular.ToString();
+                        morador.Email1 = valueEmail1.ToString();
 
                         SedexBus bus = new SedexBus();
                         if (!bus.Adicionar(morador))
@@ -250,14 +424,14 @@ namespace MeuCondominio
                         var cCelularMorador = row.Cell(4); // Celular
                         object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
-                        var cEmailMorador = row.Cell(6); // email
-                        object valueEmail = cEmailMorador.Value;
+                        var cEmail1Morador = row.Cell(6); // Email1
+                        object valueEmail1 = cEmail1Morador.Value;
 
                         morador.Bloco = "03";
                         morador.Apartamento = valueApto.ToString();
-                        morador.NomeDestinatario = valueNome.ToString();
-                        morador.NumeroCelular = valueCelular.ToString();
-                        morador.email = valueEmail.ToString();
+                        morador.NomeMorador = valueNome.ToString();
+                        morador.Celular1 = valueCelular.ToString();
+                        morador.Email1 = valueEmail1.ToString();
 
                         SedexBus bus = new SedexBus();
                         if (!bus.Adicionar(morador))
@@ -301,14 +475,14 @@ namespace MeuCondominio
                         var cCelularMorador = row.Cell(4); // Celular
                         object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
-                        var cEmailMorador = row.Cell(6); // email
-                        object valueEmail = cEmailMorador.Value;
+                        var cEmail1Morador = row.Cell(6); // Email1
+                        object valueEmail1 = cEmail1Morador.Value;
 
                         morador.Bloco = "04";
                         morador.Apartamento = valueApto.ToString();
-                        morador.NomeDestinatario = valueNome.ToString();
-                        morador.NumeroCelular = valueCelular.ToString();
-                        morador.email = valueEmail.ToString();
+                        morador.NomeMorador = valueNome.ToString();
+                        morador.Celular1 = valueCelular.ToString();
+                        morador.Email1 = valueEmail1.ToString();
 
                         SedexBus bus = new SedexBus();
                         if (!bus.Adicionar(morador))
@@ -352,14 +526,14 @@ namespace MeuCondominio
                         var cCelularMorador = row.Cell(4); // Celular
                         object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
-                        var cEmailMorador = row.Cell(6); // email
-                        object valueEmail = cEmailMorador.Value;
+                        var cEmail1Morador = row.Cell(6); // Email1
+                        object valueEmail1 = cEmail1Morador.Value;
 
                         morador.Bloco = "05";
                         morador.Apartamento = valueApto.ToString();
-                        morador.NomeDestinatario = valueNome.ToString();
-                        morador.NumeroCelular = valueCelular.ToString();
-                        morador.email = valueEmail.ToString();
+                        morador.NomeMorador = valueNome.ToString();
+                        morador.Celular1 = valueCelular.ToString();
+                        morador.Email1 = valueEmail1.ToString();
 
                         SedexBus bus = new SedexBus();
                         if (!bus.Adicionar(morador))
@@ -404,14 +578,14 @@ namespace MeuCondominio
                         var cCelularMorador = row.Cell(4); // Celular
                         object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
-                        var cEmailMorador = row.Cell(6); // email
-                        object valueEmail = cEmailMorador.Value;
+                        var cEmail1Morador = row.Cell(6); // Email1
+                        object valueEmail1 = cEmail1Morador.Value;
 
                         morador.Bloco = "06";
                         morador.Apartamento = valueApto.ToString();
-                        morador.NomeDestinatario = valueNome.ToString();
-                        morador.NumeroCelular = valueCelular.ToString();
-                        morador.email = valueEmail.ToString();
+                        morador.NomeMorador = valueNome.ToString();
+                        morador.Celular1 = valueCelular.ToString();
+                        morador.Email1 = valueEmail1.ToString();
 
                         SedexBus bus = new SedexBus();
                         if (!bus.Adicionar(morador))
@@ -456,14 +630,14 @@ namespace MeuCondominio
                         var cCelularMorador = row.Cell(4); // Celular
                         object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
-                        var cEmailMorador = row.Cell(6); // email
-                        object valueEmail = cEmailMorador.Value;
+                        var cEmail1Morador = row.Cell(6); // Email1
+                        object valueEmail1 = cEmail1Morador.Value;
 
                         morador.Bloco = "07";
                         morador.Apartamento = valueApto.ToString();
-                        morador.NomeDestinatario = valueNome.ToString();
-                        morador.NumeroCelular = valueCelular.ToString();
-                        morador.email = valueEmail.ToString();
+                        morador.NomeMorador = valueNome.ToString();
+                        morador.Celular1 = valueCelular.ToString();
+                        morador.Email1 = valueEmail1.ToString();
 
                         SedexBus bus = new SedexBus();
                         if (!bus.Adicionar(morador))
@@ -508,14 +682,14 @@ namespace MeuCondominio
                         var cCelularMorador = row.Cell(4); // Celular
                         object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
-                        var cEmailMorador = row.Cell(6); // email
-                        object valueEmail = cEmailMorador.Value;
+                        var cEmail1Morador = row.Cell(6); // Email1
+                        object valueEmail1 = cEmail1Morador.Value;
 
                         morador.Bloco = "08";
                         morador.Apartamento = valueApto.ToString();
-                        morador.NomeDestinatario = valueNome.ToString();
-                        morador.NumeroCelular = valueCelular.ToString();
-                        morador.email = valueEmail.ToString();
+                        morador.NomeMorador = valueNome.ToString();
+                        morador.Celular1 = valueCelular.ToString();
+                        morador.Email1 = valueEmail1.ToString();
 
                         SedexBus bus = new SedexBus();
                         if (!bus.Adicionar(morador))
@@ -560,14 +734,14 @@ namespace MeuCondominio
                         var cCelularMorador = row.Cell(4); // Celular
                         object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
-                        var cEmailMorador = row.Cell(6); // email
-                        object valueEmail = cEmailMorador.Value;
+                        var cEmail1Morador = row.Cell(6); // Email1
+                        object valueEmail1 = cEmail1Morador.Value;
 
                         morador.Bloco = "09";
                         morador.Apartamento = valueApto.ToString();
-                        morador.NomeDestinatario = valueNome.ToString();
-                        morador.NumeroCelular = valueCelular.ToString();
-                        morador.email = valueEmail.ToString();
+                        morador.NomeMorador = valueNome.ToString();
+                        morador.Celular1 = valueCelular.ToString();
+                        morador.Email1 = valueEmail1.ToString();
 
                         SedexBus bus = new SedexBus();
                         if (!bus.Adicionar(morador))
@@ -613,14 +787,14 @@ namespace MeuCondominio
                         var cCelularMorador = row.Cell(4); // Celular
                         object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
-                        var cEmailMorador = row.Cell(6); // email
-                        object valueEmail = cEmailMorador.Value;
+                        var cEmail1Morador = row.Cell(6); // Email1
+                        object valueEmail1 = cEmail1Morador.Value;
 
                         morador.Bloco = "10";
                         morador.Apartamento = valueApto.ToString();
-                        morador.NomeDestinatario = valueNome.ToString();
-                        morador.NumeroCelular = valueCelular.ToString();
-                        morador.email = valueEmail.ToString();
+                        morador.NomeMorador = valueNome.ToString();
+                        morador.Celular1 = valueCelular.ToString();
+                        morador.Email1 = valueEmail1.ToString();
 
                         SedexBus bus = new SedexBus();
                         if (!bus.Adicionar(morador))
@@ -666,14 +840,14 @@ namespace MeuCondominio
                         var cCelularMorador = row.Cell(4); // Celular
                         object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
-                        var cEmailMorador = row.Cell(6); // email
-                        object valueEmail = cEmailMorador.Value;
+                        var cEmail1Morador = row.Cell(6); // Email1
+                        object valueEmail1 = cEmail1Morador.Value;
 
                         morador.Bloco = "11";
                         morador.Apartamento = valueApto.ToString();
-                        morador.NomeDestinatario = valueNome.ToString();
-                        morador.NumeroCelular = valueCelular.ToString();
-                        morador.email = valueEmail.ToString();
+                        morador.NomeMorador = valueNome.ToString();
+                        morador.Celular1 = valueCelular.ToString();
+                        morador.Email1 = valueEmail1.ToString();
 
                         SedexBus bus = new SedexBus();
                         if (!bus.Adicionar(morador))
@@ -719,14 +893,14 @@ namespace MeuCondominio
                         var cCelularMorador = row.Cell(4); // Celular
                         object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
-                        var cEmailMorador = row.Cell(6); // email
-                        object valueEmail = cEmailMorador.Value;
+                        var cEmail1Morador = row.Cell(6); // Email1
+                        object valueEmail1 = cEmail1Morador.Value;
 
                         morador.Bloco = "12";
                         morador.Apartamento = valueApto.ToString();
-                        morador.NomeDestinatario = valueNome.ToString();
-                        morador.NumeroCelular = valueCelular.ToString();
-                        morador.email = valueEmail.ToString();
+                        morador.NomeMorador = valueNome.ToString();
+                        morador.Celular1 = valueCelular.ToString();
+                        morador.Email1 = valueEmail1.ToString();
 
                         SedexBus bus = new SedexBus();
                         if (!bus.Adicionar(morador))
@@ -771,14 +945,14 @@ namespace MeuCondominio
                         var cCelularMorador = row.Cell(4); // Celular
                         object valueCelular = SomenteNumeros(cCelularMorador.Value.ToString());
 
-                        var cEmailMorador = row.Cell(6); // email
-                        object valueEmail = cEmailMorador.Value;
+                        var cEmail1Morador = row.Cell(6); // Email1
+                        object valueEmail1 = cEmail1Morador.Value;
 
                         morador.Bloco = "13";
                         morador.Apartamento = valueApto.ToString();
-                        morador.NomeDestinatario = valueNome.ToString();
-                        morador.NumeroCelular = valueCelular.ToString();
-                        morador.email = valueEmail.ToString();
+                        morador.NomeMorador = valueNome.ToString();
+                        morador.Celular1 = valueCelular.ToString();
+                        morador.Email1 = valueEmail1.ToString();
 
                         SedexBus bus = new SedexBus();
                         if (!bus.Adicionar(morador))
@@ -813,7 +987,7 @@ namespace MeuCondominio
 
                 if (bloco.Equals(cBloco) && apto.Equals(cApto))
                 {
-                    listViewMoradoresApto.Items.Add(moradoresBlocos[i].NomeDestinatario);
+                    listViewMoradoresApto.Items.Add(moradoresBlocos[i].NomeMorador);
                 }
             }
         }
@@ -868,7 +1042,7 @@ namespace MeuCondominio
                 listViewMoradoresApto.Refresh();
                 txtNomeMoraador.Text = "";
                 txtCelular.Text = "";
-                txtEmail.Text = "";
+                txtEmail1.Text = "";
                 txtCodBarras.Text = "";
                 IdMoradorSedex = 0;
 
@@ -877,20 +1051,20 @@ namespace MeuCondominio
 
                 string sApto = cboApto.Text;
 
-                if ((int.Parse(sApto) > 0) && (int.Parse(sApto) <= 104))
+                if ((int.Parse(sApto) > 0) && ((int.Parse(sApto) > 10) && (int.Parse(sApto) <= 104)))
                 {
                     listViewMoradoresApto.Items.Clear();
 
                     string sBloco = cboBloco.Text;
 
                     SedexBus bus = new SedexBus();
-                    var MoradoreList = bus.Consultar(sBloco, sApto);
+                    var MoradoreList = bus.Moradores(sBloco, sApto);
 
                     foreach (Morador morador in MoradoreList)
                     {
-                        listViewMoradoresApto.Items.Add(morador.NomeDestinatario);
+                        listViewMoradoresApto.Items.Add(string.Concat(morador.NomeMorador, " ", morador.SobreNomeMorador));
                     }
-                    CarregaHistorico(cboBloco.Text, cboApto.Text);
+                    //CarregaHistorico(cboBloco.Text, cboApto.Text);
                 }
             }
             catch (Exception ex)
@@ -907,6 +1081,7 @@ namespace MeuCondominio
         private void listViewMoradoresApto_SelectedIndexChanged(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
+            listViewMoradoresApto.Refresh();
 
             if (listViewMoradoresApto.SelectedItems.Count < 1)
                 return;
@@ -922,37 +1097,43 @@ namespace MeuCondominio
                 apto = cboApto.Text.Substring(0, 1) == "0" ? cboApto.Text.Substring(1, 2) : cboApto.Text;
 
             SedexBus bus = new SedexBus();
-            List<Morador> queryMoradores = bus.Consultar(bloco, apto, nomeMorador);
-
-            foreach (Morador morador in queryMoradores)
+            Morador morador = bus.Consultar(bloco, apto, nomeMorador);
+            
+            if (morador.IdMorador > 0)
             {
-                txtNomeMoraador.Text = morador.NomeDestinatario;
-                txtCelular.Text = morador.NumeroCelular;
-                txtEmail.Text = morador.email;
+                txtNomeMoraador.Text = morador.NomeMorador;
+                txtCelular.Text = morador.Celular1;
+                txtEmail1.Text = morador.Email1;
                 IdMoradorSedex = morador.IdMorador;
-            }
-            if (IdMoradorSedex > 0)
+
                 btnExcluir.Enabled = true;
+                
+                CarregaHistorico(IdMoradorSedex);
+            }
             else
                 btnExcluir.Enabled = false;
 
+
+            
+
             Cursor.Current = Cursors.Default;
+            listViewMoradoresApto.Refresh();
         }
 
-        private void CarregaHistorico(string Bloco, string Apartamento)
+        private void CarregaHistorico(int IdMorador)
         {
             lstHistorico.Items.Clear();
             SedexBus sedexBus = new SedexBus();
-            List<Morador> moradores = sedexBus.GetHistoricoPorApartamento(Bloco, Apartamento);
+            List<SedexHistorico> historicoMorador = sedexBus.GetHistoricoPorMorador(IdMoradorSedex);
 
-            foreach (Morador morador in moradores)
+            for (int i = 0; i < historicoMorador.Count; i++)
             {
-                ListViewItem item = new ListViewItem(morador.Bloco);
-                item.SubItems.Add(morador.Apartamento);
-                item.SubItems.Add(morador.NomeDestinatario);
-                item.SubItems.Add(morador.NumeroCelular);
-                item.SubItems.Add(morador.DataEnvioMensagem);
-                item.SubItems.Add(morador.DataEntrega);
+                ListViewItem item = new ListViewItem(historicoMorador[i].NomeTorre);
+                item.SubItems.Add(historicoMorador[i].Apartamento);
+                item.SubItems.Add(historicoMorador[i].NomeMorador);
+                item.SubItems.Add(historicoMorador[i].NumeroEnviado);
+                item.SubItems.Add(historicoMorador[i].DataEnvio);
+
                 lstHistorico.Items.Add(item);
             }
         }
@@ -961,14 +1142,14 @@ namespace MeuCondominio
         {
             Morador morador = new Morador();
             morador.IdMorador = IdMoradorSedex;
-            morador.NomeDestinatario = txtNomeMoraador.Text;
+            morador.NomeMorador = txtNomeMoraador.Text;
             morador.Bloco = cboBloco.Text;
             morador.Apartamento = cboApto.Text;
             txtCelular.Mask = "";
-            morador.NumeroCelular = SomenteNumeros(txtCelular.Text);
+            morador.Celular1 = SomenteNumeros(txtCelular.Text);
             txtCelular.Mask = "(99) 00000-0000";
-            morador.email = txtEmail.Text;
-            morador.ReciboImpresso = "N";
+            morador.Email1 = txtEmail1.Text;
+            //morador.ReciboImpresso = "N";
 
             SedexBus bus = new SedexBus();
 
@@ -976,7 +1157,7 @@ namespace MeuCondominio
 
             if (IdMoradorSedex < 1)
             {
-                morador.DataCadastro = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString());
+                //morador.DataCadastro = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString());
                 sucesso = bus.Adicionar(morador);
             }
             else
@@ -1016,44 +1197,44 @@ namespace MeuCondominio
         }
         private void CarregarTelaPosConsulta(Morador morador)
         {
-            sDataCadastro = morador.DataCadastro;
-            sDataEntrega = morador.DataEntrega;
-            sDataEnvioMensagem = morador.DataEnvioMensagem;
+            //sDataCadastro = morador.DataCadastro;
+            //sDataEntrega = morador.DataEntrega;
+            //sDataEnvioMensagem = morador.DataEnvioMensagem;
             IdMoradorSedex = morador.IdMorador;
             cboBloco.Text = morador.Bloco;
             cboApto.Text = morador.Apartamento;
-            txtCelular.Text = morador.NumeroCelular;
-            txtCodBarras.Text = morador.CodigoBarraEtiqueta;
-            txtEmail.Text = morador.email;
-            txtEtiquetaLocal.Text = morador.CodigoBarraEtiquetaLocal;
-            txtNomeMoraador.Text = morador.NomeDestinatario;
-            txtPrateleira.Text = morador.LocalPrateleira.ToString();
-            txtQrcode.Text = morador.CodigoQRCode;
+            txtCelular.Text = morador.Celular1;
+            //txtCodBarras.Text = morador.CodigoBarraEtiqueta;
+            txtEmail1.Text = morador.Email1;
+            //txtEtiquetaLocal.Text = morador.CodigoBarraEtiquetaLocal;
+            //txtNomeMoraador.Text = morador.NomeMorador;
+            //txtPrateleira.Text = morador.LocalPrateleira.ToString();
+            //txtQrcode.Text = morador.CodigoQRCode;
 
-            if (!string.IsNullOrEmpty(morador.DataEntrega))
-            {
-                lblMsgMorador.Text = string.Concat("Entregue em: ", morador.DataEntrega, Environment.NewLine, "Enviado por: ");
-                if (morador.EnviadoPorSMS == "S")
-                    lblMsgMorador.Text += " -SMS- ";
-                if (morador.EnviadoPorZAP == "S")
-                    lblMsgMorador.Text += " -WhatsApp- ";
-                if (morador.EnviadoPorTELEGRAM == "S")
-                    lblMsgMorador.Text += " -Telegram- ";
-                if (morador.EnviadoPorEMAIL == "S")
-                    lblMsgMorador.Text += " -E-Mail- ";
-            }
-            if (!string.IsNullOrEmpty(morador.DataEnvioMensagem))
-            {
-                lblMsgMorador.Text = string.Concat("Enviado em: ", morador.DataEnvioMensagem, Environment.NewLine, "Enviado por: ");
-                if (morador.EnviadoPorSMS == "S")
-                    lblMsgMorador.Text += " -SMS- ";
-                if (morador.EnviadoPorZAP == "S")
-                    lblMsgMorador.Text += " -WhatsApp- ";
-                if (morador.EnviadoPorTELEGRAM == "S")
-                    lblMsgMorador.Text += " -Telegram- ";
-                if (morador.EnviadoPorEMAIL == "S")
-                    lblMsgMorador.Text += " -E-Mail- ";
-            }
+            //if (!string.IsNullOrEmpty(morador.DataEntrega))
+            //{
+            //    lblMsgMorador.Text = string.Concat("Entregue em: ", morador.DataEntrega, Environment.NewLine, "Enviado por: ");
+            //    if (morador.EnviadoPorSMS == "S")
+            //        lblMsgMorador.Text += " -SMS- ";
+            //    if (morador.EnviadoPorZAP == "S")
+            //        lblMsgMorador.Text += " -WhatsApp- ";
+            //    if (morador.EnviadoPorTELEGRAM == "S")
+            //        lblMsgMorador.Text += " -Telegram- ";
+            //    if (morador.EnviadoPorEmail1 == "S")
+            //        lblMsgMorador.Text += " -E-Mail- ";
+            //}
+            //if (!string.IsNullOrEmpty(morador.DataEnvioMensagem))
+            //{
+            //    lblMsgMorador.Text = string.Concat("Enviado em: ", morador.DataEnvioMensagem, Environment.NewLine, "Enviado por: ");
+            //    if (morador.EnviadoPorSMS == "S")
+            //        lblMsgMorador.Text += " -SMS- ";
+            //    if (morador.EnviadoPorZAP == "S")
+            //        lblMsgMorador.Text += " -WhatsApp- ";
+            //    if (morador.EnviadoPorTELEGRAM == "S")
+            //        lblMsgMorador.Text += " -Telegram- ";
+            //    if (morador.EnviadoPorEmail1 == "S")
+            //        lblMsgMorador.Text += " -E-Mail- ";
+            //}
         }
         private void LimparTela()
         {
@@ -1064,7 +1245,7 @@ namespace MeuCondominio
             listViewMoradoresApto.Items.Clear();
             txtCelular.Text = string.Empty;
             txtCodBarras.Text = string.Empty;
-            txtEmail.Text = string.Empty;
+            txtEmail1.Text = string.Empty;
             txtEtiquetaLocal.Text = string.Empty;
             txtNomeMoraador.Text = string.Empty;
             txtPrateleira.Text = string.Empty;
@@ -1092,19 +1273,19 @@ namespace MeuCondominio
         private void Salvar()
         {
             Morador morador = new Morador();
-            morador.NomeDestinatario = txtNomeMoraador.Text;
+            morador.NomeMorador = txtNomeMoraador.Text;
             morador.Bloco = cboBloco.Text;
             morador.Apartamento = cboApto.Text;
             txtCelular.Mask = "";
-            morador.NumeroCelular = SomenteNumeros(txtCelular.Text);
+            morador.Celular1 = SomenteNumeros(txtCelular.Text);
             txtCelular.Mask = "(99) 00000-0000";
-            morador.email = txtEmail.Text;
-            morador.CodigoBarraEtiqueta = txtCodBarras.Text;
-            morador.CodigoBarraEtiquetaLocal = txtEtiquetaLocal.Text;
+            morador.Email1 = txtEmail1.Text;
+            //morador.CodigoBarraEtiqueta = txtCodBarras.Text;
+            //morador.CodigoBarraEtiquetaLocal = txtEtiquetaLocal.Text;
             int iPrateleira = string.IsNullOrEmpty(txtPrateleira.Text) ? 0 : int.Parse(txtPrateleira.Text);
-            morador.LocalPrateleira = iPrateleira;
-            morador.DataCadastro = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString());
-            morador.ReciboImpresso = "N";
+            //morador.LocalPrateleira = iPrateleira;
+            //morador.DataCadastro = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString());
+            //morador.ReciboImpresso = "N";
 
             SedexBus bus = new SedexBus();
 
@@ -1140,22 +1321,22 @@ namespace MeuCondominio
         {
             Morador morador = new Morador();
             morador.IdMorador = IdMoradorSedex;
-            morador.NomeDestinatario = txtNomeMoraador.Text;
+            morador.NomeMorador = txtNomeMoraador.Text;
             morador.Bloco = cboBloco.Text;
             morador.Apartamento = cboApto.Text;
-            morador.NumeroCelular = SomenteNumeros(txtCelular.Text);
-            morador.email = txtEmail.Text;
-            morador.CodigoBarraEtiqueta = txtCodBarras.Text;
-            morador.CodigoBarraEtiquetaLocal = txtEtiquetaLocal.Text;
+            morador.Celular1 = SomenteNumeros(txtCelular.Text);
+            morador.Email1 = txtEmail1.Text;
+            //morador.CodigoBarraEtiqueta = txtCodBarras.Text;
+            //morador.CodigoBarraEtiquetaLocal = txtEtiquetaLocal.Text;
             int iPrateleira = string.IsNullOrEmpty(txtPrateleira.Text) ? 0 : int.Parse(txtPrateleira.Text);
-            morador.LocalPrateleira = iPrateleira;
-            morador.DataCadastro = sDataCadastro;
-            morador.DataEntrega = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString());
-            morador.DataEnvioMensagem = sDataEnvioMensagem;
-            morador.EnviadoPorSMS = ckbSms.Checked == true ? "S" : "N";
-            morador.EnviadoPorZAP = ckbZap.Checked == true ? "S" : "N";
-            morador.EnviadoPorTELEGRAM = "N";
-            morador.EnviadoPorEMAIL = ckbMail.Checked == true ? "S" : "N";
+            //morador.LocalPrateleira = iPrateleira;
+            //morador.DataCadastro = sDataCadastro;
+            //morador.DataEntrega = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString());
+            //morador.DataEnvioMensagem = sDataEnvioMensagem;
+            //morador.EnviadoPorSMS = ckbSms.Checked == true ? "S" : "N";
+            //morador.EnviadoPorZAP = ckbZap.Checked == true ? "S" : "N";
+            //morador.EnviadoPorTELEGRAM = "N";
+            //morador.EnviadoPorEmail1 = ckbMail.Checked == true ? "S" : "N";
 
             SedexBus bus = new SedexBus();
             if (bus.Atualizar(morador))
@@ -1246,22 +1427,123 @@ namespace MeuCondominio
             return s.ToString();
         }
 
-        private void LerXml()
+        private void LerXml(string sParametro)
+        {
+            var caminho = System.Environment.CurrentDirectory;
+            XDocument doc = XDocument.Load((CaminhoDadosXML(caminho) + @"\Configuracao.xml"));
+
+            if (sParametro == "ConfigTelegram")
+            { 
+                try
+                {
+                    DataSet dsResultado = new DataSet();
+                    dsResultado.ReadXml(CaminhoDadosXML(caminho) + @"\Configuracao.xml");
+                    if (dsResultado.Tables.Count != 0)
+                    {
+                        if (dsResultado.Tables[1].Rows.Count > 0)
+                        {
+                            code = dsResultado.Tables[1].Rows[0].ItemArray[0].ToString();
+                            hash = dsResultado.Tables[1].Rows[0].ItemArray[1].ToString();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+            #region
+
+            if (sParametro == "valorMensagem")
+            {
+                var prods = from p in doc.Descendants("ValorMensagemSMS")
+                            select new
+                            {
+                                ValorMensagem = p.Element("valorMensagem").Value
+                            };
+                foreach (var p in prods)
+                {
+                    sMensagemParaSms = String.Concat("Cond. Resid. Aricanduva!", Environment.NewLine, "Ola {Morador}", Environment.NewLine, p.ValorMensagem, Environment.NewLine, "Att: Administracao!");
+                }
+            }
+
+
+
+            //if (sParametro == "ConfigTelegram")
+            //{
+            //    var pd = from p in doc.Descendants("ConfigTelegram")
+            //             select new
+            //             {
+            //                 vHash = p.Element("codigo").Value,
+            //                 vcode = p.Element("chave").Value
+            //             };
+            //    foreach (var p in pd)
+            //    {
+            //        hash = p.vHash;
+            //        code = p.vcode;
+            //    }
+            //}
+
+            #endregion
+
+        }
+
+        private void GravarXml()
         {
             var caminho = System.Environment.CurrentDirectory;
 
-
-            XDocument doc = XDocument.Load((CaminhoDadosXML(caminho) + @"\Configuracao.xml"));
-            var prods = from p in doc.Descendants("ValorMensagemSMS")
-                        select new
-                        {
-                            ValorMensagem = p.Element("valorMensagem").Value
-                        };
-            foreach (var p in prods)
+            try
             {
-                sMensagemParaSms = String.Concat("Cond. Resid. Aricanduva!", Environment.NewLine, "Ola {Morador}", Environment.NewLine, p.ValorMensagem, Environment.NewLine, "Att: Administracao!");
+                using (DataSet dsResultado = new DataSet())
+                {
+                    dsResultado.ReadXml(CaminhoDadosXML(caminho) + @"\Configuracao.xml");
+                    if (dsResultado.Tables.Count == 0)
+                    {
+                        //cria uma instância do Produto e atribui valores às propriedades
+                        XmlTextWriter writer = new XmlTextWriter(CaminhoDadosXML(caminho) + @"\Configuracao.xml", System.Text.Encoding.UTF8);
+                        
+                        writer.WriteStartDocument(true);
+                        writer.Formatting = Formatting.Indented;
+                        writer.Indentation = 2;
+                        
+                        writer.WriteStartElement("Config");
+                        writer.WriteStartElement("ConfigTelegram");
+                        writer.WriteStartElement("codigo");
+                        writer.WriteString(code);
+                        writer.WriteEndElement();
+                        
+                        writer.WriteStartElement("hash");
+                        writer.WriteString(hash);
+                        writer.WriteEndElement();
+                        
+                        writer.Close();
+                        dsResultado.ReadXml(CaminhoDadosXML(caminho) + @"\Configuracao.xml");
+                    }
+                    //else
+                    //{
+                    //    //inclui os dados no DataSet
+                    //    dsResultado.Tables[0].Rows.Add(dsResultado.Tables[0].NewRow());
+                    //    dsResultado.Tables[0].Rows[dsResultado.Tables[0].Rows.Count - 1]["Codigo"] = txtCodigoProduto.Text;
+                    //    dsResultado.Tables[0].Rows[dsResultado.Tables[0].Rows.Count - 1]["Nome"] = txtNomeProduto.Text.ToUpper();
+                    //    dsResultado.Tables[0].Rows[dsResultado.Tables[0].Rows.Count - 1]["Preco"] = txtPreco.Text;
+                    //    dsResultado.Tables[0].Rows[dsResultado.Tables[0].Rows.Count - 1]["Estoque"] = txtEstoque.Text;
+                    //    dsResultado.Tables[0].Rows[dsResultado.Tables[0].Rows.Count - 1]["Descricao"] = txtDescricao.Text;
+                    //    dsResultado.AcceptChanges();
+                    //    //--  Escreve para o arquivo XML final usando o método Write
+                    //    dsResultado.WriteXml(CaminhoDadosXML(caminho) + @"Dados\Produtos.xml", XmlWriteMode.IgnoreSchema);
+                    //}
+                    MessageBox.Show("Dados salvos com sucesso.");
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+
         }
+
+
         public static string CaminhoDadosXML(string caminho)
         {
             if (caminho.IndexOf("\\bin\\Debug") != 0)
@@ -1283,24 +1565,22 @@ namespace MeuCondominio
             SedexBus sedexBus = new SedexBus();
             List<Morador> listSms = sedexBus.RetornaListaParaEnvioSms();
 
-            LerXml();
+            LerXml("valorMensagem");
 
             foreach ( Morador morador in listSms)
             {
-                morador.DataEnvioMensagem = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString());
-                morador.EnviadoPorSMS = "S";
+                //morador.DataEnvioMensagem = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString());
+                //morador.EnviadoPorSMS = "S";
 
 
-                string[] firstName = morador.NomeDestinatario.Split(' ');
-
-                var mensagemMorador = sMensagemParaSms.Replace("{Morador}", firstName[0]);
+                var mensagemMorador = sMensagemParaSms.Replace("{Morador}", morador.NomeMorador);
 
                 if (EnvioMensagem.EnvioSmsDev(morador, mensagemMorador, pChaveDesenvi))
                 {
                     if (sedexBus.Atualizar(morador))
                     {
                         lblMsgMorador.Visible = true;
-                        lblMsgMorador.Text = $"enviado para {morador.NomeDestinatario} com sucesso!";
+                        lblMsgMorador.Text = $"enviado para {morador.NomeMorador} com sucesso!";
                         lblMsgMorador.Refresh();
                     }
                 }
@@ -1358,7 +1638,7 @@ namespace MeuCondominio
             }
             else
             {
-                result = MessageBox.Show($"Deseja realmente excluir {morador.NomeDestinatario} ?", "ATENÇÃO!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                result = MessageBox.Show($"Deseja realmente excluir {morador.NomeMorador} ?", "ATENÇÃO!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             }
 
             if (result == DialogResult.No)
@@ -1394,8 +1674,153 @@ namespace MeuCondominio
 
         private void testeTelegramToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EnvioMensagem envio = new EnvioMensagem();
-            envio.TesteTelegram();
+            string sTelefone = SomenteNumeros(txtCelular.Text);
+
+            this.TesteTelegram(sTelefone, txtCodBarras.Text, txtCodBarras.Text);
         }
+
+
+        #region TELEGRAN
+        public async void TesteTelegram(string sTelefone, string sCodigoBarras, string sMensagem)
+        {
+
+            var client = NewClient();
+
+            //client.SendMessageAsync();
+
+            //TelegramClient client;
+            var store = new FileSessionStore();
+
+            /// Edinei
+            ///client = new TelegramClient(8106364, "d1934a983b83df5e690abf9a52fe2d0a", store);
+
+            /// Adiministração
+            client = new TelegramClient(8311909, "b96f58813637f9f406579636d2db8519", store);
+
+
+
+            //string hash = "";
+            //string code = "";
+            LerXml("ConfigTelegram");
+
+            await client.ConnectAsync();
+
+            if (!client.IsUserAuthorized())
+            {
+                hash = await client.SendCodeRequestAsync("+5511947971165");
+
+                if (InputBox("Chave para Telegram", "Informe o código que recebeu no telegram", ref code) == DialogResult.OK)
+                {
+                    GravarXml();
+                }
+            }
+
+            // Anna 11963198516
+            try
+            {
+                //For authentication you need to run following code
+                //var hash = await client.SendCodeRequestAsync("+5511969410446");
+
+                //string code = "";
+                //if (InputBox("Chave para Telegram", "Informe o código que recebeu no telegram", ref code) == DialogResult.OK)
+                //{
+                //    //                if (string.IsNullOrEmpty(code))
+                //    //                    lblMsgMorador.Text = "";
+                //}
+                //code = codeHash; // "61968"; // you can change code in debugger
+
+                var user = await client.MakeAuthAsync("+5511947971165", hash, code);
+
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Equals("AUTH_RESTART"))
+                    this.TesteTelegram(sTelefone, txtCodBarras.Text, txtCodBarras.Text);
+            }
+
+
+            //You can call any method on authenticated user. For example, let's send message to a friend by his phone number:
+            //get available contacts
+            var result = await client.GetContactsAsync();
+
+
+            string foneEnvio = SomenteNumeros(txtCelular.Text);
+            foneEnvio = string.Concat("55", foneEnvio);
+
+
+            string[] contatos = new string[] { "5511969410446", "5511976845889", "5511963198516" };
+
+
+
+
+            for (int i = 0; i < contatos.Length; i++)
+            {
+
+                //find recipient in contacts
+                var user2 = result.Users
+                    .Where(x => x.GetType() == typeof(TLUser))
+                    .Cast<TLUser>()
+                    .FirstOrDefault(x => x.Phone == contatos[i]); //foneEnvio //x.FirstName == "Anna Clara"); //+5511963198516
+
+
+                sMensagem = @"Cond. Resid. Aricanduva!" + Environment.NewLine;
+                sMensagem += "Olá " + user2.FirstName + Environment.NewLine;
+                sMensagem += "Seu Sedex Código: [" + sCodigoBarras + "] chegou e está disponível para retirada na Adminstração de segunda a sexta das 9 as 18 horas e sábado das 9 as 12 horas! " + Environment.NewLine;
+                sMensagem += "Att: Administracao!";
+
+                //send message
+                var s = await client.SendMessageAsync(new TLInputPeerUser() { UserId = user2.Id }, sMensagem);
+
+            }
+
+
+
+        }
+        #endregion
+
+        #region InputBox
+        public static DialogResult InputBox(string title, string promptText, ref string value)
+        {
+            Form form = new Form();
+            Label label = new Label();
+            TextBox textBox = new TextBox();
+            Button buttonOk = new Button();
+            Button buttonCancel = new Button();
+
+            form.Text = title;
+            label.Text = promptText;
+            textBox.Text = value;
+
+            buttonOk.Text = "OK";
+            buttonCancel.Text = "Cancel";
+            buttonOk.DialogResult = DialogResult.OK;
+            buttonCancel.DialogResult = DialogResult.Cancel;
+
+            label.SetBounds(9, 20, 372, 13);
+            textBox.SetBounds(12, 36, 372, 20);
+            buttonOk.SetBounds(228, 72, 75, 23);
+            buttonCancel.SetBounds(309, 72, 75, 23);
+
+            label.AutoSize = true;
+            textBox.Anchor = textBox.Anchor | AnchorStyles.Right;
+            buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+            form.ClientSize = new Size(396, 107);
+            form.Controls.AddRange(new Control[] { label, textBox, buttonOk, buttonCancel });
+            form.ClientSize = new Size(Math.Max(300, label.Right + 10), form.ClientSize.Height);
+            form.FormBorderStyle = FormBorderStyle.FixedDialog;
+            form.StartPosition = FormStartPosition.CenterScreen;
+            form.MinimizeBox = false;
+            form.MaximizeBox = false;
+            form.AcceptButton = buttonOk;
+            form.CancelButton = buttonCancel;
+
+            DialogResult dialogResult = form.ShowDialog();
+            value = textBox.Text;
+            return dialogResult;
+        }
+        #endregion
+
     }
 }
