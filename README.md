@@ -1,2 +1,2 @@
-# meucondominio
-Gestão de condominio
+# MeuCondomínio
+Gestão de envio de sedex para moradores
