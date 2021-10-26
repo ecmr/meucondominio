@@ -83,7 +83,7 @@ namespace MeuCondominio
             this.NomeMorador = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.EnviadoPara = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.DataSms = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.DataEntrega = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.CodigoBarrasProduto = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.rdbDesenvolvedor = new System.Windows.Forms.RadioButton();
             this.rdbAdminstracao = new System.Windows.Forms.RadioButton();
@@ -545,7 +545,7 @@ namespace MeuCondominio
             this.NomeMorador,
             this.EnviadoPara,
             this.DataSms,
-            this.DataEntrega});
+            this.CodigoBarrasProduto});
             this.lstHistorico.HideSelection = false;
             this.lstHistorico.Location = new System.Drawing.Point(6, 19);
             this.lstHistorico.MultiSelect = false;
@@ -578,10 +578,10 @@ namespace MeuCondominio
             this.DataSms.Text = "Data Envio SMS";
             this.DataSms.Width = 120;
             // 
-            // DataEntrega
+            // CodigoBarrasProduto
             // 
-            this.DataEntrega.Text = "Data Enregue";
-            this.DataEntrega.Width = 120;
+            this.CodigoBarrasProduto.Text = "Cód. Barras Produto";
+            this.CodigoBarrasProduto.Width = 120;
             // 
             // groupBox4
             // 
@@ -620,7 +620,7 @@ namespace MeuCondominio
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(829, 457);
+            this.ClientSize = new System.Drawing.Size(829, 632);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.btnExcluir);
@@ -711,7 +711,7 @@ namespace MeuCondominio
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.ListView lstHistorico;
         private System.Windows.Forms.ColumnHeader DataSms;
-        private System.Windows.Forms.ColumnHeader DataEntrega;
+        private System.Windows.Forms.ColumnHeader CodigoBarrasProduto;
         private System.Windows.Forms.ColumnHeader Bloco;
         private System.Windows.Forms.ColumnHeader Apartamento;
         private System.Windows.Forms.ColumnHeader NomeMorador;

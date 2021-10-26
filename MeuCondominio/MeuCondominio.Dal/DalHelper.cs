@@ -158,7 +158,7 @@ namespace MeuCondominio.Model
         {
             List<SedexHistorico> HistoricoSedex;
 
-            var query = @"SELECT H.NomeTorre as Bloco, H.Apartamento, NomeMorador || SobreNome as NomeMorador, H.NumeroEnviado, H.EmailEnviado, H.DataEnvio 
+            var query = @"SELECT H.NomeTorre as Bloco, H.Apartamento, NomeMorador || SobreNome as NomeMorador, H.NumeroEnviado, H.EmailEnviado, H.DataEnvio, H.CodigoBarraEtiqueta 
                 FROM 
                     SedexHistorico H
                 WHERE H.IdMorador = @IdMorador;";
@@ -222,6 +222,36 @@ namespace MeuCondominio.Model
             return moradores;
         }
 
+        private static List<Morador> PreencheMoradorParaEnvioMensagem(DataTable data)
+        {
+            List<Morador> moradores = new List<Morador>();
+
+            foreach (DataRow row in data.Rows)
+            {
+                Morador morador = new Morador
+                {
+                    IdApartamento = int.Parse(row.ItemArray[2].ToString()),
+                    Bloco = row.ItemArray[3].ToString(),
+                    Apartamento = row.ItemArray[4].ToString(),
+                    IdMorador = int.Parse(row.ItemArray[1].ToString()),
+                    NomeMorador = row.ItemArray[5].ToString(),
+                    SobreNomeMorador = row.ItemArray[6].ToString(),
+                    Celular1 = row.ItemArray[8].ToString(),
+                    Email1 = row.ItemArray[7].ToString()
+                };
+
+                moradores.Add(morador);
+            }
+            return moradores;
+        }
+
+
+
+
+
+
+
+
         private static List<SedexHistorico> PreencheHistoricoMorador(SQLiteDataReader reader)
         {
             List<SedexHistorico> historico = new List<SedexHistorico>();
@@ -235,7 +265,8 @@ namespace MeuCondominio.Model
                     NomeMorador = reader.IsDBNull(2) ? "" : reader.GetString(2),
                     NumeroEnviado = reader.IsDBNull(3) ? "" : reader.GetString(3),
                     Email1Enviado = reader.IsDBNull(4) ? "" : reader.GetString(4),
-                    DataEnvio = reader.IsDBNull(5) ? "" : reader.GetString(5)
+                    DataEnvio = reader.IsDBNull(5) ? "" : reader.GetString(5),
+                    CodigoBarraEtiqueta = reader.IsDBNull(6) ? "" : reader.GetString(6)
                 };
 
                 historico.Add(historicoMorador);
@@ -245,7 +276,32 @@ namespace MeuCondominio.Model
         #endregion
 
 
+        public static Apartamento GetApartamento(string pBloco, string pApartametno)
+        {
+            SQLiteDataAdapter da = null;
+            DataTable dt = new DataTable();
 
+            try
+            {
+                using (var cmd = DbConnection().CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT IdApartamento, NomeTorre, Apartamento FROM Apartamento AP WHERE NOMETORRE = @BLOCO AND Apartamento = @APARTAMENTO";
+
+                    cmd.Parameters.AddWithValue("@BLOCO", pBloco);
+                    cmd.Parameters.AddWithValue("@APARTAMENTO", pApartametno);
+
+                    da = new SQLiteDataAdapter(cmd.CommandText, DbConnection());
+                    da.Fill(dt);
+
+                    var apartamento = PreencheApartamentoDt(dt)[0];
+                    return apartamento;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
 
 
@@ -277,7 +333,7 @@ namespace MeuCondominio.Model
         {
             try
             {
-                var query = @"SELECT * FROM Sedex Where CodigoBarraEtiqueta=@CodigoBarraEtiqueta AND ReciboImpresso = 'N'";
+                var query = @"SELECT * FROM Sedex Where CodigoBarraEtiqueta=@CodigoBarraEtiqueta AND Enviadosms = 'N'";
 
                 using (var cmd = DbConnection().CreateCommand())
                 {
@@ -346,6 +402,7 @@ namespace MeuCondominio.Model
 
         public static List<Morador> GetClientes(Morador pmorador)
         {
+            //TODO: VER ERRO AQUI
             try
             {
                 var query = @"SELECT IDMORADOR, BLOCO, APARTAMENTO, NomeMorador, Email1, Celular1, CODIGOBARRAETIQUETA, CODIGOQRCODE, CODIGOBARRAETIQUETALOCAL, 
@@ -397,34 +454,29 @@ namespace MeuCondominio.Model
 
         public static List<Morador> GetSedexParaEnvioSms()
         {
+            SQLiteDataAdapter da = null;
+            DataTable dt = new DataTable();
+
             try
             {
-                List<Morador> listaMoradores;
-                var query = @"SELECT IdMorador, Bloco, Apartamento, NomeMorador, Email1, Celular1, 
-                    CodigoBarraEtiqueta, CodigoBarraEtiquetaLocal, CodigoQRCode, 
-                    LocalPrateleira, DataCadastro, DataEnvioMensagem, DataEntrega, 
-                    EnviadoPorEmail1, EnviadoPorSMS, EnviadoPorTELEGRAM, EnviadoPorZAP, ReciboImpresso 
-                    FROM SEDEX 
-                    WHERE
-                    CODIGOBARRAETIQUETA IS NOT NULL
-                    AND ENVIADOPORSMS IS NULL
-                    AND DATAENVIOMENSAGEM IS NULL";
+                var query = @"SELECT IdSedex, Sedex.IdMorador, Sedex.IdApartamento, ap.NomeTorre as Bloco, ap.Apartamento, Morador.Nome, Morador.Sobrenome, Morador.Email1, Morador.Celular1, CodigoBarraEtiqueta, CodigoQRCode, CodigoBarraEtiquetaLocal, LocalPrateleira, DataCadastro,
+                                   DataEntrega, DataEnvioMensagem, Enviadosms, EnviadoZap, EnviadoTelegram, EnviadoEmail, ReciboImpresso, EncomendaAlimento, EncomendaMedicamento
+                              FROM 
+                              Sedex 
+                              inner join Morador on Sedex.IdMorador = Morador.IdMorador
+                              inner join Apartamento ap on Morador.IdApartamento = ap.IdApartamento 
+                            WHERE CODIGOBARRAETIQUETA IS NOT NULL
+                            AND Enviadosms IS NULL
+                            AND DATAENVIOMENSAGEM IS NULL";
 
                 using (var cmd = DbConnection().CreateCommand())
                 {
                     cmd.CommandText = query;
-                    cmd.Connection = DbConnection();
-
-                    SQLiteDataReader reader = cmd.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        listaMoradores = PreencheMoradorDtReader(reader);
-                        if (listaMoradores.Count > 0)
-                            return listaMoradores;
-                    }
-                    return new List<Morador>();
+                    da = new SQLiteDataAdapter(cmd.CommandText, DbConnection());
+                    da.Fill(dt);
+                    return PreencheMoradorParaEnvioMensagem(dt);
                 }
+
             }
             catch (Exception ex)
             {
@@ -467,6 +519,11 @@ namespace MeuCondominio.Model
             }
         }
 
+        /// <summary>
+        /// Cria morador com dados basicos, como por exemplo: quando carregado dados de uma planilha
+        /// </summary>
+        /// <param name="morador"></param>
+        /// <returns></returns>
         public static bool Add(Morador morador)
         {
             bool sucesso = false;
@@ -474,26 +531,58 @@ namespace MeuCondominio.Model
             {
                 using (var cmd = DbConnection().CreateCommand())
                 {
-                    var query = @"INSERT INTO Sedex(IdMorador, Bloco , Apartamento , NomeMorador , Email1 , Celular1 , CodigoBarraEtiqueta , CodigoBarraEtiquetaLocal , LocalPrateleira, DataCadastro, DataEntrega, DataEnvioMensagem, EnviadoPorSMS, EnviadoPorZAP, EnviadoPorTELEGRAM, EnviadoPorEmail1, ReciboImpresso)
-                                    values ((SELECT MAX(IDMORADOR)+1 FROM SEDEX), @Bloco , @Apartamento , @NomeMorador , @Email1 , @Celular1 , @CodigoBarraEtiqueta , @CodigoBarraEtiquetaLocal , @LocalPrateleira, @DataCadastro, @DataEntrega, @DataEnvioMensagem, @EnviadoPorSMS, @EnviadoPorZAP, @EnviadoPorTELEGRAM, @EnviadoPorEmail1, @ReciboImpresso)";
+                    var query = @"INSERT INTO Morador (Nome, Sobrenome, TelefoneFixo, Celular1, Celular2, Email1, Email2, IdApartamento)
+                                               VALUES (@Nome, @Sobrenome, @TelefoneFixo, @Celular1, @Celular2, @Email1, @Email2, @IdApartamento)";
 
                     cmd.CommandText = query;
-                    cmd.Parameters.AddWithValue("@Bloco", morador.Bloco);
-                    cmd.Parameters.AddWithValue("@Apartamento", morador.Apartamento);
-                    cmd.Parameters.AddWithValue("@NomeMorador", morador.NomeMorador);
-                    cmd.Parameters.AddWithValue("@Email1", morador.Email1);
+                    cmd.Parameters.AddWithValue("@Nome", morador.NomeMorador);
+                    cmd.Parameters.AddWithValue("@Sobrenome", morador.SobreNomeMorador);
+                    cmd.Parameters.AddWithValue("@TelefoneFixo", morador.TelefoneFixo);
                     cmd.Parameters.AddWithValue("@Celular1", morador.Celular1);
-                    //cmd.Parameters.AddWithValue("@CodigoBarraEtiqueta", morador.CodigoBarraEtiqueta);
-                    //cmd.Parameters.AddWithValue("@CodigoBarraEtiquetaLocal", morador.CodigoBarraEtiquetaLocal);
-                    //cmd.Parameters.AddWithValue("@LocalPrateleira", morador.LocalPrateleira);
-                    //cmd.Parameters.AddWithValue("@DataCadastro", morador.DataCadastro);
-                    //cmd.Parameters.AddWithValue("@DataEntrega", morador.DataEntrega);
-                    //cmd.Parameters.AddWithValue("@DataEnvioMensagem", morador.DataEnvioMensagem);
-                    //cmd.Parameters.AddWithValue("@EnviadoPorSMS", morador.EnviadoPorSMS);
-                    //cmd.Parameters.AddWithValue("@EnviadoPorZAP", morador.EnviadoPorZAP);
-                    //cmd.Parameters.AddWithValue("@EnviadoPorTELEGRAM", morador.EnviadoPorTELEGRAM);
-                    //cmd.Parameters.AddWithValue("@EnviadoPorEmail1", morador.EnviadoPorEmail1);
-                    //cmd.Parameters.AddWithValue("@ReciboImpresso", morador.ReciboImpresso);
+                    cmd.Parameters.AddWithValue("@Celular2", morador.Celular2);
+                    cmd.Parameters.AddWithValue("@Email1", morador.Email1);
+                    cmd.Parameters.AddWithValue("@Email2", morador.Email2);
+                    cmd.Parameters.AddWithValue("@IdApartamento", morador.IdApartamento);
+
+                    cmd.ExecuteNonQuery();
+
+                    sucesso = true;
+                }
+
+                return sucesso;
+            }
+            catch (Exception ex)
+            {
+                MeuCondominio.Model.HelperModel.GravaLog(string.Concat("Erro métodp Add: ", ex.Message));
+                return sucesso;
+            }
+        }
+        public static bool Add(Morador morador, Sedex sedex)
+        {
+
+            //TODO: ARRUMAR ESTE INSERT
+            bool sucesso = false;
+            try
+            {
+                using (var cmd = DbConnection().CreateCommand())
+                {
+                    var query = @"INSERT INTO Sedex(IdMorador, IdApartamento, CodigoBarraEtiqueta, CodigoQRCode, CodigoBarraEtiquetaLocal, LocalPrateleira, DataCadastro, DataEntrega, DataEnvioMensagem, Enviadosms, EnviadoZap, EnviadoTelegram, EnviadoEmail, ReciboImpresso, EncomendaAlimento, EncomendaMedicamento)
+                        values (@IdMorador, @IdApartamento, @CodigoBarraEtiqueta, @CodigoQRCode, @CodigoBarraEtiquetaLocal, @LocalPrateleira, @DataCadastro, @DataEntrega, @DataEnvioMensagem, @Enviadosms, @EnviadoZap, @EnviadoTelegram, @EnviadoEmail, @ReciboImpresso, @EncomendaAlimento, @EncomendaMedicamento)";
+
+                    cmd.CommandText = query;
+                    cmd.Parameters.AddWithValue("@IdMorador", morador.IdMorador);
+                    cmd.Parameters.AddWithValue("@IdApartamento", morador.IdApartamento);
+                    cmd.Parameters.AddWithValue("@CodigoBarraEtiqueta", sedex.CodigoBarraEtiqueta);
+                    cmd.Parameters.AddWithValue("@CodigoBarraEtiquetaLocal", sedex.CodigoBarraEtiquetaLocal);
+                    cmd.Parameters.AddWithValue("@LocalPrateleira", sedex.LocalPrateleira);
+                    cmd.Parameters.AddWithValue("@DataCadastro", sedex.DataCadastro);
+                    cmd.Parameters.AddWithValue("@DataEntrega", sedex.DataEntrega);
+                    cmd.Parameters.AddWithValue("@DataEnvioMensagem", sedex.DataEnvioMensagem);
+                    cmd.Parameters.AddWithValue("@EnviadoPorSms", sedex.EnviadoPorSms);
+                    cmd.Parameters.AddWithValue("@EnviadoPorWhatsApp", sedex.EnviadoPorWhatsApp);
+                    cmd.Parameters.AddWithValue("@EnviadoPorTelegram", sedex.EnviadoPorTelegram);
+                    cmd.Parameters.AddWithValue("@EnviadoPorEmail1", sedex.EnviadoPorEmail1);
+                    //cmd.Parameters.AddWithValue("@ReciboImpresso", sedex.ReciboImpresso);
 
                     cmd.ExecuteNonQuery();
 
@@ -509,27 +598,23 @@ namespace MeuCondominio.Model
             }
         }
 
-        public static bool Update(Morador morador)
+        /// <summary>
+        /// Atualiza morador
+        /// </summary>
+        /// <param name="morador"></param>
+        /// <returns></returns>
+        public static bool AtualizaMorador(Morador morador)
         {
-            var query = @"Update Sedex Set 
-                Bloco = @Bloco,
-                Apartamento = @Apartamento,
-                NomeMorador = @NomeMorador,
-                Email1 = @Email1,
-                Celular1 = @Celular1,
-                CodigoBarraEtiqueta = @CodigoBarraEtiqueta,
-                CodigoQRCode = @CodigoQRCode,
-                CodigoBarraEtiquetaLocal = @CodigoBarraEtiquetaLocal,
-                LocalPrateleira = @LocalPrateleira,
-                DataCadastro = @DataCadastro,
-                DataEntrega = @DataEntrega,
-                DataEnvioMensagem = @DataEnvioMensagem,
-                EnviadoPorEmail1 = @EnviadoPorEmail1,
-                EnviadoPorSMS = @EnviadoPorSMS,
-                EnviadoPorTELEGRAM = @EnviadoPorTELEGRAM,
-                EnviadoPorZAP = @EnviadoPorZAP,
-                ReciboImpresso = @ReciboImpresso
-            Where IdMorador = @IdMorador";
+            var query = @"UPDATE Morador
+                       SET Nome = @Nome,
+                           Sobrenome = @Sobrenome,
+                           TelefoneFixo = @TelefoneFixo,
+                           Celular1 = @Celular1,
+                           Celular2 = @Celular2,
+                           Email1 = @Email1,
+                           Email2 = @Email2,
+                           IdApartamento = @IdApartamento
+                     WHERE IdMorador = @IdMorador";
 
             try
             {
@@ -540,23 +625,15 @@ namespace MeuCondominio.Model
                         cmd.CommandText = query;
 
                         cmd.Parameters.AddWithValue("@IdMorador", morador.IdMorador);
-                        cmd.Parameters.AddWithValue("@Bloco", morador.Bloco);
-                        cmd.Parameters.AddWithValue("@Apartamento", morador.Apartamento);
+                        cmd.Parameters.AddWithValue("@Nome", morador.NomeMorador);
+                        cmd.Parameters.AddWithValue("@Sobrenome", morador.SobreNomeMorador);
                         cmd.Parameters.AddWithValue("@NomeMorador", morador.NomeMorador);
-                        cmd.Parameters.AddWithValue("@Email1", morador.Email1);
+                        cmd.Parameters.AddWithValue("@TelefoneFixo", morador.TelefoneFixo); 
                         cmd.Parameters.AddWithValue("@Celular1", morador.Celular1);
-                        //cmd.Parameters.AddWithValue("@CodigoBarraEtiqueta", morador.CodigoBarraEtiqueta);
-                        //cmd.Parameters.AddWithValue("@CodigoQRCode", morador.CodigoQRCode);
-                        //cmd.Parameters.AddWithValue("@CodigoBarraEtiquetaLocal", morador.CodigoBarraEtiquetaLocal);
-                        //cmd.Parameters.AddWithValue("@LocalPrateleira", morador.LocalPrateleira);
-                        //cmd.Parameters.AddWithValue("@DataCadastro", morador.DataCadastro);
-                        //cmd.Parameters.AddWithValue("@DataEntrega", morador.DataEntrega);
-                        //cmd.Parameters.AddWithValue("@DataEnvioMensagem", morador.DataEnvioMensagem);
-                        //cmd.Parameters.AddWithValue("@EnviadoPorSMS", morador.EnviadoPorSMS);
-                        //cmd.Parameters.AddWithValue("@EnviadoPorZAP", morador.EnviadoPorZAP);
-                        //cmd.Parameters.AddWithValue("@EnviadoPorTELEGRAM", morador.EnviadoPorTELEGRAM);
-                        //cmd.Parameters.AddWithValue("@EnviadoPorEmail1", morador.EnviadoPorEmail1);
-                        //cmd.Parameters.AddWithValue("@ReciboImpresso", morador.ReciboImpresso);
+                        cmd.Parameters.AddWithValue("@Celular2", morador.Celular2);
+                        cmd.Parameters.AddWithValue("@Email1", morador.Email1);
+                        cmd.Parameters.AddWithValue("@Email2", morador.Email2);
+                        cmd.Parameters.AddWithValue("@IdApartamento", morador.IdApartamento);
 
                         cmd.ExecuteNonQuery();
 
@@ -564,6 +641,67 @@ namespace MeuCondominio.Model
                     }
                     return false;
                 };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+        public static bool Update()
+        {
+            int resultado = 0;
+
+            var query = @"INSERT INTO SedexHistorico (NomeTorre, Apartamento, IdMorador, NomeMorador, SobreNome, NumeroEnviado, EmailEnviado, DataEnvio,CodigoBarraEtiqueta)
+                SELECT ap.NomeTorre, ap.Apartamento, Morador.IdMorador, Morador.Nome, Morador.Sobrenome, Morador.Celular1, Morador.Email1, DATETIME('now'), CodigoBarraEtiqueta
+                FROM 
+                Sedex 
+                inner join Morador on Sedex.IdMorador = Morador.IdMorador
+                inner join Apartamento ap on Morador.IdApartamento = ap.IdApartamento 
+                WHERE 1 = 1
+                AND CODIGOBARRAETIQUETA IS NOT NULL
+                AND Enviadosms IS NULL
+                AND DATAENVIOMENSAGEM IS NULL";
+
+            try
+            {
+
+                using (var cmd = new SQLiteCommand(DbConnection()))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = query;
+                    
+                    resultado = cmd.ExecuteNonQuery();
+
+                }
+                if (resultado > 0)
+                {
+                    var query2 = @"DELETE FROM SEDEX WHERE 1 = 1 AND CODIGOBARRAETIQUETA IS NOT NULL AND Enviadosms IS NULL AND DATAENVIOMENSAGEM IS NULL";
+
+                    try
+                    {
+
+                        using (var cmd = new SQLiteCommand(DbConnection()))
+                        {
+                            cmd.CommandType = CommandType.Text;
+                            cmd.CommandText = query2;
+
+                            resultado = cmd.ExecuteNonQuery();
+
+                        }
+                        if (resultado > 0)
+                            return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(ex.Message);
+                    }
+                }
+                else
+                    return false;
+
+                if (resultado > 0) return true; else return false;
             }
             catch (Exception ex)
             {
@@ -573,12 +711,10 @@ namespace MeuCondominio.Model
 
         public static bool UpdateTelefone(Morador morador)
         {
-            var query = @"UPDATE SEDEX
+            var query = @"UPDATE MORADOR
                 SET Celular1 = @Celular1
                 WHERE
-                BLOCO = @Bloco
-                AND APARTAMENTO = @Apartamento
-                AND NomeMorador = @NomeMorador";
+                IdMorador=@IdMorador";
 
             try
             {
@@ -588,14 +724,12 @@ namespace MeuCondominio.Model
                     {
                         cmd.CommandText = query;
 
-                        cmd.Parameters.AddWithValue("@Bloco", morador.Bloco);
-                        cmd.Parameters.AddWithValue("@Apartamento", morador.Apartamento);
-                        cmd.Parameters.AddWithValue("@NomeMorador", morador.NomeMorador);
+                        cmd.Parameters.AddWithValue("@IdMorador", morador.IdMorador);
                         cmd.Parameters.AddWithValue("@Celular1", morador.Celular1);
 
-                        cmd.ExecuteNonQuery();
+                        var x = cmd.ExecuteNonQuery();
 
-                        return true;
+                        return x == 1 ? true: false;
                     }
                     return false;
                 };
@@ -606,7 +740,6 @@ namespace MeuCondominio.Model
             }
 
         }
-
         public static bool Delete(int Id)
         {
             try
@@ -624,10 +757,6 @@ namespace MeuCondominio.Model
                 throw new Exception(ex.Message);
             }
         }
-
-
-
-
         public static List<Morador> GetHistoricoPorApartamento(string pBloco, string pApartamento)
         {
             List<Morador> HistoricoSedex;
@@ -672,8 +801,6 @@ namespace MeuCondominio.Model
                 throw new Exception(ex.Message);
             }
         }
-
-
         private static List<Morador> PreencheMoradorDt(DataTable data)
         {
             List<Morador> moradores = new List<Morador>();
@@ -705,5 +832,60 @@ namespace MeuCondominio.Model
             }
             return moradores;
         }
+        //PreencheMoradorParaEnvioMensagem
+        private static List<Apartamento> PreencheApartamentoDt(DataTable data)
+        {
+            List<Apartamento> apartamentos = new List<Apartamento>();
+
+            foreach (DataRow row in data.Rows)
+            {
+                Apartamento ap = new Apartamento()
+                {
+                   IdApartamento = int.Parse(row.ItemArray[0].ToString()),
+                   NomeTorre = row.ItemArray[1].ToString(),
+                   NumeroApartamento = row.ItemArray[2].ToString()
+            };
+
+                apartamentos.Add(ap);
+            }
+            return apartamentos;
+        }
+
+        #region Historico
+        public static bool AddHistorico(Morador morador, Sedex sedex)
+        {
+            bool sucesso = false;
+            try
+            {
+                using (var cmd = DbConnection().CreateCommand())
+                {
+                    var query = @"INSERT INTO SedexHistorico (NomeTorre, Apartamento, IdMorador, NomeMorador, SobreNome, NumeroEnviado, EmailEnviado, DataEnvio)
+                    VALUES (@NomeTorre, @Apartamento, @IdMorador, @NomeMorador, @SobreNome, @NumeroEnviado, @EmailEnviado, @DataEnvio)";
+
+                    cmd.CommandText = query;
+                    cmd.Parameters.AddWithValue("@NomeTorre", morador.Bloco);
+                    cmd.Parameters.AddWithValue("@Apartamento", morador.Apartamento);
+                    cmd.Parameters.AddWithValue("@IdMorador", sedex.IdMorador);
+                    cmd.Parameters.AddWithValue("@NomeMorador", morador.NomeMorador);
+                    cmd.Parameters.AddWithValue("@SobreNome", morador.SobreNomeMorador);
+                    cmd.Parameters.AddWithValue("@NumeroEnviado", morador.Celular1);
+                    cmd.Parameters.AddWithValue("@EmailEnviado", morador.Email1);
+                    cmd.Parameters.AddWithValue("@DataEnvio", sedex.DataEnvioMensagem);
+
+                    cmd.ExecuteNonQuery();
+
+                    sucesso = true;
+                }
+
+                return sucesso;
+            }
+            catch (Exception ex)
+            {
+                MeuCondominio.Model.HelperModel.GravaLog(string.Concat("Erro métodp Add: ", ex.Message));
+                return sucesso;
+            }
+        }
+        #endregion
+
     }
 }

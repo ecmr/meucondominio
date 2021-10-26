@@ -10,5 +10,6 @@
         public string NumeroEnviado { get; set; }
         public string Email1Enviado { get; set; }
         public string DataEnvio { get; set; }
+        public string CodigoBarraEtiqueta { get; set; }
     }
 }

@@ -261,6 +261,7 @@ namespace MeuCondominio
             cboApto.Items.Add("104");
 
             // CarregarBlocos();
+            Cursor.Current = Cursors.Default;
         }
 
         #region Eventos
@@ -301,7 +302,9 @@ namespace MeuCondominio
         {
             string fileName = sLocalExcel + "cadastro  moradores 09 11 20 ATUALIZADO.xlsx";
             var workbook = new XLWorkbook(fileName);
-            var ws1 = workbook.Worksheet(2); //Bloco01
+            
+            
+            var ws1 = workbook.Worksheet(2); // Bloco01
 
             try
             {
@@ -331,6 +334,7 @@ namespace MeuCondominio
                         morador.Email1 = valueEmail1.ToString();
 
                         SedexBus bus = new SedexBus();
+
                         if (bus.Adicionar(morador))
                             continue;
                         HelperModel.GravaLog("Erro ao carregar bloco02, morador: " + morador.Bloco + "-" + morador.Apartamento);
@@ -1133,6 +1137,7 @@ namespace MeuCondominio
                 item.SubItems.Add(historicoMorador[i].NomeMorador);
                 item.SubItems.Add(historicoMorador[i].NumeroEnviado);
                 item.SubItems.Add(historicoMorador[i].DataEnvio);
+                item.SubItems.Add(historicoMorador[i].CodigoBarraEtiqueta);
 
                 lstHistorico.Items.Add(item);
             }
@@ -1161,7 +1166,7 @@ namespace MeuCondominio
                 sucesso = bus.Adicionar(morador);
             }
             else
-                sucesso = bus.Atualizar(morador);
+                sucesso = bus.AtualizarMorador(morador);
             
             if (sucesso)
             {
@@ -1272,31 +1277,42 @@ namespace MeuCondominio
         #region CRUD
         private void Salvar()
         {
-            Morador morador = new Morador();
-            morador.NomeMorador = txtNomeMoraador.Text;
-            morador.Bloco = cboBloco.Text;
-            morador.Apartamento = cboApto.Text;
             txtCelular.Mask = "";
-            morador.Celular1 = SomenteNumeros(txtCelular.Text);
+
+            Morador morador = new Morador()
+            {
+                IdMorador = IdMoradorSedex,
+                NomeMorador = txtNomeMoraador.Text,
+                Bloco = cboBloco.Text,
+                Apartamento = cboApto.Text,
+                Celular1 = SomenteNumeros(txtCelular.Text),
+                Email1 = txtEmail1.Text
+            };
+
             txtCelular.Mask = "(99) 00000-0000";
-            morador.Email1 = txtEmail1.Text;
-            //morador.CodigoBarraEtiqueta = txtCodBarras.Text;
-            //morador.CodigoBarraEtiquetaLocal = txtEtiquetaLocal.Text;
-            int iPrateleira = string.IsNullOrEmpty(txtPrateleira.Text) ? 0 : int.Parse(txtPrateleira.Text);
-            //morador.LocalPrateleira = iPrateleira;
-            //morador.DataCadastro = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString());
-            //morador.ReciboImpresso = "N";
+
+            Sedex sedex = new Sedex()
+            {
+                IdMorador = morador.IdMorador,
+                IdApartamento = morador.IdApartamento,
+                CodigoBarraEtiqueta = txtCodBarras.Text,
+                CodigoBarraEtiquetaLocal = txtEtiquetaLocal.Text,
+                LocalPrateleira = string.IsNullOrEmpty(txtPrateleira.Text) ? 0 : int.Parse(txtPrateleira.Text),
+                DataCadastro = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString()),
+                ReciboImpresso = "N"
+
+            };
+
 
             SedexBus bus = new SedexBus();
 
             bool sucesso = false;
 
-            morador.IdMorador = IdMoradorSedex;
+            //morador.IdMorador = IdMoradorSedex;
+            
             sucesso = bus.AtualizarTelefone(morador);
 
-            var temcadastro = bus.Consultar(morador);
-
-            if (temcadastro.Count > 0)
+            if (sucesso)
             {
                 lblMsgMorador.Text = "Registro* salvo com sucesso!";
                 lblMsgMorador.Visible = true;
@@ -1305,7 +1321,7 @@ namespace MeuCondominio
 
             morador.IdMorador = 0;
 
-            sucesso = bus.Adicionar(morador);
+            sucesso = bus.Adicionar(morador, sedex);
 
             if (!sucesso)
             {
@@ -1317,35 +1333,27 @@ namespace MeuCondominio
             }
             lblMsgMorador.Visible = true;
         }
-        private void RegistrarEntrega()
-        {
-            Morador morador = new Morador();
-            morador.IdMorador = IdMoradorSedex;
-            morador.NomeMorador = txtNomeMoraador.Text;
-            morador.Bloco = cboBloco.Text;
-            morador.Apartamento = cboApto.Text;
-            morador.Celular1 = SomenteNumeros(txtCelular.Text);
-            morador.Email1 = txtEmail1.Text;
-            //morador.CodigoBarraEtiqueta = txtCodBarras.Text;
-            //morador.CodigoBarraEtiquetaLocal = txtEtiquetaLocal.Text;
-            int iPrateleira = string.IsNullOrEmpty(txtPrateleira.Text) ? 0 : int.Parse(txtPrateleira.Text);
-            //morador.LocalPrateleira = iPrateleira;
-            //morador.DataCadastro = sDataCadastro;
-            //morador.DataEntrega = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString());
-            //morador.DataEnvioMensagem = sDataEnvioMensagem;
-            //morador.EnviadoPorSMS = ckbSms.Checked == true ? "S" : "N";
-            //morador.EnviadoPorZAP = ckbZap.Checked == true ? "S" : "N";
-            //morador.EnviadoPorTELEGRAM = "N";
-            //morador.EnviadoPorEmail1 = ckbMail.Checked == true ? "S" : "N";
 
-            SedexBus bus = new SedexBus();
-            if (bus.Atualizar(morador))
-            {
-                lblMsgMorador.Text = "Sedex entregue!";
-                lblMsgMorador.Visible = true;
-                timer1.Enabled = true;
-            }
-        }
+        //private void RegistrarEntrega()
+        //{
+        //    Morador morador = new Morador();
+        //    morador.IdMorador = IdMoradorSedex;
+        //    morador.NomeMorador = txtNomeMoraador.Text;
+        //    morador.Bloco = cboBloco.Text;
+        //    morador.Apartamento = cboApto.Text;
+        //    morador.Celular1 = SomenteNumeros(txtCelular.Text);
+        //    morador.Email1 = txtEmail1.Text;
+        //    int iPrateleira = string.IsNullOrEmpty(txtPrateleira.Text) ? 0 : int.Parse(txtPrateleira.Text);
+
+        //    SedexBus bus = new SedexBus();
+        //    if (bus.Atualizar(morador))
+        //    {
+        //        lblMsgMorador.Text = "Sedex entregue!";
+        //        lblMsgMorador.Visible = true;
+        //        timer1.Enabled = true;
+        //    }
+        //}
+
         private Morador ConsultarBase(string CodigoBarras)
         {
             SedexBus bus = new SedexBus();
@@ -1407,7 +1415,7 @@ namespace MeuCondominio
 
         private void FrmGestaoSedex_Load(object sender, EventArgs e)
         {
-
+            Cursor.Current = Cursors.WaitCursor;
         }
 
         private void cboBloco_SelectedIndexChanged(object sender, EventArgs e)
@@ -1569,24 +1577,22 @@ namespace MeuCondominio
 
             foreach ( Morador morador in listSms)
             {
-                //morador.DataEnvioMensagem = string.Concat(DateTime.Now.Day.ToString(), "/", DateTime.Now.Month.ToString(), "/", DateTime.Now.Year.ToString(), " ", DateTime.Now.Hour.ToString(), ":", DateTime.Now.Minute.ToString());
-                //morador.EnviadoPorSMS = "S";
-
-
                 var mensagemMorador = sMensagemParaSms.Replace("{Morador}", morador.NomeMorador);
 
                 if (EnvioMensagem.EnvioSmsDev(morador, mensagemMorador, pChaveDesenvi))
                 {
-                    if (sedexBus.Atualizar(morador))
-                    {
-                        lblMsgMorador.Visible = true;
-                        lblMsgMorador.Text = $"enviado para {morador.NomeMorador} com sucesso!";
-                        lblMsgMorador.Refresh();
-                    }
+                    lblMsgMorador.Visible = true;
+                    lblMsgMorador.Text = $"enviado para {morador.NomeMorador} com sucesso!";
+                    lblMsgMorador.Refresh();
                 }
             }
+
             lblMsgMorador.Text = $"Enviado para {listSms.Count} moradores com sucesso!";
             timer1.Enabled = true;
+
+            //TODO: ATUALIZA HISTORICO
+            if (sedexBus.Atualizar())
+                return;
         }
 
         private void btnSalvar_Click(object sender, EventArgs e)
@@ -1605,10 +1611,10 @@ namespace MeuCondominio
                 if (result == DialogResult.Yes)
                     AtualizaMorador();
             }
-            else if (ckbEntregue.Checked)
-            {
-                RegistrarEntrega();
-            }
+            //else if (ckbEntregue.Checked)
+            //{
+            //    RegistrarEntrega();
+            //}
             else
             {
                 Salvar();

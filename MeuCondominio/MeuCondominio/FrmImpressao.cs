@@ -74,8 +74,10 @@ namespace MeuCondominio
 
                 foreach (Morador morador in listPrint)
                 {
-                   // morador.ReciboImpresso = "S";
-                    bus.Atualizar(morador);
+                    // morador.ReciboImpresso = "S";
+                    //TODO: Fata criar os metodos para atualizar quando for impresso o recibo
+                    ///UPDATE SedexHistorico SET ReciboImpresso = 'S' WHERE IdSedex = 0;
+                    //bus.AtualizarRecibo(morador);
                 }
             }
         }

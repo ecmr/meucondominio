@@ -42,14 +42,27 @@ namespace MeuCondominio.Bus
             return DalHelper.GetSedexParaAssinatura();
         }
 
+
         public bool Adicionar(Morador morador)
         {
+            Apartamento ap = DalHelper.GetApartamento(morador.Bloco, morador.Apartamento);
+            morador.IdApartamento = ap.IdApartamento;
             return DalHelper.Add(morador);
         }
 
-        public bool Atualizar(Morador morador)
+        public bool Adicionar(Morador morador, Sedex sedex)
         {
-            return DalHelper.Update(morador);
+            return DalHelper.Add(morador, sedex);
+        }
+
+        public bool Atualizar()
+        {
+            return DalHelper.Update();
+        }
+
+        public bool AtualizarMorador(Morador morador)
+        {
+            return DalHelper.Update();
         }
 
         public bool AtualizarTelefone(Morador morador)
@@ -86,6 +99,14 @@ namespace MeuCondominio.Bus
         {
             return DalHelper.GetHistoricoPorApartamento(string.Concat("BLOCO ", bloco), apartamento);
         }
+
+        #region Histórico
+        public bool AdicionarHistorico(Morador morador, Sedex sedex)
+        {
+            return DalHelper.AddHistorico(morador, sedex);
+        }
+        #endregion
+
 
 
     }
