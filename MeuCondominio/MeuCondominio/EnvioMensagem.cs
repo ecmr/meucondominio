@@ -20,7 +20,7 @@ namespace MeuCondominio
         /// 
         /// </summary>
         /// <param name="morador"></param>
-        public static bool EnvioSmsDev(Morador morador, string pMensagem, string pKey)
+        public static bool EnvioSmsDev(SmsEnvio enviarPara, string pMensagem, string pKey)
         {
             string sHost = "https://api.smsdev.com.br/v1/send?key=";
             string sKey = string.Empty;
@@ -31,16 +31,13 @@ namespace MeuCondominio
             else if (pKey == "Administração")
                 sKey = "GYU1CWX2T3JUTGUJ7XT6OSE0NORTYAM7L4UF447UG9QQYDIA7X2LR5Y3NMVA7JAE8D9XL1DN7KWN6WAULTFPGKA9QQPBOH9PN0OKFWYEHZ9X29Y8FB0O4KNZ4Z99INCV";
 
-            string[] nomeMorador = morador.NomeMorador.Split(' ');
+            string[] nomeMorador = enviarPara.NomeMorador.Split(' ');
 
             if (string.IsNullOrEmpty(pMensagem))
                 pMensagem = "Seu Sedex chegou e já está disponível para retirada na Adm até as 18 horas, Sabado até 12 horas!";
 
-            string sFone = string.Concat("&type=9&number=", morador.Celular1);
-            //string sMsg = string.Concat("&msg=Cond. Resid. Aricanduva!",
-            //    Environment.NewLine, "Olá ", nomeMorador[0], Environment.NewLine,
-            //    pMensagem, Environment.NewLine,
-            //    "Att: Administração!");
+            string sFone = string.Concat("&type=9&number=", enviarPara.Celular1);
+
             string sMsg = string.Concat("&msg=", pMensagem);
 
             // Create a request using a URL that can receive a post.

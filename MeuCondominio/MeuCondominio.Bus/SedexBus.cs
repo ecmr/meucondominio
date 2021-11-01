@@ -1,5 +1,6 @@
 ﻿using MeuCondominio.Model;
 using MeuCondominio.Model;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
@@ -9,17 +10,19 @@ namespace MeuCondominio.Bus
     {
         public Morador Consultar(int idMorador)
         {
-            return DalHelper.GetCliente(idMorador);
+            return DalHelper.GetSedex(idMorador);
+            //return DalHelper.GetCliente(idMorador);
         }
 
         public Morador Consultar(string CodigoBarras)
         {
-            return DalHelper.GetCliente(CodigoBarras);
+            return DalHelper.GetSedex(CodigoBarras);
+            //return DalHelper.GetCliente(CodigoBarras);
         }
 
         public List<Morador> Moradores(string pBloco, string pApto)
         {
-            return DalHelper.GetMoradores(pBloco, pApto);
+            return DalHelper.GetMorador(pBloco, pApto);
         }
 
         public Morador Consultar(string pBloco, string pApto, string pNomeMorador)
@@ -27,12 +30,17 @@ namespace MeuCondominio.Bus
             return DalHelper.GetMorador(pBloco, pApto, pNomeMorador);
         }
 
-        public List<Morador> Consultar(Morador morador)
+        public List<Morador> Consultar(Morador morador, string pBloco, string pApto)
         {
-            return DalHelper.GetClientes(morador);
+            return DalHelper.GetMorador(morador, pBloco, pApto);
         }
 
-        public List<Morador> RetornaListaParaEnvioSms()
+        public List<Morador> GetMoradores(Morador morador, string bloco, string apartameto)
+        {
+            return DalHelper.GetMorador(morador, bloco, apartameto);
+        }
+
+        public List<SmsEnvio> RetornaListaParaEnvioSms()
         {
             return DalHelper.GetSedexParaEnvioSms();
         }
@@ -42,27 +50,52 @@ namespace MeuCondominio.Bus
             return DalHelper.GetSedexParaAssinatura();
         }
 
-
         public bool Adicionar(Morador morador)
-        {
+        { //ao incluir um novo morador deu erro aqui
             Apartamento ap = DalHelper.GetApartamento(morador.Bloco, morador.Apartamento);
             morador.IdApartamento = ap.IdApartamento;
+            morador.SobreNomeMorador = PegaSobreNome(morador.NomeMorador);
+            morador.NomeMorador = PegaPrimeiroNome(morador.NomeMorador);
             return DalHelper.Add(morador);
         }
 
+        /// <summary>
+        /// Responsável por criar um moraor novo e adiconar uma encomenda para o mesmo
+        /// </summary>
+        /// <param name="morador"></param>
+        /// <param name="sedex"></param>
+        /// <returns></returns>
         public bool Adicionar(Morador morador, Sedex sedex)
         {
-            return DalHelper.Add(morador, sedex);
+            bool sucesso = false;
+
+            morador.SobreNomeMorador = PegaSobreNome(morador.NomeMorador);
+            morador.NomeMorador = PegaPrimeiroNome(morador.NomeMorador);
+
+            if (morador.IdMorador < 1)
+            {
+                if (DalHelper.Add(morador))
+                    morador = DalHelper.GetMorador(morador, morador.Bloco, morador.Apartamento)[0];
+            }
+            if (!string.IsNullOrEmpty(sedex.CodigoBarraEtiqueta))
+                sucesso = DalHelper.Add(sedex);
+
+            return sucesso;
         }
 
-        public bool Atualizar()
+        /// <summary>
+        /// TODO: FALTA
+        /// </summary>
+        /// <param name="sedex"></param>
+        /// <returns></returns>
+        public bool RegistrarEmvioSms(int ChaveSedex)
         {
-            return DalHelper.Update();
+            return DalHelper.RegistraEnvioMensagem(ChaveSedex);
         }
 
         public bool AtualizarMorador(Morador morador)
         {
-            return DalHelper.Update();
+            return DalHelper.AtualizaMorador(morador);
         }
 
         public bool AtualizarTelefone(Morador morador)
@@ -87,7 +120,6 @@ namespace MeuCondominio.Bus
             return DalHelper.GetHistoricoPorMorador(idMorador);
         }
 
-
         /// <summary>
         /// Excluir, substituido pelo GetHistoricoPorMorador(int idMorador)
         /// </summary>
@@ -101,13 +133,50 @@ namespace MeuCondominio.Bus
         }
 
         #region Histórico
+
+        public bool EnviarSmsParaHistorico()
+        {
+            return DalHelper.EnviaSedexParaHistorico();
+        }
+
         public bool AdicionarHistorico(Morador morador, Sedex sedex)
         {
             return DalHelper.AddHistorico(morador, sedex);
         }
         #endregion
 
+        public bool AlteraStatusRecibo()
+        {
+            return DalHelper.AtualizaReciboImpresso();
+        }
 
+        #region Metodos gerais
+        private string PegaPrimeiroNome(string nome)
+        {
+            if (string.IsNullOrEmpty(nome))
+                return "";
+
+            string[] nomeCompleto = nome.Split(' ');
+            return nomeCompleto[0];
+        }
+
+        private string PegaSobreNome(string nome)
+        {
+            if (string.IsNullOrEmpty(nome))
+                return "";
+
+            string[] nomeCompleto = nome.Split(' ');
+
+            string SobreNome = "";
+
+            for (int i = 1; i < nomeCompleto.Length; i++)
+            {
+                SobreNome += string.Concat(nomeCompleto[i], " ");
+            }
+
+            return SobreNome;
+        }
+        #endregion
 
     }
 }
