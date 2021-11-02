@@ -408,6 +408,7 @@ namespace MeuCondominio
             this.testeTelegramToolStripMenuItem.Name = "testeTelegramToolStripMenuItem";
             this.testeTelegramToolStripMenuItem.Size = new System.Drawing.Size(96, 20);
             this.testeTelegramToolStripMenuItem.Text = "Teste Telegram";
+            this.testeTelegramToolStripMenuItem.Visible = false;
             this.testeTelegramToolStripMenuItem.Click += new System.EventHandler(this.testeTelegramToolStripMenuItem_Click);
             // 
             // checkBox1
@@ -458,24 +459,25 @@ namespace MeuCondominio
             // btnEnviarSms
             // 
             this.btnEnviarSms.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEnviarSms.Location = new System.Drawing.Point(153, 45);
+            this.btnEnviarSms.Location = new System.Drawing.Point(122, 45);
             this.btnEnviarSms.Name = "btnEnviarSms";
-            this.btnEnviarSms.Size = new System.Drawing.Size(118, 32);
+            this.btnEnviarSms.Size = new System.Drawing.Size(149, 32);
             this.btnEnviarSms.TabIndex = 26;
-            this.btnEnviarSms.Text = "Enviar SMS";
+            this.btnEnviarSms.Text = "Enviar Mensagem";
             this.btnEnviarSms.UseVisualStyleBackColor = true;
             this.btnEnviarSms.Click += new System.EventHandler(this.btnEnviarSms_Click);
             // 
             // ckbMail
             // 
             this.ckbMail.AutoSize = true;
+            this.ckbMail.Checked = true;
+            this.ckbMail.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ckbMail.Location = new System.Drawing.Point(191, 22);
             this.ckbMail.Name = "ckbMail";
             this.ckbMail.Size = new System.Drawing.Size(55, 17);
             this.ckbMail.TabIndex = 13;
             this.ckbMail.Text = "E-Mail";
             this.ckbMail.UseVisualStyleBackColor = true;
-            this.ckbMail.Visible = false;
             // 
             // ckbZap
             // 

@@ -1614,12 +1614,17 @@ namespace MeuCondominio
                     lblMsgMorador.Refresh();
                     sedexBus.RegistrarEmvioSms(enviar.ChaveSedex);
                 }
+                if (!string.IsNullOrEmpty(enviar.Email1))
+                    EnvioMensagem.EnvioEmail1(enviar.Email1, "Seu Sedex chegou!", mensagemMorador);
             }
 
             lblMsgMorador.Text = $"Enviado para {listSms.Count} moradores com sucesso!";
             timer1.Enabled = true;
 
-             if (sedexBus.EnviarSmsParaHistorico())
+            if (sedexBus.EnviarSmsParaHistorico())
+            {
+                sedexBus.ExcluiHistoricoVelho();   
+            }
                 return;
         }
 

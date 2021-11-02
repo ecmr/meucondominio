@@ -133,15 +133,18 @@ namespace MeuCondominio.Bus
         }
 
         #region Histórico
-
         public bool EnviarSmsParaHistorico()
         {
             return DalHelper.EnviaSedexParaHistorico();
         }
-
         public bool AdicionarHistorico(Morador morador, Sedex sedex)
         {
             return DalHelper.AddHistorico(morador, sedex);
+        }
+
+        public void ExcluiHistoricoVelho()
+        {
+            DalHelper.LimpaHistorico();
         }
         #endregion
 

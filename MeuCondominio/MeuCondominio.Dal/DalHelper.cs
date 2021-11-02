@@ -835,6 +835,26 @@ namespace MeuCondominio.Model
             }
         }
 
+        public static void LimpaHistorico()
+        {
+            var query = @"DELETE FROM SedexHistorico WHERE IdSedexHistorico IN
+                (SELECT IdSedexHistorico FROM SedexHistorico WHERE DATETIME(DataEnvio) < date('now', 'start of month', '-1 month', '0 day'));";
+
+            try
+            {
+                using (var cmd = new SQLiteCommand(DbConnection()))
+                {
+                    cmd.CommandText = query;
+
+                    cmd.ExecuteNonQuery();
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         #endregion
 
         #region RECIBO
@@ -859,7 +879,6 @@ namespace MeuCondominio.Model
             }
         }
         #endregion
-
 
         #region PREENCHEOBJETOS
         private static List<Morador> PreencheMoradorDt(DataTable data)

@@ -182,8 +182,31 @@ namespace MeuCondominio
             //Console.WriteLine(message.Body);
             #endregion
         }
-        public static void EnvioEmail1()
-        { }
+        public static void EnvioEmail1(string paraqualemail, string assunto, string mensagem)
+        {
+            var fromAddress = new MailAddress("edinei.menezes@gmail.com", "Condominio Residencial Aricanduva");
+            var toAddress = new MailAddress(paraqualemail, "To Name");
+            const string fromPassword = "jdnrkxwwcpwtdvza";
+
+            var smtp = new SmtpClient
+            {
+                Host = "smtp.gmail.com",
+                Port = 587,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(fromAddress.Address, fromPassword)
+            };
+
+            using (var message = new MailMessage(fromAddress, toAddress)
+            {
+                Subject = assunto,
+                Body = mensagem
+            })
+            {
+                smtp.Send(message);
+            }
+        }
 
         #region TELEGRAN
         public async void TesteTelegram(string sTelefone,string sMensagem)
