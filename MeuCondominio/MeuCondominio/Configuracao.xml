@@ -3,6 +3,9 @@
   <ValorMensagemSMS>
     <valorMensagem>Seu Sedex chegou e ja esta disponivel para retirada na Adm ate as 18 horas, Sabado ate 12 horas!</valorMensagem>
   </ValorMensagemSMS>
+  <ValorMensagemEmail>
+    <valorMensagemMail>Seu Sedex de código {codigoSedex} chegou e já está disponível para retirada na Administração até às 18 horas, Sábado até 12 horas!</valorMensagemMail>
+  </ValorMensagemEmail>  
   <ConfigTelegram>
       <codigo>36016</codigo>
       <hash>c9c3b282ae72476e0f</hash>

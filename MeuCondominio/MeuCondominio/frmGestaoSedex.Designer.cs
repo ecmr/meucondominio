@@ -87,6 +87,7 @@ namespace MeuCondominio
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.rdbDesenvolvedor = new System.Windows.Forms.RadioButton();
             this.rdbAdminstracao = new System.Windows.Forms.RadioButton();
+            this.Email = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -545,6 +546,7 @@ namespace MeuCondominio
             this.Bloco,
             this.Apartamento,
             this.NomeMorador,
+            this.Email,
             this.EnviadoPara,
             this.DataSms,
             this.CodigoBarrasProduto});
@@ -560,15 +562,17 @@ namespace MeuCondominio
             // Bloco
             // 
             this.Bloco.Text = "Bloco";
+            this.Bloco.Width = 40;
             // 
             // Apartamento
             // 
             this.Apartamento.Text = "Apto";
+            this.Apartamento.Width = 45;
             // 
             // NomeMorador
             // 
             this.NomeMorador.Text = "Morador";
-            this.NomeMorador.Width = 310;
+            this.NomeMorador.Width = 150;
             // 
             // EnviadoPara
             // 
@@ -617,6 +621,11 @@ namespace MeuCondominio
             this.rdbAdminstracao.TabStop = true;
             this.rdbAdminstracao.Text = "Administração";
             this.rdbAdminstracao.UseVisualStyleBackColor = true;
+            // 
+            // Email
+            // 
+            this.Email.Text = "E-Mail Enviado";
+            this.Email.Width = 180;
             // 
             // FrmGestaoSedex
             // 
@@ -724,6 +733,7 @@ namespace MeuCondominio
         private System.Windows.Forms.ToolStripMenuItem configuraçõesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mensagemSMSToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testeTelegramToolStripMenuItem;
+        private System.Windows.Forms.ColumnHeader Email;
     }
 }
 

@@ -7,5 +7,7 @@
         public string Celular1 { get; set; }
         public string Email1 { get; set; }
         public int ChaveSedex { get; set; }
+
+        public string CodigoBarras { get; set; }
     }
 }

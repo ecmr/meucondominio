@@ -69,11 +69,13 @@ namespace MeuCondominio.Bus
         {
             bool sucesso = false;
 
-            morador.SobreNomeMorador = PegaSobreNome(morador.NomeMorador);
-            morador.NomeMorador = PegaPrimeiroNome(morador.NomeMorador);
+            morador.SobreNomeMorador = PegaSobreNome(morador.NomeMorador).Trim();
+            morador.NomeMorador = PegaPrimeiroNome(morador.NomeMorador).Trim();
+             
 
             if (morador.IdMorador < 1)
             {
+                morador.IdApartamento = DalHelper.GetApartamento(morador.Bloco, morador.Apartamento).IdApartamento;
                 if (DalHelper.Add(morador))
                     morador = DalHelper.GetMorador(morador, morador.Bloco, morador.Apartamento)[0];
             }
@@ -91,6 +93,11 @@ namespace MeuCondominio.Bus
         public bool RegistrarEmvioSms(int ChaveSedex)
         {
             return DalHelper.RegistraEnvioMensagem(ChaveSedex);
+        }
+
+        public bool RegistrarEmvioEmail(int ChaveSedex)
+        {
+            return DalHelper.RegistraEnvioEmail(ChaveSedex);
         }
 
         public bool AtualizarMorador(Morador morador)

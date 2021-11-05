@@ -81,7 +81,6 @@ namespace MeuCondominio.Model
                     cmd.Parameters.AddWithValue("@BLOCO", string.Concat("BLOCO ", pBloco));
                     cmd.Parameters.AddWithValue("@APARTAMENTO", pApto);
                     cmd.Parameters.AddWithValue("@NOME", NomeMorador[0]);
-                    //cmd.Parameters.AddWithValue("@SOBRENOME", NomeMorador[1]);
 
                     cmd.Connection = DbConnection();
 
@@ -89,7 +88,7 @@ namespace MeuCondominio.Model
 
                     if (reader.HasRows)
                     {
-                        var morador = PreencheMoradorDtReader(reader)[0];
+                        var morador = PreencheMoradorBanReader(reader)[0];
                         if (morador.IdMorador > 0)
                             return morador;
                     }
@@ -107,8 +106,8 @@ namespace MeuCondominio.Model
             try
             {
                 var query = @"SELECT DISTINCT 
-                         AP.IdApartamento, AP.NomeTorre AS BLOCO, AP.Apartamento
-                        ,MD.IDMORADOR, MD.NOME, MD.SOBRENOME, MD.TELEFONEFIXO, MD.CELULAR1, MD.CELULAR2, MD.Email1, MD.Email2
+                         MD.IDMORADOR, MD.NOME, MD.SOBRENOME, MD.TELEFONEFIXO, MD.CELULAR1, MD.CELULAR2, MD.Email1, MD.Email2 
+                        ,AP.IdApartamento, AP.NomeTorre AS BLOCO, AP.Apartamento
                     FROM
                         Apartamento AP
                     INNER JOIN MORADOR MD ON AP.IdApartamento = MD.IdApartamento
@@ -159,8 +158,8 @@ namespace MeuCondominio.Model
                     cmd.CommandText = query;
 
                     cmd.Parameters.AddWithValue("@NOME", pmorador.NomeMorador);
-                    cmd.Parameters.AddWithValue("@SOBRENOME", pmorador.SobreNomeMorador);
-                    cmd.Parameters.AddWithValue("@BLOCO", pBloco);
+                    cmd.Parameters.AddWithValue("@SOBRENOME", pmorador.SobreNomeMorador.Trim());
+                    cmd.Parameters.AddWithValue("@BLOCO", string.Concat("BLOCO ", pBloco));
                     cmd.Parameters.AddWithValue("@APARTAMENTO", pApartamento);
 
                     cmd.Connection = DbConnection();
@@ -652,6 +651,32 @@ namespace MeuCondominio.Model
             }
         }
 
+        /// <summary>
+        /// Registra envio de e-mail
+        /// </summary>
+        /// <param name="IdSedex"></param>
+        /// <returns></returns>
+        public static bool RegistraEnvioEmail(int IdSedex)
+        {
+            var rowsAffected = 0;
+            try
+            {
+                var query = @"UPDATE SEDEX SET EnviadoEmail = 'S', DATAENVIOMENSAGEM = DATETIME('NOW') WHERE IdSedex = @IdSedex";
+
+                using (var cmd = new SQLiteCommand(DbConnection()))
+                {
+                    cmd.CommandText = query;
+                    cmd.Parameters.AddWithValue("@IdSedex", IdSedex);
+                    rowsAffected = cmd.ExecuteNonQuery();
+                    return rowsAffected > 0 ? true : false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         #endregion
 
         #region HISTORICOSEDEX
@@ -804,7 +829,7 @@ namespace MeuCondominio.Model
         {
             List<SedexHistorico> HistoricoSedex;
 
-            var query = @"SELECT H.NomeTorre as Bloco, H.Apartamento, NomeMorador || SobreNome as NomeMorador, H.NumeroEnviado, H.EmailEnviado, H.DataEnvio, H.CodigoBarraEtiqueta 
+            var query = @"SELECT H.NomeTorre as Bloco, H.Apartamento, NomeMorador || ' ' || SobreNome as NomeMorador, H.EmailEnviado, H.NumeroEnviado, H.DataEnvio, H.CodigoBarraEtiqueta 
                 FROM 
                     SedexHistorico H
                 WHERE H.ReciboImpresso = 'S' AND H.IdMorador = @IdMorador;";
@@ -957,11 +982,11 @@ namespace MeuCondominio.Model
             {
                 SedexHistorico historicoMorador = new SedexHistorico
                 {
-                    NomeTorre = reader.IsDBNull(0) ? "" : reader.GetString(0),
+                    NomeTorre = reader.IsDBNull(0) ? "" : reader.GetString(0).Replace("BLOCO",""),
                     Apartamento = reader.IsDBNull(1) ? "" : reader.GetString(1),
                     NomeMorador = reader.IsDBNull(2) ? "" : reader.GetString(2),
-                    NumeroEnviado = reader.IsDBNull(3) ? "" : reader.GetString(3),
-                    Email1Enviado = reader.IsDBNull(4) ? "" : reader.GetString(4),
+                    Email1Enviado = reader.IsDBNull(3) ? "" : reader.GetString(3),
+                    NumeroEnviado = reader.IsDBNull(4) ? "" : reader.GetString(4),
                     DataEnvio = reader.IsDBNull(5) ? "" : reader.GetString(5),
                     CodigoBarraEtiqueta = reader.IsDBNull(6) ? "" : reader.GetString(6)
                 };
@@ -977,6 +1002,41 @@ namespace MeuCondominio.Model
         /// <param name="reader"></param>
         /// <returns></returns>
         private static List<Morador> PreencheMoradorDtReader(SQLiteDataReader reader)
+        {
+            List<Morador> moradores = new List<Morador>();
+
+            while (reader.Read())
+            {
+                Morador morador = new Morador
+                {
+                    IdMorador = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
+                    NomeMorador = reader.IsDBNull(1) ? "" : reader.GetString(1),
+                    SobreNomeMorador = reader.IsDBNull(2) ? "" : reader.GetString(2),
+                    TelefoneFixo = reader.IsDBNull(3) ? "" : reader.GetString(3),
+                    Celular1 = reader.IsDBNull(4) ? "" : reader.GetString(4),
+                    Celular2 = reader.IsDBNull(5) ? "" : reader.GetString(5),
+                    Email1 = reader.IsDBNull(6) ? "" : reader.GetString(6),
+                    Email2 = reader.IsDBNull(7) ? "" : reader.GetString(7),
+                    IdApartamento = reader.IsDBNull(8) ? 0 : reader.GetInt32(8),
+                    Bloco = reader.IsDBNull(4) ? "" : reader.GetString(4),
+                    Apartamento = reader.IsDBNull(5) ? "" : reader.GetString(5)
+                    
+
+                };
+
+                moradores.Add(morador);
+            }
+            return moradores;
+        }
+
+
+        /// <summary>
+        /// Preenche Moradores ao consultar com bloco apartamento e nome
+        /// Ban: bloco, apartamento, nome 
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
+        private static List<Morador> PreencheMoradorBanReader(SQLiteDataReader reader)
         {
             List<Morador> moradores = new List<Morador>();
 
@@ -1014,7 +1074,8 @@ namespace MeuCondominio.Model
                     SobreNomeMorador = row.ItemArray[6].ToString(),
                     Celular1 = row.ItemArray[8].ToString(),
                     Email1 = row.ItemArray[7].ToString(),
-                    ChaveSedex = int.Parse(row.ItemArray[0].ToString())
+                    ChaveSedex = int.Parse(row.ItemArray[0].ToString()),
+                    CodigoBarras = row.ItemArray[9].ToString()
                 };
 
                 enviar.Add(envio);

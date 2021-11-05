@@ -30,6 +30,7 @@ namespace MeuCondominio
         private string sDataEntrega;
         private string sDataEnvioMensagem;
         private string sMensagemParaSms;
+        private string sMensagemParaEmail;
         private string hash;
         private string code;
 
@@ -1135,11 +1136,15 @@ namespace MeuCondominio
             {
                 var data = historicoMorador[i].DataEnvio.Split('-');
                 var diaHora = data[2].Split(' ');
+                var telefone = string.Concat(historicoMorador[i].NumeroEnviado.Substring(0, 2), "-");
+                telefone += string.Concat(historicoMorador[i].NumeroEnviado.Substring(2, 5), "-");
+                telefone += string.Concat(historicoMorador[i].NumeroEnviado.Substring(7, 4));
 
                 ListViewItem item = new ListViewItem(historicoMorador[i].NomeTorre);
                 item.SubItems.Add(historicoMorador[i].Apartamento);
                 item.SubItems.Add(historicoMorador[i].NomeMorador);
-                item.SubItems.Add(historicoMorador[i].NumeroEnviado);
+                item.SubItems.Add(historicoMorador[i].Email1Enviado);
+                item.SubItems.Add(telefone);
                 item.SubItems.Add(string.Concat(diaHora[0], "/", data[1], "/", data[0], " ", diaHora[1]));
                 item.SubItems.Add(historicoMorador[i].CodigoBarraEtiqueta);
 
@@ -1500,24 +1505,19 @@ namespace MeuCondominio
                 {
                     sMensagemParaSms = String.Concat("Cond. Resid. Aricanduva!", Environment.NewLine, "Ola {Morador}", Environment.NewLine, p.ValorMensagem, Environment.NewLine, "Att: Administracao!");
                 }
+
+
+                var prod = from p in doc.Descendants("ValorMensagemEmail")
+                            select new
+                            {
+                                ValorMensagemMail = p.Element("valorMensagemMail").Value
+
+                            };
+                foreach (var p in prod)
+                {
+                    sMensagemParaEmail = String.Concat("Olá {Morador}", Environment.NewLine, p.ValorMensagemMail, Environment.NewLine, "Att: Administração!");
+                }
             }
-
-
-
-            //if (sParametro == "ConfigTelegram")
-            //{
-            //    var pd = from p in doc.Descendants("ConfigTelegram")
-            //             select new
-            //             {
-            //                 vHash = p.Element("codigo").Value,
-            //                 vcode = p.Element("chave").Value
-            //             };
-            //    foreach (var p in pd)
-            //    {
-            //        hash = p.vHash;
-            //        code = p.vcode;
-            //    }
-            //}
 
             #endregion
 
@@ -1595,6 +1595,8 @@ namespace MeuCondominio
                 MessageBox.Show("Selecione qual chave sedex que deseja usar!");
                 return;
             }
+
+            this.btnEnviarSms.Enabled = false;
            
             string pChaveDesenvi = rdbAdminstracao.Checked ? "Administração" : "Desenvolvedor";
             
@@ -1610,13 +1612,29 @@ namespace MeuCondominio
                 if (EnvioMensagem.EnvioSmsDev(enviar, mensagemMorador, pChaveDesenvi))
                 {
                     lblMsgMorador.Visible = true;
-                    lblMsgMorador.Text = $"enviado para {enviar.NomeMorador} com sucesso!";
+                    lblMsgMorador.Text = $"sms enviado para {enviar.NomeMorador} com sucesso!";
                     lblMsgMorador.Refresh();
                     sedexBus.RegistrarEmvioSms(enviar.ChaveSedex);
                 }
-                if (!string.IsNullOrEmpty(enviar.Email1))
-                    EnvioMensagem.EnvioEmail1(enviar.Email1, "Seu Sedex chegou!", mensagemMorador);
             }
+
+            foreach (SmsEnvio enviar in listSms)
+            {
+                var mensagemMorador = sMensagemParaEmail.Replace("{Morador}", enviar.NomeMorador);
+                mensagemMorador = mensagemMorador.Replace("{codigoSedex}", enviar.CodigoBarras);  
+
+                if (!string.IsNullOrEmpty(enviar.Email1))
+                {
+                    EnvioMensagem.EnvioEmail1(enviar.Email1, "Seu Sedex chegou!", mensagemMorador);
+
+                    lblMsgMorador.Visible = true;
+                    lblMsgMorador.Text = $"E-mail enviado para {enviar.NomeMorador} com sucesso!";
+                    lblMsgMorador.Refresh();
+                    sedexBus.RegistrarEmvioEmail(enviar.ChaveSedex);
+                }
+            }
+
+
 
             lblMsgMorador.Text = $"Enviado para {listSms.Count} moradores com sucesso!";
             timer1.Enabled = true;
@@ -1625,7 +1643,9 @@ namespace MeuCondominio
             {
                 sedexBus.ExcluiHistoricoVelho();   
             }
-                return;
+            this.btnEnviarSms.Enabled = true;
+            return;
+
         }
 
         private void btnSalvar_Click(object sender, EventArgs e)

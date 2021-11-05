@@ -184,9 +184,9 @@ namespace MeuCondominio
         }
         public static void EnvioEmail1(string paraqualemail, string assunto, string mensagem)
         {
-            var fromAddress = new MailAddress("edinei.menezes@gmail.com", "Condominio Residencial Aricanduva");
-            var toAddress = new MailAddress(paraqualemail, "To Name");
-            const string fromPassword = "jdnrkxwwcpwtdvza";
+            var fromAddress = new MailAddress("residencialaricanduva.boletos@gmail.com", "Condomínio Residencial Aricanduva");
+            var toAddress = new MailAddress(paraqualemail, "Adm");
+            const string fromPassword = "rlectipgdqbpjbgm";
 
             var smtp = new SmtpClient
             {
