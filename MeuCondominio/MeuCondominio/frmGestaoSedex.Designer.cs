@@ -58,12 +58,12 @@ namespace MeuCondominio
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.incluirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cnsultarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.configuraçõesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mensagemSMSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.salvarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.carregarExcelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imprimirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reciboDeEntregaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.configuraçõesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.mensagemSMSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testeTelegramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
@@ -81,13 +81,13 @@ namespace MeuCondominio
             this.Bloco = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Apartamento = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.NomeMorador = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.Email = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.EnviadoPara = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.DataSms = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.CodigoBarrasProduto = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.rdbDesenvolvedor = new System.Windows.Forms.RadioButton();
             this.rdbAdminstracao = new System.Windows.Forms.RadioButton();
-            this.Email = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -329,10 +329,10 @@ namespace MeuCondominio
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.incluirToolStripMenuItem,
             this.cnsultarToolStripMenuItem,
-            this.salvarToolStripMenuItem,
             this.carregarExcelToolStripMenuItem,
-            this.imprimirToolStripMenuItem,
             this.configuraçõesToolStripMenuItem,
+            this.salvarToolStripMenuItem,
+            this.imprimirToolStripMenuItem,
             this.testeTelegramToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -355,6 +355,21 @@ namespace MeuCondominio
             this.cnsultarToolStripMenuItem.Text = "Consultar";
             this.cnsultarToolStripMenuItem.Visible = false;
             this.cnsultarToolStripMenuItem.Click += new System.EventHandler(this.cnsultarToolStripMenuItem_Click);
+            // 
+            // configuraçõesToolStripMenuItem
+            // 
+            this.configuraçõesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mensagemSMSToolStripMenuItem});
+            this.configuraçõesToolStripMenuItem.Name = "configuraçõesToolStripMenuItem";
+            this.configuraçõesToolStripMenuItem.Size = new System.Drawing.Size(96, 20);
+            this.configuraçõesToolStripMenuItem.Text = "Configurações";
+            // 
+            // mensagemSMSToolStripMenuItem
+            // 
+            this.mensagemSMSToolStripMenuItem.Name = "mensagemSMSToolStripMenuItem";
+            this.mensagemSMSToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.mensagemSMSToolStripMenuItem.Text = "Mensagem SMS";
+            this.mensagemSMSToolStripMenuItem.Click += new System.EventHandler(this.mensagemSMSToolStripMenuItem_Click);
             // 
             // salvarToolStripMenuItem
             // 
@@ -388,21 +403,6 @@ namespace MeuCondominio
             this.reciboDeEntregaToolStripMenuItem.Text = "Recibo de entrega";
             this.reciboDeEntregaToolStripMenuItem.Visible = false;
             this.reciboDeEntregaToolStripMenuItem.Click += new System.EventHandler(this.reciboDeEntregaToolStripMenuItem_Click);
-            // 
-            // configuraçõesToolStripMenuItem
-            // 
-            this.configuraçõesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mensagemSMSToolStripMenuItem});
-            this.configuraçõesToolStripMenuItem.Name = "configuraçõesToolStripMenuItem";
-            this.configuraçõesToolStripMenuItem.Size = new System.Drawing.Size(96, 20);
-            this.configuraçõesToolStripMenuItem.Text = "Configurações";
-            // 
-            // mensagemSMSToolStripMenuItem
-            // 
-            this.mensagemSMSToolStripMenuItem.Name = "mensagemSMSToolStripMenuItem";
-            this.mensagemSMSToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
-            this.mensagemSMSToolStripMenuItem.Text = "Mensagem SMS";
-            this.mensagemSMSToolStripMenuItem.Click += new System.EventHandler(this.mensagemSMSToolStripMenuItem_Click);
             // 
             // testeTelegramToolStripMenuItem
             // 
@@ -574,6 +574,11 @@ namespace MeuCondominio
             this.NomeMorador.Text = "Morador";
             this.NomeMorador.Width = 150;
             // 
+            // Email
+            // 
+            this.Email.Text = "E-Mail Enviado";
+            this.Email.Width = 180;
+            // 
             // EnviadoPara
             // 
             this.EnviadoPara.Text = "Núm. Enviado";
@@ -621,11 +626,6 @@ namespace MeuCondominio
             this.rdbAdminstracao.TabStop = true;
             this.rdbAdminstracao.Text = "Administração";
             this.rdbAdminstracao.UseVisualStyleBackColor = true;
-            // 
-            // Email
-            // 
-            this.Email.Text = "E-Mail Enviado";
-            this.Email.Width = 180;
             // 
             // FrmGestaoSedex
             // 

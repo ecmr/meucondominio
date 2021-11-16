@@ -19,6 +19,10 @@ namespace MeuCondominio.Bus
             return DalHelper.GetSedex(CodigoBarras);
             //return DalHelper.GetCliente(CodigoBarras);
         }
+        public List<Morador> GetMoradores()
+        {
+            return DalHelper.GetMorador();
+        }
 
         public List<Morador> Moradores(string pBloco, string pApto)
         {
@@ -33,6 +37,16 @@ namespace MeuCondominio.Bus
         public List<Morador> Consultar(Morador morador, string pBloco, string pApto)
         {
             return DalHelper.GetMorador(morador, pBloco, pApto);
+        }
+
+        public Apartamento RetornaApartamento(string pBloco, string pApto)
+        {
+            return DalHelper.GetApartamento(pBloco, pApto);
+        }
+
+        public Apartamento RetornaApartamentoFiltroExcel(string pBloco, string pApto)
+        {
+            return DalHelper.GetApartamentoFiltroExcel(pBloco, pApto);
         }
 
         public List<Morador> GetMoradores(Morador morador, string bloco, string apartameto)
@@ -54,8 +68,11 @@ namespace MeuCondominio.Bus
         { //ao incluir um novo morador deu erro aqui
             Apartamento ap = DalHelper.GetApartamento(morador.Bloco, morador.Apartamento);
             morador.IdApartamento = ap.IdApartamento;
-            morador.SobreNomeMorador = PegaSobreNome(morador.NomeMorador);
-            morador.NomeMorador = PegaPrimeiroNome(morador.NomeMorador);
+            if (string.IsNullOrEmpty(morador.SobreNomeMorador))
+                morador.SobreNomeMorador = PegaSobreNome(morador.NomeMorador);
+            if (string.IsNullOrEmpty(morador.NomeMorador))
+                morador.NomeMorador = PegaPrimeiroNome(morador.NomeMorador);
+            
             return DalHelper.Add(morador);
         }
 

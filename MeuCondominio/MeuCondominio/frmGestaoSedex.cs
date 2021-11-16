@@ -193,9 +193,6 @@ namespace MeuCondominio
         }
         #endregion
 
-
-
-
         private static string sLocalExcel = @"C:\Sedex Condominio\Excel\";
 
         public FrmGestaoSedex()
@@ -296,8 +293,172 @@ namespace MeuCondominio
         }
         private void carregarExcelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CarregarBlocos();
+            #region
+            //lblMsgMorador.Text = "Importando moradores, aguarde...";
+            //lblMsgMorador.Visible = true;
+            //timer1.Enabled = true;
+            //lblMsgMorador.Refresh();
+
+            //SedexBus sedexBus = new SedexBus();
+            //List<Morador> moradores = sedexBus.GetMoradores();
+
+            //foreach (Morador morador in moradores)
+            //{
+            //    morador.SobreNomeMorador = PegaSobreNome(morador.NomeMorador).Trim();
+            //    morador.NomeMorador = PegaPrimeiroNome(morador.NomeMorador).Trim();
+            //    morador.IdApartamento = sedexBus.RetornaApartamento(morador.Bloco, morador.Apartamento).IdApartamento;
+            //    sedexBus.Adicionar(morador);
+            //    lblMsgMorador.Text = string.Concat("Morador ", morador.NomeMorador, " adicionado...");
+            //    lblMsgMorador.Refresh();
+            //}
+            //lblMsgMorador.Text = string.Concat(moradores.Count, " ", " adicionados com sucesso.");
+            //lblMsgMorador.Refresh();
+            //return;
+            #endregion
+
+            //CarregarBlocos();
+            CarregaExcel();
             MeuCondominio.Model.HelperModel.GravaLog("Carregar excel");
+        }
+
+        private void CarregaExcel()
+        {
+            lblMsgMorador.Text = "Importando moradores, aguarde...";
+            lblMsgMorador.Visible = true;
+            timer1.Enabled = true;
+            lblMsgMorador.Refresh();
+
+            Cursor.Current = Cursors.WaitCursor;
+
+            string fileName = sLocalExcel + "Contatos.xlsx";
+            var workbook = new XLWorkbook(fileName);
+
+
+            var ws1 = workbook.Worksheet("Moradores");
+
+            try
+            {
+                int parar = 0;
+
+                for (int i = 2; i < 660; i++)
+                {
+                    Morador morador = new Morador();
+                    var row = ws1.Row(i);
+
+                    if (!row.IsEmpty())
+                    {
+                        string[] cUnidade = row.Cell(1).Value.ToString().Split(' '); // unidade APTO BLOCO
+
+                        object valueApto = null;
+                        object valueBloco = null;
+
+                        if ((cUnidade.Length > 0) && (cUnidade.Length < 2))
+                        {
+                            valueApto = cUnidade[0];
+                        }
+                        else if ((cUnidade.Length > 1) && (cUnidade.Length < 3))
+                        {
+                            valueApto = cUnidade[0];
+                            valueBloco = cUnidade[1];
+                        }
+                        else if ((cUnidade.Length > 0) && (cUnidade.Length < 4))
+                        {
+                            valueApto = cUnidade[0];
+                            valueBloco = string.Concat(cUnidade[1], " ", cUnidade[2]);
+                        }
+                        else if ((cUnidade.Length > 3) && (cUnidade.Length < 5))
+                        {
+                            valueApto = cUnidade[0];
+                            valueBloco = string.Concat(cUnidade[1], " ", cUnidade[2], " ", cUnidade[3]);
+                        }
+                        else if ((cUnidade.Length > 4) && (cUnidade.Length < 6))
+                        {
+                            valueApto = cUnidade[0];
+                            valueBloco = string.Concat(cUnidade[1], " ", cUnidade[2], " ", cUnidade[3], " ", cUnidade[4]);
+                        }
+
+
+
+                        if (!string.IsNullOrEmpty(cUnidade[1]))
+                            valueBloco = cUnidade[1];
+
+                        string[] cNomeCompleto = row.Cell(2).Value.ToString().Split(' '); // Morador
+                        object valueNome = cNomeCompleto[0];
+
+                        object valueSobreNome = string.Empty;
+
+                        for (int k = 1; k < cNomeCompleto.Length; k++)
+                        {
+                            valueSobreNome += string.Concat(cNomeCompleto[k], " ");
+                        }
+
+                        var cTipo = row.Cell(3); // Tipo: Proprietario/Residente
+                        object valueTipoMorador = cTipo.Value;
+
+                        var cTelefoneFixo = row.Cell(4); // Telefone Fixo
+                        object valueTelFixo = SomenteNumeros(cTelefoneFixo.Value.ToString());
+
+                        var cTelCelular = row.Cell(5); // Telefone celular
+                        object valueTelCelula = SomenteNumeros(cTelCelular.Value.ToString());
+
+                        string[] cEmails = row.Cell(13).Value.ToString().Split(';'); // email
+                        object valueEmail = cEmails;
+
+
+                        morador.Apartamento = valueApto.ToString();
+                        morador.Bloco = valueBloco.ToString();
+                        morador.NomeMorador = valueNome.ToString();
+                        morador.SobreNomeMorador = valueSobreNome.ToString();
+                        morador.TelefoneFixo = valueTelFixo.ToString();
+                        morador.Celular1 = valueTelCelula.ToString();
+                        morador.Email1 = cEmails[0].ToLower();
+
+                        for (int m = 1; m < cEmails.Length; m++)
+                        {
+                            morador.Email2 = cEmails[m].ToLower();
+                        }
+
+                        SedexBus bus = new SedexBus();
+
+                        Apartamento apMorador = new Model.Apartamento();
+
+                        //if (morador.Apartamento.Length > 3)
+                        //{ apMorador.IdApartamento = 0; }
+                        //else
+                            
+                        apMorador = bus.RetornaApartamentoFiltroExcel(morador.Bloco, morador.Apartamento);
+
+                        if (apMorador.IdApartamento > 0)
+                            morador.IdApartamento = apMorador.IdApartamento;
+
+
+                        if (bus.Adicionar(morador))
+                            continue;
+                        HelperModel.GravaLog("Erro ao carregar bloco02, morador: " + morador.Bloco + "-" + morador.Apartamento);
+                    }
+                }
+                Cursor.Current = Cursors.Default;
+                lblMsgMorador.Text = "Moradores importados com sucesso!";
+                lblMsgMorador.Visible = true;
+                timer1.Enabled = true;
+                lblMsgMorador.Refresh();
+            }
+            catch (Exception ex)
+            {
+                Cursor.Current = Cursors.Default;
+                lblMsgMorador.Text = "Ocorreu um erro ao importar moradores!";
+                lblMsgMorador.Visible = true;
+                timer1.Enabled = true;
+                lblMsgMorador.Refresh();
+
+                string nomeArquivoDeLog = @"C:\AdCon\Log\ErroLog.txt";
+
+                string diretorio = Path.GetDirectoryName(nomeArquivoDeLog);
+                if (!Directory.Exists(diretorio))
+                    Directory.CreateDirectory(diretorio);
+
+                File.WriteAllText(nomeArquivoDeLog, ex.Message);
+            }
         }
         private void CarregaBloco01()
         {
@@ -1876,6 +2037,31 @@ namespace MeuCondominio
             return dialogResult;
         }
         #endregion
+        private string PegaPrimeiroNome(string nome)
+        {
+            if (string.IsNullOrEmpty(nome))
+                return "";
+
+            string[] nomeCompleto = nome.Split(' ');
+            return nomeCompleto[0];
+        }
+
+        private string PegaSobreNome(string nome)
+        {
+            if (string.IsNullOrEmpty(nome))
+                return "";
+
+            string[] nomeCompleto = nome.Split(' ');
+
+            string SobreNome = "";
+
+            for (int i = 1; i < nomeCompleto.Length; i++)
+            {
+                SobreNome += string.Concat(nomeCompleto[i], " ");
+            }
+
+            return SobreNome;
+        }
 
     }
 }

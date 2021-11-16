@@ -10,6 +10,7 @@ namespace MeuCondominio.Model
     {
         private static SQLiteConnection sqliteConnection;
         private static string stBanco = @"C:\Sedex Condominio\dados\Cadastro.sqlite3";
+        private static string strBancoAtual = @"C:\Sedex Condominio\dados\CadastroADM.sqlite3";
 
         public DalHelper()
         { }
@@ -19,6 +20,21 @@ namespace MeuCondominio.Model
             try
             {
                 sqliteConnection = new SQLiteConnection(string.Concat("Data Source=", stBanco, "; Version=3;"));
+                sqliteConnection.Open();
+            }
+            catch (Exception ex)
+            {
+                HelperModel.GravaLog(string.Concat("Erro DbConnection: ", ex.Message));
+            }
+
+            return sqliteConnection;
+        }
+
+        private static SQLiteConnection DbConnection(string banco)
+        {
+            try
+            {
+                sqliteConnection = new SQLiteConnection(string.Concat("Data Source=", banco, "; Version=3;"));
                 sqliteConnection.Open();
             }
             catch (Exception ex)
@@ -60,6 +76,47 @@ namespace MeuCondominio.Model
 
 
         #region MORADOR
+        public static List<Morador> GetMorador()
+        {
+            try
+            {
+                var query = @"SELECT BLOCO, APARTAMENTO, NOMEDESTINATARIO, NUMEROCELULAR FROM Sedex"; //CadastroADMATUAL.
+
+                using (var cmd = DbConnection(strBancoAtual).CreateCommand())
+                {
+                    cmd.CommandText = query;
+                    //cmd.Connection = DbConnection();
+
+                    SQLiteDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        List<Morador> moradores = new List<Morador>();
+
+                        while (reader.Read())
+                        {
+                            Morador morador = new Morador
+                            {
+                                Bloco = reader.IsDBNull(0) ? "" : reader.GetString(0),
+                                Apartamento = reader.IsDBNull(1) ? "" : reader.GetString(1),
+                                NomeMorador = reader.IsDBNull(2) ? "" : reader.GetString(2),
+                                Celular1 = reader.IsDBNull(4) ? "" : reader.GetString(3)
+                            };
+
+                            moradores.Add(morador);
+                        }
+                        return moradores;
+                    }
+                    return new List<Morador>();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
         public static Morador GetMorador(string pBloco, string pApto, string NomeCompleto)
         {
             var NomeMorador = NomeCompleto.Split(' ');
@@ -306,8 +363,6 @@ namespace MeuCondominio.Model
         #region APARTAMENTO
         public static Apartamento GetApartamento(string pBloco, string pApartametno)
         {
-            DataTable dt = new DataTable();
-
             var query = @"SELECT IdApartamento, NomeTorre, Apartamento FROM Apartamento AP WHERE NOMETORRE = @BLOCO AND Apartamento = @APARTAMENTO";
 
             try
@@ -351,6 +406,53 @@ namespace MeuCondominio.Model
 
         }
 
+        public static Apartamento GetApartamentoFiltroExcel(string pBloco, string pApartametno)
+        {
+            var query = @"SELECT IdApartamento, NomeTorre, Apartamento
+                            FROM Apartamento 
+                            WHERE substring(NomeTorre,7,2) = @BLOCO
+                            AND (('0' || Apartamento) = @APARTAMENTO OR Apartamento = @APARTAMENTO)";
+
+            try
+            {
+                using (var cmd = DbConnection().CreateCommand())
+                {
+                    cmd.CommandText = query;
+
+                    cmd.Parameters.AddWithValue("@BLOCO", pBloco);
+                    cmd.Parameters.AddWithValue("@APARTAMENTO", pApartametno);
+
+                    cmd.Connection = DbConnection();
+
+                    using (SQLiteDataReader rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            Apartamento apto = new Apartamento()
+                            {
+                                IdApartamento = rdr.GetInt32(0),
+                                NomeTorre = rdr.GetString(1),
+                                NumeroApartamento = rdr.GetString(2)
+                            };
+                            return apto;
+                        }
+                    }
+                }
+                return new Apartamento();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+
+
+
+
+
+
+
+        }
 
 
         #endregion
