@@ -26,6 +26,7 @@ namespace MeuCondominio
     {
         List<Morador> moradoresBlocos = new List<Morador>();
         private int IdMoradorSedex;
+        private int idApartamentomorador;
         private string sDataCadastro;
         private string sDataEntrega;
         private string sDataEnvioMensagem;
@@ -1271,6 +1272,7 @@ namespace MeuCondominio
                 txtCelular.Text = morador.Celular1;
                 txtEmail1.Text = morador.Email1;
                 IdMoradorSedex = morador.IdMorador;
+                idApartamentomorador = morador.IdApartamento;
 
                 btnExcluir.Enabled = true;
                 
@@ -1317,7 +1319,9 @@ namespace MeuCondominio
         {
             Morador morador = new Morador();
             morador.IdMorador = IdMoradorSedex;
-            morador.NomeMorador = txtNomeMoraador.Text;
+            morador.IdApartamento = idApartamentomorador;
+            morador.SobreNomeMorador = PegaSobreNome(txtNomeMoraador.Text.Trim());
+            morador.NomeMorador = PegaPrimeiroNome(txtNomeMoraador.Text.Trim());
             morador.Bloco = cboBloco.Text;
             morador.Apartamento = cboApto.Text;
             txtCelular.Mask = "";
@@ -1844,7 +1848,7 @@ namespace MeuCondominio
 
             SedexBus sedexBus = new SedexBus();
 
-            Morador morador = sedexBus.Consultar(IdMoradorSedex);
+            Morador morador = sedexBus.ConsultarMorador(IdMoradorSedex);
 
             DialogResult result;
 

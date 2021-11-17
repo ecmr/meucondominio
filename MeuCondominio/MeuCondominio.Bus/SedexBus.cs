@@ -14,6 +14,11 @@ namespace MeuCondominio.Bus
             //return DalHelper.GetCliente(idMorador);
         }
 
+        public Morador ConsultarMorador(int idMorador)
+        {
+            return DalHelper.GetMorador(idMorador);
+        }
+
         public Morador Consultar(string CodigoBarras)
         {
             return DalHelper.GetSedex(CodigoBarras);

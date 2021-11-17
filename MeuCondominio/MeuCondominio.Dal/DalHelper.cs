@@ -76,6 +76,51 @@ namespace MeuCondominio.Model
 
 
         #region MORADOR
+        /// <summary>
+        /// Retorna um morador pelo id
+        /// </summary>
+        /// <param name="idMorador"></param>
+        /// <returns></returns>
+        public static Morador GetMorador(int idMorador)
+        {
+            SQLiteDataAdapter da = null;
+            DataTable dt = new DataTable();
+
+            try
+            {
+                using (var cmd = DbConnection().CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM Morador Where IdMorador=" + idMorador;
+                    da = new SQLiteDataAdapter(cmd.CommandText, DbConnection());
+                    da.Fill(dt);
+
+                    List<Morador> moradores = new List<Morador>();
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        Morador morador = new Morador();
+
+                        morador.IdMorador = int.Parse(row.ItemArray[0].ToString());
+                        morador.NomeMorador = row.ItemArray[1].ToString();
+                        morador.SobreNomeMorador = row.ItemArray[2].ToString();
+                        morador.TelefoneFixo = row.ItemArray[3].ToString();
+                        morador.Celular1 = row.ItemArray[4].ToString();
+                        morador.Email1 = row.ItemArray[5].ToString();
+                        moradores.Add(morador);
+                    }
+
+                    if (moradores.Count > 0)
+                        return moradores[0];
+                    else
+                        return new Morador();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public static List<Morador> GetMorador()
         {
             try
@@ -115,7 +160,6 @@ namespace MeuCondominio.Model
                 throw new Exception(ex.Message);
             }
         }
-
 
         public static Morador GetMorador(string pBloco, string pApto, string NomeCompleto)
         {
@@ -524,7 +568,10 @@ namespace MeuCondominio.Model
                     da.Fill(dt);
 
                     var morador = PreencheMoradorDt(dt);
-                    return morador[0];
+                    if (morador.Count > 0)
+                        return morador[0];
+                    else
+                        return new Morador();
                 }
             }
             catch (Exception ex)
@@ -721,7 +768,7 @@ namespace MeuCondominio.Model
             {
                 using (var cmd = new SQLiteCommand(DbConnection()))
                 {
-                    cmd.CommandText = "DELETE FROM Sedex Where IdMorador=@Id";
+                    cmd.CommandText = "DELETE FROM Morador Where IdMorador=@Id";
                     cmd.Parameters.AddWithValue("@Id", Id);
                     cmd.ExecuteNonQuery();
                     return true;
@@ -1023,24 +1070,10 @@ namespace MeuCondominio.Model
                 morador.SobreNomeMorador = row.ItemArray[4].ToString();
                 morador.Email1 = row.ItemArray[5].ToString();
                 morador.Celular1 = row.ItemArray[6].ToString();
-                //morador.CodigoBarraEtiqueta = row.ItemArray[6].ToString();
-                //morador.CodigoQRCode = row.ItemArray[7].ToString();
-                //morador.CodigoBarraEtiquetaLocal = row.ItemArray[8].ToString();
-                //morador.LocalPrateleira = int.Parse(row.ItemArray[9].ToString());
-                //morador.DataCadastro = row.ItemArray[10].ToString();
-                //morador.DataEntrega = row.ItemArray[11].ToString();
-                //morador.DataEnvioMensagem = row.ItemArray[12].ToString();
-                //morador.EnviadoPorSMS = row.ItemArray[13].ToString();
-                //morador.EnviadoPorZAP = row.ItemArray[14].ToString();
-                //morador.EnviadoPorTELEGRAM = row.ItemArray[15].ToString();
-                //morador.EnviadoPorEmail1 = row.ItemArray[16].ToString();
-                //morador.ReciboImpresso = row.ItemArray[17].ToString();
-
                 moradores.Add(morador);
             }
             return moradores;
         }
-        //PreencheMoradorParaEnvioMensagem
 
         private static List<Apartamento> PreencheApartamentoReader(SQLiteDataReader reader)
         {
