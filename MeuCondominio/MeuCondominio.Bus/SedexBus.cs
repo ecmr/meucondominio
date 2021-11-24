@@ -29,6 +29,11 @@ namespace MeuCondominio.Bus
             return DalHelper.GetMorador();
         }
 
+        public List<Morador> GetMoradoresAtuais()
+        {
+            return DalHelper.GetMoradorAtuais();
+        }
+
         public List<Morador> Moradores(string pBloco, string pApto)
         {
             return DalHelper.GetMorador(pBloco, pApto);

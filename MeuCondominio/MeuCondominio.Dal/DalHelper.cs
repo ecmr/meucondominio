@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using MeuCondominio.Model;
 using System.Data.SQLite;
+using System.IO;
 
 namespace MeuCondominio.Model
 {
@@ -10,7 +11,7 @@ namespace MeuCondominio.Model
     {
         private static SQLiteConnection sqliteConnection;
         private static string stBanco = @"C:\Sedex Condominio\dados\Cadastro.sqlite3";
-        private static string strBancoAtual = @"C:\Sedex Condominio\dados\CadastroADM.sqlite3";
+        private static string strBancoAtual = @"C:\Users\edine\Desktop\Meu Condominio BKP\dados\Cadastro.sqlite3";
 
         public DalHelper()
         { }
@@ -121,11 +122,55 @@ namespace MeuCondominio.Model
             }
         }
 
+
+        public static List<Morador> GetMoradorAtuais()
+        {
+            try
+            {
+                var query = @"SELECT IdMorador, UPPER(Nome), UPPER(Sobrenome), TelefoneFixo, Celular1, Celular2, Email1, Email2, IdApartamento FROM Morador;";
+
+                using (var cmd = DbConnection().CreateCommand())
+                {
+                    cmd.CommandText = query;
+
+                    SQLiteDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        List<Morador> moradores = new List<Morador>();
+
+                        while (reader.Read())
+                        {
+                            Morador morador = new Morador
+                            {
+                                IdMorador = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
+                                NomeMorador = reader.IsDBNull(1) ? "" : reader.GetString(1),
+                                SobreNomeMorador = reader.IsDBNull(2) ? "" : reader.GetString(2),
+                                TelefoneFixo = reader.IsDBNull(3) ? "" : reader.GetString(3),
+                                Celular1 = reader.IsDBNull(4) ? "" : reader.GetString(4),
+                                Celular2 = reader.IsDBNull(5) ? "" : reader.GetString(5),
+                                Email1 = reader.IsDBNull(6) ? "" : reader.GetString(6),
+                                Email2 = reader.IsDBNull(7) ? "" : reader.GetString(7)
+                            };
+
+                            moradores.Add(morador);
+                        }
+                        return moradores;
+                    }
+                    return new List<Morador>();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public static List<Morador> GetMorador()
         {
             try
             {
-                var query = @"SELECT BLOCO, APARTAMENTO, NOMEDESTINATARIO, NUMEROCELULAR FROM Sedex"; //CadastroADMATUAL.
+                var query = @"SELECT Bloco, Apartamento, UPPER(NomeDestinatario) AS NomeDestinatario, Email, NumeroCelular FROM Sedex;";
 
                 using (var cmd = DbConnection(strBancoAtual).CreateCommand())
                 {
@@ -145,7 +190,8 @@ namespace MeuCondominio.Model
                                 Bloco = reader.IsDBNull(0) ? "" : reader.GetString(0),
                                 Apartamento = reader.IsDBNull(1) ? "" : reader.GetString(1),
                                 NomeMorador = reader.IsDBNull(2) ? "" : reader.GetString(2),
-                                Celular1 = reader.IsDBNull(4) ? "" : reader.GetString(3)
+                                Email1 = reader.IsDBNull(2) ? "" : reader.GetString(3),
+                                Celular1 = reader.IsDBNull(4) ? "" : reader.GetString(4)
                             };
 
                             moradores.Add(morador);
@@ -164,6 +210,14 @@ namespace MeuCondominio.Model
         public static Morador GetMorador(string pBloco, string pApto, string NomeCompleto)
         {
             var NomeMorador = NomeCompleto.Split(' ');
+            var Sobrenome = string.Empty;
+
+            for (int i = 1; i < NomeMorador.Length; i++)
+            {
+                Sobrenome += string.Concat(NomeMorador[i], " ");
+            }
+            Sobrenome = Sobrenome.Trim();
+
 
             try
             {
@@ -173,7 +227,7 @@ namespace MeuCondominio.Model
                     FROM
                         Apartamento AP
                     INNER JOIN MORADOR MD ON AP.IdApartamento = MD.IdApartamento
-                    WHERE BLOCO = @BLOCO AND APARTAMENTO = @APARTAMENTO AND MD.NOME = @NOME;";
+                    WHERE BLOCO = @BLOCO AND APARTAMENTO = @APARTAMENTO AND TRIM(UPPER(MD.NOME)) = TRIM(UPPER(@NOME));";
 
                 using (var cmd = DbConnection().CreateCommand())
                 {
@@ -181,7 +235,8 @@ namespace MeuCondominio.Model
 
                     cmd.Parameters.AddWithValue("@BLOCO", string.Concat("BLOCO ", pBloco));
                     cmd.Parameters.AddWithValue("@APARTAMENTO", pApto);
-                    cmd.Parameters.AddWithValue("@NOME", NomeMorador[0]);
+                    cmd.Parameters.AddWithValue("@NOME", NomeCompleto.Trim()); // NomeMorador[0]
+                    //cmd.Parameters.AddWithValue("@SOBRENOME", Sobrenome.Trim());
 
                     cmd.Connection = DbConnection();
 
@@ -204,6 +259,7 @@ namespace MeuCondominio.Model
 
         public static List<Morador> GetMorador(string pBloco, string pApto)
         {
+            
             try
             {
                 var query = @"SELECT DISTINCT 
@@ -231,12 +287,20 @@ namespace MeuCondominio.Model
                         if (morador.Count > 0)
                             return morador;
                     }
+                   
                     return new List<Morador>();
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                string nomeArquivoDeLog = @"C:\AdCon\Log\ErroLog.txt";
+
+                string diretorio = Path.GetDirectoryName(nomeArquivoDeLog);
+                if (!Directory.Exists(diretorio))
+                    Directory.CreateDirectory(diretorio);
+
+                File.WriteAllText(nomeArquivoDeLog, string.Concat(GetMorador(pBloco, pApto), " >>>> ", ex.Message, Environment.NewLine, ex.InnerException));
+                return new List<Morador>();
             }
         }
 

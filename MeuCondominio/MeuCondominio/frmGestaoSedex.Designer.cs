@@ -58,10 +58,10 @@ namespace MeuCondominio
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.incluirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cnsultarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.carregarExcelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.configuraçõesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mensagemSMSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.salvarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.carregarExcelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imprimirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reciboDeEntregaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testeTelegramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -88,6 +88,7 @@ namespace MeuCondominio
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.rdbDesenvolvedor = new System.Windows.Forms.RadioButton();
             this.rdbAdminstracao = new System.Windows.Forms.RadioButton();
+            this.relatórioAcademiaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -330,6 +331,7 @@ namespace MeuCondominio
             this.incluirToolStripMenuItem,
             this.cnsultarToolStripMenuItem,
             this.carregarExcelToolStripMenuItem,
+            this.relatórioAcademiaToolStripMenuItem,
             this.configuraçõesToolStripMenuItem,
             this.salvarToolStripMenuItem,
             this.imprimirToolStripMenuItem,
@@ -356,6 +358,13 @@ namespace MeuCondominio
             this.cnsultarToolStripMenuItem.Visible = false;
             this.cnsultarToolStripMenuItem.Click += new System.EventHandler(this.cnsultarToolStripMenuItem_Click);
             // 
+            // carregarExcelToolStripMenuItem
+            // 
+            this.carregarExcelToolStripMenuItem.Name = "carregarExcelToolStripMenuItem";
+            this.carregarExcelToolStripMenuItem.Size = new System.Drawing.Size(94, 20);
+            this.carregarExcelToolStripMenuItem.Text = "Carregar Excel";
+            this.carregarExcelToolStripMenuItem.Click += new System.EventHandler(this.carregarExcelToolStripMenuItem_Click);
+            // 
             // configuraçõesToolStripMenuItem
             // 
             this.configuraçõesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -378,14 +387,6 @@ namespace MeuCondominio
             this.salvarToolStripMenuItem.Text = "Salvar";
             this.salvarToolStripMenuItem.Visible = false;
             this.salvarToolStripMenuItem.Click += new System.EventHandler(this.salvarToolStripMenuItem_Click);
-            // 
-            // carregarExcelToolStripMenuItem
-            // 
-            this.carregarExcelToolStripMenuItem.Name = "carregarExcelToolStripMenuItem";
-            this.carregarExcelToolStripMenuItem.Size = new System.Drawing.Size(94, 20);
-            this.carregarExcelToolStripMenuItem.Text = "Carregar Excel";
-            this.carregarExcelToolStripMenuItem.Visible = false;
-            this.carregarExcelToolStripMenuItem.Click += new System.EventHandler(this.carregarExcelToolStripMenuItem_Click);
             // 
             // imprimirToolStripMenuItem
             // 
@@ -627,6 +628,13 @@ namespace MeuCondominio
             this.rdbAdminstracao.Text = "Administração";
             this.rdbAdminstracao.UseVisualStyleBackColor = true;
             // 
+            // relatórioAcademiaToolStripMenuItem
+            // 
+            this.relatórioAcademiaToolStripMenuItem.Name = "relatórioAcademiaToolStripMenuItem";
+            this.relatórioAcademiaToolStripMenuItem.Size = new System.Drawing.Size(122, 20);
+            this.relatórioAcademiaToolStripMenuItem.Text = "Relatório Academia";
+            this.relatórioAcademiaToolStripMenuItem.Click += new System.EventHandler(this.relatórioAcademiaToolStripMenuItem_Click);
+            // 
             // FrmGestaoSedex
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -734,6 +742,7 @@ namespace MeuCondominio
         private System.Windows.Forms.ToolStripMenuItem mensagemSMSToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testeTelegramToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader Email;
+        private System.Windows.Forms.ToolStripMenuItem relatórioAcademiaToolStripMenuItem;
     }
 }
 

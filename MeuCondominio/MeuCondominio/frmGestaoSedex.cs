@@ -317,9 +317,60 @@ namespace MeuCondominio
             //return;
             #endregion
 
+            Cursor.Current = Cursors.WaitCursor;
+            lblMsgMorador.Text = "Atualizando moradores, aguarde...";
+            lblMsgMorador.Visible = true;
+            timer1.Enabled = true;
+            lblMsgMorador.Refresh();
+
+            UnirTabelas();
+
+            Cursor.Current = Cursors.Default;
+            lblMsgMorador.Text = "moradores atualizados...";
+            lblMsgMorador.Visible = true;
+            timer1.Enabled = true;
+            lblMsgMorador.Refresh();
+
+
+
             //CarregarBlocos();
-            CarregaExcel();
+           // CarregaExcel();
             MeuCondominio.Model.HelperModel.GravaLog("Carregar excel");
+        }
+
+        private void UnirTabelas()
+        {
+            SedexBus sedexBus = new SedexBus();
+            List<Morador> moradoresAntigos = sedexBus.GetMoradores();
+            List<Morador> moradoresAtuais = sedexBus.GetMoradoresAtuais();
+
+
+
+            foreach (Morador moradorAntigo in moradoresAntigos)
+            {
+                string sobreNomeAntigo = PegaSobreNome(moradorAntigo.NomeMorador.Trim());
+                string nomeAntigo = PegaPrimeiroNome(moradorAntigo.NomeMorador.Trim());
+
+                foreach (Morador moradorAtual in moradoresAtuais)
+                {
+                    if ((moradorAtual.NomeMorador == nomeAntigo) && (moradorAtual.SobreNomeMorador.Trim() == sobreNomeAntigo.Trim()))
+                    {
+                        moradorAtual.Celular1 = moradorAntigo.Celular1;
+                        bool x = sedexBus.AtualizarMorador(moradorAtual);
+                        lblMsgMorador.Text = string.Concat("Morador ", moradorAtual.NomeMorador, " Atualizado!");
+                        lblMsgMorador.Visible = true;
+                        timer1.Enabled = true;
+                        lblMsgMorador.Refresh();
+                    }                    
+                }
+            }
+
+
+
+
+
+
+
         }
 
         private void CarregaExcel()
@@ -1225,13 +1276,11 @@ namespace MeuCondominio
                     string sBloco = cboBloco.Text;
 
                     SedexBus bus = new SedexBus();
-                    var MoradoreList = bus.Moradores(sBloco, sApto);
-
-                    foreach (Morador morador in MoradoreList)
+                    var moradores = bus.Moradores(sBloco, sApto);
+                    foreach (Morador morador in moradores)
                     {
                         listViewMoradoresApto.Items.Add(string.Concat(morador.NomeMorador, " ", morador.SobreNomeMorador));
                     }
-                    //CarregaHistorico(cboBloco.Text, cboApto.Text);
                 }
             }
             catch (Exception ex)
@@ -1320,8 +1369,8 @@ namespace MeuCondominio
             Morador morador = new Morador();
             morador.IdMorador = IdMoradorSedex;
             morador.IdApartamento = idApartamentomorador;
-            morador.SobreNomeMorador = PegaSobreNome(txtNomeMoraador.Text.Trim());
-            morador.NomeMorador = PegaPrimeiroNome(txtNomeMoraador.Text.Trim());
+            // morador.SobreNomeMorador = PegaSobreNome(txtNomeMoraador.Text.Trim());
+            morador.NomeMorador = txtNomeMoraador.Text.Trim(); //PegaPrimeiroNome(txtNomeMoraador.Text.Trim());
             morador.Bloco = cboBloco.Text;
             morador.Apartamento = cboApto.Text;
             txtCelular.Mask = "";
@@ -1785,7 +1834,10 @@ namespace MeuCondominio
 
             foreach (SmsEnvio enviar in listSms)
             {
-                var mensagemMorador = sMensagemParaEmail.Replace("{Morador}", enviar.NomeMorador);
+                string PrimeiroNome = PegaPrimeiroNome(enviar.NomeMorador);
+
+                var mensagemMorador = sMensagemParaEmail.Replace("{Morador}", PrimeiroNome);
+
                 mensagemMorador = mensagemMorador.Replace("{codigoSedex}", enviar.CodigoBarras);  
 
                 if (!string.IsNullOrEmpty(enviar.Email1))
@@ -2067,5 +2119,10 @@ namespace MeuCondominio
             return SobreNome;
         }
 
+        private void relatórioAcademiaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmRelatorioAcademia frmRelatorioAcademia = new FrmRelatorioAcademia();
+            frmRelatorioAcademia.Show();
+        }
     }
 }
