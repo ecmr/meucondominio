@@ -38,16 +38,37 @@ namespace MeuCondominio
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.btnCarregarEventos = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.CRBloco = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.CRApto = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.CRNome = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.CRMatricula = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.CREvento = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtMatricula = new System.Windows.Forms.TextBox();
+            this.dTPickerEvento = new System.Windows.Forms.DateTimePicker();
+            this.btnExecutar = new System.Windows.Forms.Button();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // listView1
             // 
+            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.CRBloco,
+            this.CRApto,
+            this.CRNome,
+            this.CRMatricula,
+            this.CREvento});
+            this.listView1.FullRowSelect = true;
+            this.listView1.GridLines = true;
             this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(12, 89);
+            this.listView1.Location = new System.Drawing.Point(225, 91);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(776, 349);
+            this.listView1.Size = new System.Drawing.Size(563, 349);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.View = System.Windows.Forms.View.Details;
             // 
             // txtCartao
             // 
@@ -117,11 +138,93 @@ namespace MeuCondominio
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // CRBloco
+            // 
+            this.CRBloco.Text = "BLOCO";
+            // 
+            // CRApto
+            // 
+            this.CRApto.Text = "Apartamento";
+            this.CRApto.Width = 80;
+            // 
+            // CRNome
+            // 
+            this.CRNome.Text = "NOME";
+            this.CRNome.Width = 170;
+            // 
+            // CRMatricula
+            // 
+            this.CRMatricula.Text = "MATRICULA";
+            this.CRMatricula.Width = 90;
+            // 
+            // CREvento
+            // 
+            this.CREvento.Text = "DATA-HORA";
+            this.CREvento.Width = 140;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.btnExecutar);
+            this.groupBox1.Controls.Add(this.dTPickerEvento);
+            this.groupBox1.Controls.Add(this.txtMatricula);
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Location = new System.Drawing.Point(12, 107);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(200, 149);
+            this.groupBox1.TabIndex = 8;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Filtros";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(7, 20);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(50, 13);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "Matricula";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(10, 68);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(56, 13);
+            this.label4.TabIndex = 1;
+            this.label4.Text = "Data-Hora";
+            // 
+            // txtMatricula
+            // 
+            this.txtMatricula.Location = new System.Drawing.Point(13, 36);
+            this.txtMatricula.Name = "txtMatricula";
+            this.txtMatricula.Size = new System.Drawing.Size(100, 20);
+            this.txtMatricula.TabIndex = 2;
+            // 
+            // dTPickerEvento
+            // 
+            this.dTPickerEvento.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dTPickerEvento.Location = new System.Drawing.Point(7, 84);
+            this.dTPickerEvento.Name = "dTPickerEvento";
+            this.dTPickerEvento.Size = new System.Drawing.Size(170, 20);
+            this.dTPickerEvento.TabIndex = 3;
+            // 
+            // btnExecutar
+            // 
+            this.btnExecutar.Location = new System.Drawing.Point(114, 120);
+            this.btnExecutar.Name = "btnExecutar";
+            this.btnExecutar.Size = new System.Drawing.Size(75, 23);
+            this.btnExecutar.TabIndex = 4;
+            this.btnExecutar.Text = "Executar";
+            this.btnExecutar.UseVisualStyleBackColor = true;
+            this.btnExecutar.Click += new System.EventHandler(this.btnExecutar_Click);
+            // 
             // FrmRelatorioAcademia
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.btnCarregarEventos);
             this.Controls.Add(this.label2);
@@ -131,7 +234,11 @@ namespace MeuCondominio
             this.Controls.Add(this.txtCartao);
             this.Controls.Add(this.listView1);
             this.Name = "FrmRelatorioAcademia";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FrmRelatorioAcademia";
+            this.Load += new System.EventHandler(this.FrmRelatorioAcademia_Load);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -148,5 +255,16 @@ namespace MeuCondominio
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Button btnCarregarEventos;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ColumnHeader CRBloco;
+        private System.Windows.Forms.ColumnHeader CRApto;
+        private System.Windows.Forms.ColumnHeader CRNome;
+        private System.Windows.Forms.ColumnHeader CRMatricula;
+        private System.Windows.Forms.ColumnHeader CREvento;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button btnExecutar;
+        private System.Windows.Forms.DateTimePicker dTPickerEvento;
+        private System.Windows.Forms.TextBox txtMatricula;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label3;
     }
 }

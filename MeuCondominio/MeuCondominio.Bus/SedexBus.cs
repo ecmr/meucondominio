@@ -8,6 +8,20 @@ namespace MeuCondominio.Bus
 {
     public class SedexBus
     {
+
+        #region CATRACA
+        public bool AdionarEvento(Catraca evento)
+        {
+            return DalHelper.AdicionarEvento(evento);
+        }
+
+        public List<AcademiaEvento> RetornarEventos(Catraca evento)
+        {
+            return DalHelper.GetEventosCatraca(evento);
+        }
+
+        #endregion
+
         public Morador Consultar(int idMorador)
         {
             return DalHelper.GetSedex(idMorador);

@@ -74,6 +74,107 @@ namespace MeuCondominio.Model
             }
         }
 
+        #region ACADEMIA
+        /// <summary>
+        /// Adiciona eventos da catraca
+        /// </summary>
+        /// <param name="pMatricula"></param>
+        /// <param name="pEntrada"></param>
+        /// <param name="pSaida"></param>
+        /// <returns></returns>
+        public static bool AdicionarEvento(Catraca evento)
+        {
+            bool sucesso = false;
+            try
+            {
+                using (var cmd = DbConnection().CreateCommand())
+                {
+                    var query = @"INSERT INTO CATRACA (MATRICULA, REGISTRO) VALUES (@MATRICULA, @REGISTRO);";
+
+                    cmd.CommandText = query;
+                    cmd.Parameters.AddWithValue("@MATRICULA", evento.Matricula);
+                    cmd.Parameters.AddWithValue("@ENTRADA", evento.Registro);
+
+                    cmd.ExecuteNonQuery();
+
+                    sucesso = true;
+                }
+
+                return sucesso;
+            }
+            catch (Exception ex)
+            {
+                MeuCondominio.Model.HelperModel.GravaLog(string.Concat("Erro métodp Add: ", ex.Message));
+                return sucesso;
+            }
+        }
+
+        /// <summary>
+        /// Lista eventos da catraca
+        /// </summary>
+        /// <returns></returns>
+        public static List<AcademiaEvento> GetEventosCatraca(Catraca pPvento)
+        {
+            try
+            {
+                var query = @"SELECT 
+                                BLOCO, APARTAMENTO, NOME, A.MATRICULA, REGISTRO
+                            FROM 
+                                ACADEMIA A INNER JOIN
+                                CATRACA C ON C.MATRICULA = A.MATRICULA
+                            WHERE 1 = 1 ";
+
+                if (!string.IsNullOrEmpty(pPvento.Matricula))
+                    query += @" AND A.MATRICULA = @MATRICULA";
+                if (pPvento.Registro > DateTime.Parse("01/01/0001 00:00:00"))
+                {
+                    query += @" AND DATE(substr(REGISTRO,1,4) || '-' || substr(REGISTRO,6,2) || '-' || substr(REGISTRO,9,2)) BETWEEN DATE(@REGISTRO) AND DATE(@REGISTRO)";
+                }
+
+                // 
+
+                query += " ORDER BY A.MATRICULA";
+
+                using (var cmd = DbConnection().CreateCommand())
+                {
+                    cmd.CommandText = query;
+
+                    if (!string.IsNullOrEmpty(pPvento.Matricula))
+                        cmd.Parameters.AddWithValue("@MATRICULA", pPvento.Matricula);
+                    if (pPvento.Registro > DateTime.Parse("01/01/0001 00:00:00"))
+                        cmd.Parameters.AddWithValue("@REGISTRO", pPvento.Registro.ToString("yyyy-MM-dd"));
+
+
+                    SQLiteDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        List<AcademiaEvento> eventos = new List<AcademiaEvento>();
+
+                        while (reader.Read())
+                        {
+                            AcademiaEvento evento = new AcademiaEvento
+                            {
+                                Bloco = reader.IsDBNull(0) ? "0" : reader.GetString(0),
+                                Apartamento = reader.IsDBNull(1) ? "0" : reader.GetString(1),
+                                 Nome = reader.IsDBNull(2) ? "0" : reader.GetString(2),
+                                Matricula = reader.IsDBNull(3) ? "0" : reader.GetString(3),
+                                Registro = reader.IsDBNull(4) ? DateTime.MinValue : reader.GetDateTime(4)
+                            };
+
+                            eventos.Add(evento);
+                        }
+                        return eventos;
+                    }
+                    return new List<AcademiaEvento>();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        #endregion
 
 
         #region MORADOR

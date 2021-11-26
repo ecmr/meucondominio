@@ -41,7 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Academia.cs" />
+    <Compile Include="AcademiaEvento.cs" />
     <Compile Include="Apartamento.cs" />
+    <Compile Include="Catraca.cs" />
     <Compile Include="HelperModel.cs" />
     <Compile Include="Morador.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
