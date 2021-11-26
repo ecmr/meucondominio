@@ -682,6 +682,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
     }
@@ -1936,7 +1944,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Meu Condominio"
         "ProductCode" = "8:{923BA729-2568-4D9D-927B-86AFDF9EEECE}"
-        "PackageCode" = "8:{4BF6452E-38AD-425A-AA96-EE570AEA2606}"
+        "PackageCode" = "8:{F6903954-4968-4772-9F81-42D5F07C4593}"
         "UpgradeCode" = "8:{158A6977-A707-4F7F-9FC5-F578C3A3DF18}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -2058,7 +2066,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_4AB7A6473B584DB0AFB2D3ACF4C14133"
             {
-            "Name" = "8:App Installer"
+            "Name" = "8:Meu Condomínio"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
