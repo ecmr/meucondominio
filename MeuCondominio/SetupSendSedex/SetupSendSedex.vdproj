@@ -1944,7 +1944,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Meu Condominio"
         "ProductCode" = "8:{923BA729-2568-4D9D-927B-86AFDF9EEECE}"
-        "PackageCode" = "8:{F6903954-4968-4772-9F81-42D5F07C4593}"
+        "PackageCode" = "8:{2230E99A-0ACE-45FD-B739-B0F3E4B82CB4}"
         "UpgradeCode" = "8:{158A6977-A707-4F7F-9FC5-F578C3A3DF18}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

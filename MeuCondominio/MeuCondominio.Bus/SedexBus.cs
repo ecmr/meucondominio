@@ -83,9 +83,9 @@ namespace MeuCondominio.Bus
             return DalHelper.GetSedexParaEnvioSms();
         }
 
-        public List<Morador> RetornaListaParaRecibo()
+        public List<Morador> RetornaListaParaRecibo(string pDataInicio = "", string pDataFim = "")
         {
-            return DalHelper.GetSedexParaAssinatura();
+            return DalHelper.GetSedexParaAssinatura(pDataInicio, pDataFim);
         }
 
         public bool Adicionar(Morador morador)

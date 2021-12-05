@@ -1,8 +1,10 @@
-﻿using MeuCondominio.Model;
+﻿using MeuCondominio.Bus;
+using MeuCondominio.Model;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Printing;
+using System.IO;
 using System.Windows.Forms;
 
 namespace MeuCondominio
@@ -13,15 +15,9 @@ namespace MeuCondominio
         PrintDocument print;
         String[] textoToPrint;
 
-        public FrmImpressao(List<Morador> moradores)
+        public FrmImpressao()
         {
-            listPrint = moradores;
-            textoToPrint = new string[listPrint.Count * 3];
-            print = new ImprimirDocumento(textoToPrint);
-            print.EndPrint += new System.Drawing.Printing.PrintEventHandler(this.printDocument1_EndPrint);
-            
             InitializeComponent();
-            
         }
 
         private void FrmImpressao_Load(object sender, EventArgs e)
@@ -33,24 +29,47 @@ namespace MeuCondominio
             {
                 cboImpressora.Items.Add(printer);
             }
-            this.Visible = false;
-            this.btnImprimir_Click(sender, e);
-            this.Close();
+            this.Visible = true;
         }
 
         private void btnImprimir_Click(object sender, EventArgs e)
         {
+            List<Morador> ListaRecibo = new List<Morador>();
+            SedexBus bus = new SedexBus();
+
+            if (ckBPeriodo.Checked)
+            {
+                string inicio = string.Concat(string.Concat(dtpDataInicial.Text.Substring(6, 4)), '-', string.Concat(dtpDataInicial.Text.Substring(3, 2)), '-', string.Concat(dtpDataInicial.Text.Substring(0, 2)), " ", dtpHoraInicial.Text);
+                string fim = string.Concat(string.Concat(dtpDataFinal.Text.Substring(6, 4)), '-', string.Concat(dtpDataFinal.Text.Substring(3, 2)), '-', string.Concat(dtpDataFinal.Text.Substring(0, 2)), " ", dtpHoraFinal.Text);
+                ListaRecibo = bus.RetornaListaParaRecibo(inicio, fim);
+            }
+            else
+            {
+                ListaRecibo = bus.RetornaListaParaRecibo();
+            }
+
+
+            if (ListaRecibo.Count < 1)
+            {
+                lblMsgMorador.Visible = true;
+                lblMsgMorador.Text = "Sem recibos para impressão selecionada!";
+                return;
+            }
+
+            textoToPrint = new string[ListaRecibo.Count * 3];
+            print = new ImprimirDocumento(textoToPrint);
+            print.EndPrint += new System.Drawing.Printing.PrintEventHandler(this.printDocument1_EndPrint);
+
             int x = 0;
 
-            for (int i = 0; i < listPrint.Count; i++)
+            foreach (Morador moradorPrint in ListaRecibo)
             {
-                //textoToPrint[x] += ("BL:" + listPrint[i].Bloco + " Apto: " + listPrint[i].Apartamento + " Cod: " + listPrint[i].CodigoBarraEtiqueta).PadRight(37, '_');
-                textoToPrint[x] += ("BL:" + listPrint[i].Bloco.Remove(0, 5) + " Apto: " + listPrint[i].Apartamento + " Cod: " + listPrint[i].SobreNomeMorador).PadRight(37, '_');
+                textoToPrint[x] += ("BL:" + moradorPrint.Bloco.Remove(0,5).PadLeft(2, '0') + " Apto: " + moradorPrint.Apartamento + " Cod: " + moradorPrint.SobreNomeMorador.PadRight(13, ' ')).PadRight(37, '_');
                 textoToPrint[x] += (" Nome:_____________ Data:__/__/____ Ass:_________________");
                 x++;
                 textoToPrint[x] += (" ").PadRight(150, ' ');
                 x++;
-             }
+            }
 
             print.PrintPage += this.Doc_PrintPage;
             
@@ -64,20 +83,32 @@ namespace MeuCondominio
                 print.Print();
             }
             this.Visible = false;
+
+            if (!bus.AlteraStatusRecibo())
+            {
+                string nomeArquivoDeLog = @"C:\AdCon\Log\ErroLog.txt";
+
+                string diretorio = Path.GetDirectoryName(nomeArquivoDeLog);
+                if (!Directory.Exists(diretorio))
+                    Directory.CreateDirectory(diretorio);
+
+                File.WriteAllText(nomeArquivoDeLog, string.Concat("void imprimirToolStripMenuItem_Click(): ", "Erro ao alterar status de Recibo impresso"));
+            }
+
         }
 
         private void printDocument1_EndPrint(object sender, System.Drawing.Printing.PrintEventArgs e)
         {
             {
-                Bus.SedexBus bus = new Bus.SedexBus();
+               //Bus.SedexBus bus = new Bus.SedexBus();
 
-                foreach (Morador morador in listPrint)
-                {
-                    // morador.ReciboImpresso = "S";
-                    //TODO: Fata criar os metodos para atualizar quando for impresso o recibo
-                    ///UPDATE SedexHistorico SET ReciboImpresso = 'S' WHERE IdSedex = 0;
-                    //bus.AtualizarRecibo(morador);
-                }
+                //foreach (Morador morador in listPrint)
+                //{
+                //    // morador.ReciboImpresso = "S";
+                //    //TODO: Fata criar os metodos para atualizar quando for impresso o recibo
+                //    ///UPDATE SedexHistorico SET ReciboImpresso = 'S' WHERE IdSedex = 0;
+                //    //bus.AtualizarRecibo(morador);
+                //}
             }
         }
 

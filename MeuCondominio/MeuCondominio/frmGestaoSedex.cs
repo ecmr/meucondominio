@@ -1549,6 +1549,8 @@ namespace MeuCondominio
             {
                 lblMsgMorador.Text = "Registro* salvo com sucesso!";
                 lblMsgMorador.Visible = true;
+                lstHistorico.Items.Clear();
+                lstHistorico.Refresh();
                 return;
             }
             else
@@ -1617,44 +1619,20 @@ namespace MeuCondominio
 
         private void imprimirToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            List<Morador> ListaRecibo = new List<Morador>();
-            SedexBus bus = new SedexBus();
-            ListaRecibo = bus.RetornaListaParaRecibo();
-
-            if (ListaRecibo.Count < 1)
-            {
-                lblMsgMorador.Visible = true;
-                lblMsgMorador.Text = "Sem recibos para ser impressão!";
-                timer1.Enabled = true;
-                return;
-            }
-            else
-            {
-                FrmImpressao frmImpressao = new FrmImpressao(ListaRecibo);
-                frmImpressao.StartPosition = FormStartPosition.CenterScreen;
-                frmImpressao.ShowDialog();
-                if (!bus.AlteraStatusRecibo())
-                {
-                    string nomeArquivoDeLog = @"C:\AdCon\Log\ErroLog.txt";
-
-                    string diretorio = Path.GetDirectoryName(nomeArquivoDeLog);
-                    if (!Directory.Exists(diretorio))
-                        Directory.CreateDirectory(diretorio);
-
-                    File.WriteAllText(nomeArquivoDeLog, string.Concat("void imprimirToolStripMenuItem_Click(): ", "Erro ao alterar status de Recibo impresso"));
-                }
-            }
-
-
+            FrmImpressao frmImpressao = new FrmImpressao();
+            frmImpressao.StartPosition = FormStartPosition.CenterScreen;
+            frmImpressao.ShowDialog();
         }
 
         private void reciboDeEntregaToolStripMenuItem_Click(object sender, EventArgs e)
         {
             List<Morador> ListaRecibo = new List<Morador>();
             SedexBus bus = new SedexBus();
+
+
             ListaRecibo = bus.RetornaListaParaRecibo();
 
-            FrmImpressao frmImpressao = new FrmImpressao(ListaRecibo);
+            FrmImpressao frmImpressao = new FrmImpressao();
             frmImpressao.StartPosition = FormStartPosition.CenterScreen;
             frmImpressao.ShowDialog();
         }

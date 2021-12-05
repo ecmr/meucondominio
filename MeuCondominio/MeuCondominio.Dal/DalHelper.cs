@@ -93,7 +93,7 @@ namespace MeuCondominio.Model
 
                     cmd.CommandText = query;
                     cmd.Parameters.AddWithValue("@MATRICULA", evento.Matricula);
-                    cmd.Parameters.AddWithValue("@ENTRADA", evento.Registro);
+                    cmd.Parameters.AddWithValue("@REGISTRO", evento.Registro);
 
                     cmd.ExecuteNonQuery();
 
@@ -130,8 +130,6 @@ namespace MeuCondominio.Model
                 {
                     query += @" AND DATE(substr(REGISTRO,1,4) || '-' || substr(REGISTRO,6,2) || '-' || substr(REGISTRO,9,2)) BETWEEN DATE(@REGISTRO) AND DATE(@REGISTRO)";
                 }
-
-                // 
 
                 query += " ORDER BY A.MATRICULA";
 
@@ -895,7 +893,7 @@ namespace MeuCondominio.Model
             }
         }
 
-        public static List<Morador> GetSedexParaAssinatura()
+        public static List<Morador> GetSedexParaAssinatura(string pDataInicio="", string pDataFim="")
         {
             SQLiteDataAdapter da = null;
             DataTable dt = new DataTable();
@@ -904,21 +902,53 @@ namespace MeuCondominio.Model
                     FROM SedexHistorico SED
                       inner join Morador MORA on SED.IdMorador = MORA.IdMorador
                       inner join Apartamento ap on MORA.IdApartamento = ap.IdApartamento 
-                    WHERE 1 = 1
-                    AND ReciboImpresso = 'N'
-                    GROUP BY
-                        ap.NomeTorre, ap.Apartamento, MORA.Nome, MORA.Email1, MORA.Celular1, SED.CodigoBarraEtiqueta 
-                    ORDER BY 
-                    ap.NomeTorre, AP.Apartamento;";
+                    WHERE 1 = 1 ";
+
+            if (!string.IsNullOrEmpty(pDataInicio) && (!string.IsNullOrEmpty(pDataFim)))
+                query += @" AND sed.dataenvio BETWEEN @DTINICIO AND @DTFIM";
+            else
+                query += @" AND ReciboImpresso = 'N' ";
+
+
+            query += @" GROUP BY
+                       ap.NomeTorre, ap.Apartamento, MORA.Nome, MORA.Email1, MORA.Celular1, SED.CodigoBarraEtiqueta 
+                   ORDER BY 
+                   ap.NomeTorre, AP.Apartamento;";
 
             try
             {
-                using (var cmd = DbConnection().CreateCommand())
+                using (var cmd = new SQLiteCommand(DbConnection()))
                 {
                     cmd.CommandText = query;
-                    da = new SQLiteDataAdapter(cmd.CommandText, DbConnection());
-                    da.Fill(dt);
-                    return PreencheMoradorDt(dt);
+
+                    if (!string.IsNullOrEmpty(pDataInicio) && (!string.IsNullOrEmpty(pDataFim)))
+                    {
+                        cmd.Parameters.AddWithValue("@DTINICIO", pDataInicio);
+                        cmd.Parameters.AddWithValue("@DTFIM", pDataFim);
+                    }
+
+                    cmd.Parameters.AddWithValue("@DTINICIO", pDataInicio);
+                    cmd.Parameters.AddWithValue("@DTFIM", pDataFim);
+
+                    SQLiteDataReader dr = cmd.ExecuteReader();
+
+                    List<Morador> moradores = new List<Morador>();
+
+                    while(dr.Read())
+                    {
+                        Morador morador = new Morador();
+
+                        morador.IdMorador = dr.IsDBNull(0) ? 0 : dr.GetInt32(0);
+                        morador.Bloco = dr.IsDBNull(1) ? "" : dr.GetString(1);
+                        morador.Apartamento = dr.IsDBNull(2) ? "" : dr.GetString(2);
+                        morador.NomeMorador = dr.IsDBNull(3) ? "" : dr.GetString(3);
+                        morador.SobreNomeMorador = dr.IsDBNull(4) ? "" : dr.GetString(4);
+                        morador.Email1 = dr.IsDBNull(5) ? "" : dr.GetString(5);
+                        morador.Celular1 = dr.IsDBNull(6) ? "" : dr.GetString(6);
+                        moradores.Add(morador);
+                    }
+                    return moradores;
+
                 }
             }
             catch (Exception ex)
