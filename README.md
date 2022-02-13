@@ -1,2 +1,2 @@
 # MeuCondomínio
-Gestão de envio de sedex para moradores
+Gestão de sedex e encomendas e envio de notificações aos moradores, envios para Telegram e e-mail.
