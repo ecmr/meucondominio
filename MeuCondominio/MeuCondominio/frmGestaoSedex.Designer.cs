@@ -59,6 +59,7 @@ namespace MeuCondominio
             this.incluirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cnsultarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.carregarExcelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.relatórioAcademiaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.configuraçõesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mensagemSMSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.salvarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -88,12 +89,24 @@ namespace MeuCondominio
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.rdbDesenvolvedor = new System.Windows.Forms.RadioButton();
             this.rdbAdminstracao = new System.Windows.Forms.RadioButton();
-            this.relatórioAcademiaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.grpBoxConfigTelegram = new System.Windows.Forms.GroupBox();
+            this.buttonSendCode = new System.Windows.Forms.Button();
+            this.labelCode = new System.Windows.Forms.Label();
+            this.textBoxCode = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.linkLabel = new System.Windows.Forms.LinkLabel();
+            this.label11 = new System.Windows.Forms.Label();
+            this.textBoxApiHash = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.textBoxApiID = new System.Windows.Forms.TextBox();
+            this.buttonLogin = new System.Windows.Forms.Button();
+            this.textBoxPhone = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            this.grpBoxConfigTelegram.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -365,6 +378,13 @@ namespace MeuCondominio
             this.carregarExcelToolStripMenuItem.Text = "Carregar Excel";
             this.carregarExcelToolStripMenuItem.Click += new System.EventHandler(this.carregarExcelToolStripMenuItem_Click);
             // 
+            // relatórioAcademiaToolStripMenuItem
+            // 
+            this.relatórioAcademiaToolStripMenuItem.Name = "relatórioAcademiaToolStripMenuItem";
+            this.relatórioAcademiaToolStripMenuItem.Size = new System.Drawing.Size(122, 20);
+            this.relatórioAcademiaToolStripMenuItem.Text = "Relatório Academia";
+            this.relatórioAcademiaToolStripMenuItem.Click += new System.EventHandler(this.relatórioAcademiaToolStripMenuItem_Click);
+            // 
             // configuraçõesToolStripMenuItem
             // 
             this.configuraçõesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -516,7 +536,7 @@ namespace MeuCondominio
             // timer1
             // 
             this.timer1.Enabled = true;
-            this.timer1.Interval = 3000;
+            this.timer1.Interval = 2000;
             this.timer1.Tick += new System.EventHandler(this.LimparMensagem);
             // 
             // btnExcluir
@@ -534,7 +554,7 @@ namespace MeuCondominio
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.lstHistorico);
-            this.groupBox3.Location = new System.Drawing.Point(16, 410);
+            this.groupBox3.Location = new System.Drawing.Point(16, 505);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(784, 218);
             this.groupBox3.TabIndex = 27;
@@ -628,18 +648,162 @@ namespace MeuCondominio
             this.rdbAdminstracao.Text = "Administração";
             this.rdbAdminstracao.UseVisualStyleBackColor = true;
             // 
-            // relatórioAcademiaToolStripMenuItem
+            // grpBoxConfigTelegram
             // 
-            this.relatórioAcademiaToolStripMenuItem.Name = "relatórioAcademiaToolStripMenuItem";
-            this.relatórioAcademiaToolStripMenuItem.Size = new System.Drawing.Size(122, 20);
-            this.relatórioAcademiaToolStripMenuItem.Text = "Relatório Academia";
-            this.relatórioAcademiaToolStripMenuItem.Click += new System.EventHandler(this.relatórioAcademiaToolStripMenuItem_Click);
+            this.grpBoxConfigTelegram.Controls.Add(this.textBoxPhone);
+            this.grpBoxConfigTelegram.Controls.Add(this.buttonSendCode);
+            this.grpBoxConfigTelegram.Controls.Add(this.labelCode);
+            this.grpBoxConfigTelegram.Controls.Add(this.textBoxCode);
+            this.grpBoxConfigTelegram.Controls.Add(this.label10);
+            this.grpBoxConfigTelegram.Controls.Add(this.linkLabel);
+            this.grpBoxConfigTelegram.Controls.Add(this.label11);
+            this.grpBoxConfigTelegram.Controls.Add(this.textBoxApiHash);
+            this.grpBoxConfigTelegram.Controls.Add(this.label12);
+            this.grpBoxConfigTelegram.Controls.Add(this.textBoxApiID);
+            this.grpBoxConfigTelegram.Controls.Add(this.buttonLogin);
+            this.grpBoxConfigTelegram.Location = new System.Drawing.Point(22, 407);
+            this.grpBoxConfigTelegram.Name = "grpBoxConfigTelegram";
+            this.grpBoxConfigTelegram.Size = new System.Drawing.Size(778, 91);
+            this.grpBoxConfigTelegram.TabIndex = 30;
+            this.grpBoxConfigTelegram.TabStop = false;
+            this.grpBoxConfigTelegram.Text = "Configurações Telegram";
+            // 
+            // buttonSendCode
+            // 
+            this.buttonSendCode.Location = new System.Drawing.Point(674, 51);
+            this.buttonSendCode.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonSendCode.Name = "buttonSendCode";
+            this.buttonSendCode.Size = new System.Drawing.Size(61, 22);
+            this.buttonSendCode.TabIndex = 22;
+            this.buttonSendCode.Text = "Verificar";
+            this.buttonSendCode.UseVisualStyleBackColor = true;
+            this.buttonSendCode.Visible = false;
+            this.buttonSendCode.Click += new System.EventHandler(this.buttonSendCode_Click);
+            // 
+            // labelCode
+            // 
+            this.labelCode.AutoSize = true;
+            this.labelCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelCode.Location = new System.Drawing.Point(440, 50);
+            this.labelCode.Margin = new System.Windows.Forms.Padding(0);
+            this.labelCode.Name = "labelCode";
+            this.labelCode.Padding = new System.Windows.Forms.Padding(2);
+            this.labelCode.Size = new System.Drawing.Size(139, 17);
+            this.labelCode.TabIndex = 21;
+            this.labelCode.Text = "Código de verificação:";
+            this.labelCode.Visible = false;
+            // 
+            // textBoxCode
+            // 
+            this.textBoxCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxCode.Location = new System.Drawing.Point(581, 53);
+            this.textBoxCode.Margin = new System.Windows.Forms.Padding(2);
+            this.textBoxCode.Name = "textBoxCode";
+            this.textBoxCode.Size = new System.Drawing.Size(76, 19);
+            this.textBoxCode.TabIndex = 20;
+            this.textBoxCode.Visible = false;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(21, 50);
+            this.label10.Margin = new System.Windows.Forms.Padding(0);
+            this.label10.Name = "label10";
+            this.label10.Padding = new System.Windows.Forms.Padding(2);
+            this.label10.Size = new System.Drawing.Size(163, 17);
+            this.label10.TabIndex = 19;
+            this.label10.Text = "Use o Número de telefone:";
+            // 
+            // linkLabel
+            // 
+            this.linkLabel.AutoSize = true;
+            this.linkLabel.LinkArea = new System.Windows.Forms.LinkArea(13, 28);
+            this.linkLabel.Location = new System.Drawing.Point(443, 25);
+            this.linkLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.linkLabel.Name = "linkLabel";
+            this.linkLabel.Padding = new System.Windows.Forms.Padding(2);
+            this.linkLabel.Size = new System.Drawing.Size(214, 21);
+            this.linkLabel.TabIndex = 18;
+            this.linkLabel.TabStop = true;
+            this.linkLabel.Tag = "https://my.telegram.org/apps";
+            this.linkLabel.Text = "get these at https://my.telegram.org/apps";
+            this.linkLabel.UseCompatibleTextRendering = true;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(154, 24);
+            this.label11.Margin = new System.Windows.Forms.Padding(0);
+            this.label11.Name = "label11";
+            this.label11.Padding = new System.Windows.Forms.Padding(2);
+            this.label11.Size = new System.Drawing.Size(66, 17);
+            this.label11.TabIndex = 17;
+            this.label11.Text = "api_hash:";
+            // 
+            // textBoxApiHash
+            // 
+            this.textBoxApiHash.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MeuCondominio.Properties.Settings.Default, "api_hash", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBoxApiHash.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxApiHash.Location = new System.Drawing.Point(222, 24);
+            this.textBoxApiHash.Margin = new System.Windows.Forms.Padding(2);
+            this.textBoxApiHash.Name = "textBoxApiHash";
+            this.textBoxApiHash.Size = new System.Drawing.Size(211, 19);
+            this.textBoxApiHash.TabIndex = 16;
+            this.textBoxApiHash.Text = global::MeuCondominio.Properties.Settings.Default.api_hash;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.Location = new System.Drawing.Point(21, 24);
+            this.label12.Margin = new System.Windows.Forms.Padding(0);
+            this.label12.Name = "label12";
+            this.label12.Padding = new System.Windows.Forms.Padding(2);
+            this.label12.Size = new System.Drawing.Size(49, 17);
+            this.label12.TabIndex = 15;
+            this.label12.Text = "api_id:";
+            // 
+            // textBoxApiID
+            // 
+            this.textBoxApiID.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MeuCondominio.Properties.Settings.Default, "api_id", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBoxApiID.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxApiID.Location = new System.Drawing.Point(71, 24);
+            this.textBoxApiID.Margin = new System.Windows.Forms.Padding(2);
+            this.textBoxApiID.Name = "textBoxApiID";
+            this.textBoxApiID.Size = new System.Drawing.Size(76, 19);
+            this.textBoxApiID.TabIndex = 14;
+            this.textBoxApiID.Text = global::MeuCondominio.Properties.Settings.Default.api_id;
+            // 
+            // buttonLogin
+            // 
+            this.buttonLogin.Location = new System.Drawing.Point(325, 50);
+            this.buttonLogin.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonLogin.Name = "buttonLogin";
+            this.buttonLogin.Size = new System.Drawing.Size(84, 22);
+            this.buttonLogin.TabIndex = 13;
+            this.buttonLogin.Text = "Conectar/Login";
+            this.buttonLogin.UseVisualStyleBackColor = true;
+            this.buttonLogin.Click += new System.EventHandler(this.buttonLogin_Click);
+            // 
+            // textBoxPhone
+            // 
+            this.textBoxPhone.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MeuCondominio.Properties.Settings.Default, "phone_number", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBoxPhone.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxPhone.Location = new System.Drawing.Point(186, 50);
+            this.textBoxPhone.Margin = new System.Windows.Forms.Padding(2);
+            this.textBoxPhone.Name = "textBoxPhone";
+            this.textBoxPhone.Size = new System.Drawing.Size(135, 19);
+            this.textBoxPhone.TabIndex = 23;
+            this.textBoxPhone.Text = global::MeuCondominio.Properties.Settings.Default.phone_number;
             // 
             // FrmGestaoSedex
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(829, 632);
+            this.ClientSize = new System.Drawing.Size(829, 739);
+            this.Controls.Add(this.grpBoxConfigTelegram);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.btnExcluir);
@@ -663,6 +827,7 @@ namespace MeuCondominio
             this.Name = "FrmGestaoSedex";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Gestão de Sedex";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmGestaoSedex_FormClosing);
             this.Load += new System.EventHandler(this.FrmGestaoSedex_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -673,6 +838,8 @@ namespace MeuCondominio
             this.groupBox3.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            this.grpBoxConfigTelegram.ResumeLayout(false);
+            this.grpBoxConfigTelegram.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -743,6 +910,18 @@ namespace MeuCondominio
         private System.Windows.Forms.ToolStripMenuItem testeTelegramToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader Email;
         private System.Windows.Forms.ToolStripMenuItem relatórioAcademiaToolStripMenuItem;
+        private System.Windows.Forms.GroupBox grpBoxConfigTelegram;
+        private System.Windows.Forms.TextBox textBoxPhone;
+        private System.Windows.Forms.Button buttonSendCode;
+        private System.Windows.Forms.Label labelCode;
+        private System.Windows.Forms.TextBox textBoxCode;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.LinkLabel linkLabel;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox textBoxApiHash;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TextBox textBoxApiID;
+        private System.Windows.Forms.Button buttonLogin;
     }
 }
 

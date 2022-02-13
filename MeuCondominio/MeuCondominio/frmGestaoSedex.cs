@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using MeuCondominio.Bus;
 using MeuCondominio.Model;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -17,6 +18,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
 using TeleSharp.TL;
+using TL;
 using TLSharp.Core;
 using TLSharp.Core.Exceptions;
 
@@ -34,6 +36,14 @@ namespace MeuCondominio
         private string sMensagemParaEmail;
         private string hash;
         private string code;
+
+        #region WTelegramClient
+        private readonly ManualResetEventSlim _codeReady = new ManualResetEventSlim();
+        private WTelegram.Client _client;
+        private User _user;
+        private string _userId;
+        #endregion
+
 
         #region testeTelegram
         private string NumberToSendMessage { get; set; }
@@ -258,6 +268,13 @@ namespace MeuCondominio
             cboApto.Items.Add("102");
             cboApto.Items.Add("103");
             cboApto.Items.Add("104");
+
+            #region WTelegramClient
+            WTelegram.Helpers.Log = (l, s) => Debug.WriteLine(s);
+
+            //grpBoxConfigTelegram.Visible = false;
+            //this.Height = 706;
+            #endregion
 
             // CarregarBlocos();
             Cursor.Current = Cursors.Default;
@@ -1279,7 +1296,8 @@ namespace MeuCondominio
                     var moradores = bus.Moradores(sBloco, sApto);
                     foreach (Morador morador in moradores)
                     {
-                        listViewMoradoresApto.Items.Add(string.Concat(morador.NomeMorador, " ", morador.SobreNomeMorador));
+                        listViewMoradoresApto.Items.Add(string.Concat(morador.NomeMorador));
+                        //listViewMoradoresApto.Items.Add(string.Concat(morador.NomeMorador, " ", morador.SobreNomeMorador));
                     }
                 }
             }
@@ -1314,8 +1332,8 @@ namespace MeuCondominio
 
             SedexBus bus = new SedexBus();
             Morador morador = bus.Consultar(bloco, apto, nomeMorador);
-            
-            if (morador.IdMorador > 0)
+
+            if (morador.IdMorador > 0)            
             {
                 txtNomeMoraador.Text = string.Concat(morador.NomeMorador, " ", morador.SobreNomeMorador);
                 txtCelular.Text = morador.Celular1;
@@ -1370,7 +1388,7 @@ namespace MeuCondominio
             morador.IdMorador = IdMoradorSedex;
             morador.IdApartamento = idApartamentomorador;
             // morador.SobreNomeMorador = PegaSobreNome(txtNomeMoraador.Text.Trim());
-            morador.NomeMorador = txtNomeMoraador.Text.Trim(); //PegaPrimeiroNome(txtNomeMoraador.Text.Trim());
+            morador.NomeMorador = txtNomeMoraador.Text.Trim().ToUpper(); //PegaPrimeiroNome(txtNomeMoraador.Text.Trim());
             morador.Bloco = cboBloco.Text;
             morador.Apartamento = cboApto.Text;
             txtCelular.Mask = "";
@@ -1695,7 +1713,7 @@ namespace MeuCondominio
                             };
                 foreach (var p in prods)
                 {
-                    sMensagemParaSms = String.Concat("Cond. Resid. Aricanduva!", Environment.NewLine, "Ola {Morador}", Environment.NewLine, p.ValorMensagem, Environment.NewLine, "Att: Administracao!");
+                    sMensagemParaSms = String.Concat("Cond. Resid. Aricanduva!", Environment.NewLine, "Olá {Morador}", Environment.NewLine, p.ValorMensagem, Environment.NewLine, "Att: ADM!");
                 }
 
 
@@ -1780,8 +1798,18 @@ namespace MeuCondominio
             return caminho;
         }
 
+        private void RemoveDatTelegram()
+        {
+            if (File.Exists(@"C:\repos\meucondominio\MeuCondominio\MeuCondominio\bin\Debug\session.dat"))
+                File.Delete(@"C:\repos\meucondominio\MeuCondominio\MeuCondominio\bin\Debug\session.dat");
+        }
+
+
         private void btnEnviarSms_Click(object sender, EventArgs e)
         {
+
+            RemoveDatTelegram();
+
             if ((!rdbAdminstracao.Checked) && (!rdbDesenvolvedor.Checked))
             {
                 MessageBox.Show("Selecione qual chave sedex que deseja usar!");
@@ -1799,16 +1827,37 @@ namespace MeuCondominio
 
             foreach ( SmsEnvio enviar in listSms)
             {
-                var mensagemMorador = sMensagemParaSms.Replace("{Morador}", enviar.NomeMorador);
+                var nome = enviar.NomeMorador.Split(' ');
+                var mensagemMorador = sMensagemParaSms.Replace("{Morador}", nome[0]);
 
-                if (EnvioMensagem.EnvioSmsDev(enviar, mensagemMorador, pChaveDesenvi))
-                {
-                    lblMsgMorador.Visible = true;
-                    lblMsgMorador.Text = $"sms enviado para {enviar.NomeMorador} com sucesso!";
-                    lblMsgMorador.Refresh();
-                    sedexBus.RegistrarEmvioSms(enviar.ChaveSedex);
-                }
+
+                //if (EnvioMensagem.EnvioSmsDev(enviar, mensagemMorador, pChaveDesenvi))
+                // Envio para ChatBoot
+                // EnvioMensagem.EnviarMensagemParaChatTelegram("TESTE CONDOMINIO");
+                // Envio para numero do morador
+                EnvioWTelegramClient(enviar);
+
+                break;
+
+                EnvioMensagem.EnviarMensagemParaContatoTelegram(enviar.Celular1, "TESTE DO SEDEX CONDOMINIO");
+
+                // var retorno = (EnvioMensagem.ZenviaEnvioSms(new MoradorSms() { From = "5511969410446", To = enviar.Celular1, Text = mensagemMorador }));
+                // var retorno = EnvioMensagem.EnvioZenvia(new MoradorSms() { From = "5511969410446", To = enviar.Celular1, Text = mensagemMorador });
+
+                //if (retorno == (Task<true>))
+                //{
+                //    lblMsgMorador.Visible = true;
+                //    lblMsgMorador.Text = $"sms enviado para {enviar.NomeMorador} com sucesso!";
+                //    lblMsgMorador.Refresh();
+                //    sedexBus.RegistrarEmvioSms(enviar.ChaveSedex);
+                //}
             }
+
+
+
+            return;
+
+
 
             foreach (SmsEnvio enviar in listSms)
             {
@@ -2101,6 +2150,111 @@ namespace MeuCondominio
         {
             FrmRelatorioAcademia frmRelatorioAcademia = new FrmRelatorioAcademia();
             frmRelatorioAcademia.Show();
+        }
+
+
+        #region WTelegramCliente
+        private void FrmGestaoSedex_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _client?.Dispose();
+            Properties.Settings.Default.Save();
+        }
+
+        private void linkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(((LinkLabel)sender).Tag as string);
+        }
+        
+        private async void EnvioWTelegramClient(SmsEnvio enviar)
+        {
+            //Connexão
+            _client = new WTelegram.Client(Config);
+            _user = await _client.LoginUserIfNeeded();
+            lblMsgMorador.Text = ($"We are now connected as {_user}");
+
+
+
+            //Envio
+            var result = await _client.Contacts_GetContacts(_client.GetHashCode());
+
+            var user3 = result.users
+            .Where(x => x.GetType() == typeof(User))
+            .Cast<User>()
+            .FirstOrDefault(x => x.phone == "5511963198516");
+
+            _user = user3;
+
+            foreach (User user in result.users.Values)
+            {
+                if (user.phone == String.Concat("55", enviar.Celular1.Trim())) // "5511963198516")
+                {
+                    _user = user;
+                    break;
+                }
+            }
+
+            enviar.CodigoBarras = string.IsNullOrEmpty(enviar.CodigoBarras.ToString()) ? "X" : enviar.CodigoBarras;
+
+            string msg2 = @"Cond. Resid. Aricanduva!" + Environment.NewLine;
+            msg2 += "Olá " + _user.first_name + Environment.NewLine;
+            msg2 += "Seu Sedex de código " + enviar.CodigoBarras + " chegou e está disponível para retirada na Adminstração de segunda a sexta das 9 as 18 horas e sábado das 9 as 12 horas! " + Environment.NewLine;
+            msg2 += "Att: Administracao!";
+
+            await _client.SendMessageAsync(new InputPeerUser() { user_id = _user.id }, msg2);
+        }
+
+        string Config(string what)
+        {
+            switch (what)
+            {
+                case "api_id": return textBoxApiID.Text;
+                case "api_hash": return textBoxApiHash.Text;
+                case "phone_number": return textBoxPhone.Text;
+                case "verification_code":
+                case "password":
+                    BeginInvoke(new Action(() => CodeNeeded(what.Replace('_', ' '))));
+                    _codeReady.Reset();
+                    _codeReady.Wait();
+                    return textBoxCode.Text;
+                default: return null;
+
+                //case "api_id": return "8106364";
+                //case "api_hash": return "";
+                //case "phone_number": return "d1934a983b83df5e690abf9a52fe2d0a";
+                //case "verification_code":
+                //case "password":
+                //    BeginInvoke(new Action(() => CodeNeeded(what.Replace('_', ' '))));
+                //    _codeReady.Reset();
+                //    _codeReady.Wait();
+                //    return "65067";
+                //default: return null;
+            };
+        }
+        private void CodeNeeded(string what)
+        {
+            labelCode.Text = what + ':';
+            textBoxCode.Text = "";
+            labelCode.Visible = textBoxCode.Visible = buttonSendCode.Visible = true;
+            textBoxCode.Focus();
+            lblMsgMorador.Text = ($"A {what} is required...");
+            lblMsgMorador.Visible = true;
+        }
+        #endregion
+
+        private async void buttonLogin_Click(object sender, EventArgs e)
+        {
+            buttonLogin.Enabled = false;
+            lblMsgMorador.Text = ($"Connecting & login into Telegram servers...");
+            _client = new WTelegram.Client(Config);
+            _user = await _client.LoginUserIfNeeded();
+            lblMsgMorador.Text = ($"We are now connected as {_user}");
+            lblMsgMorador.Visible = true;
+        }
+
+        private void buttonSendCode_Click(object sender, EventArgs e)
+        {
+            labelCode.Visible = textBoxCode.Visible = buttonSendCode.Visible = false;
+            _codeReady.Set();
         }
     }
 }

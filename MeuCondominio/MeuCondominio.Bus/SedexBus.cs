@@ -50,11 +50,13 @@ namespace MeuCondominio.Bus
 
         public List<Morador> Moradores(string pBloco, string pApto)
         {
+            pBloco = String.Concat("BL-", pBloco);
             return DalHelper.GetMorador(pBloco, pApto);
         }
 
         public Morador Consultar(string pBloco, string pApto, string pNomeMorador)
         {
+            pBloco = String.Concat("BL-", pBloco);
             return DalHelper.GetMorador(pBloco, pApto, pNomeMorador);
         }
 
@@ -89,14 +91,16 @@ namespace MeuCondominio.Bus
         }
 
         public bool Adicionar(Morador morador)
-        { //ao incluir um novo morador deu erro aqui
-            Apartamento ap = DalHelper.GetApartamento(morador.Bloco, morador.Apartamento);
-            morador.IdApartamento = ap.IdApartamento;
-            if (string.IsNullOrEmpty(morador.SobreNomeMorador))
-                morador.SobreNomeMorador = PegaSobreNome(morador.NomeMorador);
-            if (string.IsNullOrEmpty(morador.NomeMorador))
-                morador.NomeMorador = PegaPrimeiroNome(morador.NomeMorador);
-            
+        {
+            #region
+            //Apartamento ap = DalHelper.GetApartamento(morador.Bloco, morador.Apartamento);
+            //morador.IdApartamento = ap.IdApartamento;
+            //if (string.IsNullOrEmpty(morador.SobreNomeMorador))
+            //    morador.SobreNomeMorador = PegaSobreNome(morador.NomeMorador);
+            //if (string.IsNullOrEmpty(morador.NomeMorador))
+            //    morador.NomeMorador = PegaPrimeiroNome(morador.NomeMorador);
+            #endregion
+
             return DalHelper.Add(morador);
         }
 
