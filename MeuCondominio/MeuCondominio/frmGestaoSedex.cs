@@ -272,8 +272,10 @@ namespace MeuCondominio
             #region WTelegramClient
             WTelegram.Helpers.Log = (l, s) => Debug.WriteLine(s);
 
-            //grpBoxConfigTelegram.Visible = false;
-            //this.Height = 706;
+            grpBoxConfigTelegram.Visible = false;
+            this.Height = 706;
+            Point point = new Point(20, 410);
+            groupBox3.Location = point;
             #endregion
 
             // CarregarBlocos();
@@ -1830,34 +1832,12 @@ namespace MeuCondominio
                 var nome = enviar.NomeMorador.Split(' ');
                 var mensagemMorador = sMensagemParaSms.Replace("{Morador}", nome[0]);
 
-
-                //if (EnvioMensagem.EnvioSmsDev(enviar, mensagemMorador, pChaveDesenvi))
-                // Envio para ChatBoot
-                // EnvioMensagem.EnviarMensagemParaChatTelegram("TESTE CONDOMINIO");
-                // Envio para numero do morador
                 EnvioWTelegramClient(enviar);
+                lblMsgMorador.Visible = true;
+                lblMsgMorador.Text = $"Mensagem enviada para {enviar.NomeMorador} com sucesso!";
+                lblMsgMorador.Refresh();
 
-                break;
-
-                EnvioMensagem.EnviarMensagemParaContatoTelegram(enviar.Celular1, "TESTE DO SEDEX CONDOMINIO");
-
-                // var retorno = (EnvioMensagem.ZenviaEnvioSms(new MoradorSms() { From = "5511969410446", To = enviar.Celular1, Text = mensagemMorador }));
-                // var retorno = EnvioMensagem.EnvioZenvia(new MoradorSms() { From = "5511969410446", To = enviar.Celular1, Text = mensagemMorador });
-
-                //if (retorno == (Task<true>))
-                //{
-                //    lblMsgMorador.Visible = true;
-                //    lblMsgMorador.Text = $"sms enviado para {enviar.NomeMorador} com sucesso!";
-                //    lblMsgMorador.Refresh();
-                //    sedexBus.RegistrarEmvioSms(enviar.ChaveSedex);
-                //}
             }
-
-
-
-            return;
-
-
 
             foreach (SmsEnvio enviar in listSms)
             {
@@ -1877,8 +1857,6 @@ namespace MeuCondominio
                     sedexBus.RegistrarEmvioEmail(enviar.ChaveSedex);
                 }
             }
-
-
 
             lblMsgMorador.Text = $"Enviado para {listSms.Count} moradores com sucesso!";
             timer1.Enabled = true;
@@ -2169,24 +2147,34 @@ namespace MeuCondominio
         {
             //Connexão
             _client = new WTelegram.Client(Config);
+
             _user = await _client.LoginUserIfNeeded();
-            lblMsgMorador.Text = ($"We are now connected as {_user}");
+            lblMsgMorador.Text = ($"Você está conectado como: {_user}");
+            timer1.Enabled = true;
 
-
+            if (textBoxCode.Visible)
+            {
+                this.Height = 778;
+                this.grpBoxConfigTelegram.Visible = true;
+                Point point = new Point(20, 510);
+                groupBox3.Location = point;
+                this.Refresh();
+            }
+            else
+            {
+                this.Height = 706;
+                this.grpBoxConfigTelegram.Visible = false;
+                Point point = new Point(20, 410);
+                groupBox3.Location = point;
+                this.Refresh();
+            }
 
             //Envio
             var result = await _client.Contacts_GetContacts(_client.GetHashCode());
 
-            var user3 = result.users
-            .Where(x => x.GetType() == typeof(User))
-            .Cast<User>()
-            .FirstOrDefault(x => x.phone == "5511963198516");
-
-            _user = user3;
-
             foreach (User user in result.users.Values)
             {
-                if (user.phone == String.Concat("55", enviar.Celular1.Trim())) // "5511963198516")
+                if (user.phone == String.Concat("55", enviar.Celular1.Trim()))
                 {
                     _user = user;
                     break;
@@ -2217,17 +2205,6 @@ namespace MeuCondominio
                     _codeReady.Wait();
                     return textBoxCode.Text;
                 default: return null;
-
-                //case "api_id": return "8106364";
-                //case "api_hash": return "";
-                //case "phone_number": return "d1934a983b83df5e690abf9a52fe2d0a";
-                //case "verification_code":
-                //case "password":
-                //    BeginInvoke(new Action(() => CodeNeeded(what.Replace('_', ' '))));
-                //    _codeReady.Reset();
-                //    _codeReady.Wait();
-                //    return "65067";
-                //default: return null;
             };
         }
         private void CodeNeeded(string what)
@@ -2236,7 +2213,7 @@ namespace MeuCondominio
             textBoxCode.Text = "";
             labelCode.Visible = textBoxCode.Visible = buttonSendCode.Visible = true;
             textBoxCode.Focus();
-            lblMsgMorador.Text = ($"A {what} is required...");
+            lblMsgMorador.Text = ($"Uma {what} é requerida...");
             lblMsgMorador.Visible = true;
         }
         #endregion
@@ -2244,10 +2221,10 @@ namespace MeuCondominio
         private async void buttonLogin_Click(object sender, EventArgs e)
         {
             buttonLogin.Enabled = false;
-            lblMsgMorador.Text = ($"Connecting & login into Telegram servers...");
+            lblMsgMorador.Text = ($"Conectando & logando no servidor Telegram...");
             _client = new WTelegram.Client(Config);
             _user = await _client.LoginUserIfNeeded();
-            lblMsgMorador.Text = ($"We are now connected as {_user}");
+            lblMsgMorador.Text = ($"Você está conectado como: {_user}");
             lblMsgMorador.Visible = true;
         }
 

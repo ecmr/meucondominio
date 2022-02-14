@@ -90,6 +90,7 @@ namespace MeuCondominio
             this.rdbDesenvolvedor = new System.Windows.Forms.RadioButton();
             this.rdbAdminstracao = new System.Windows.Forms.RadioButton();
             this.grpBoxConfigTelegram = new System.Windows.Forms.GroupBox();
+            this.textBoxPhone = new System.Windows.Forms.TextBox();
             this.buttonSendCode = new System.Windows.Forms.Button();
             this.labelCode = new System.Windows.Forms.Label();
             this.textBoxCode = new System.Windows.Forms.TextBox();
@@ -100,7 +101,6 @@ namespace MeuCondominio
             this.label12 = new System.Windows.Forms.Label();
             this.textBoxApiID = new System.Windows.Forms.TextBox();
             this.buttonLogin = new System.Windows.Forms.Button();
-            this.textBoxPhone = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -193,11 +193,10 @@ namespace MeuCondominio
             // 
             // lblMsgMorador
             // 
-            this.lblMsgMorador.AutoSize = true;
             this.lblMsgMorador.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this.lblMsgMorador.Location = new System.Drawing.Point(9, 292);
+            this.lblMsgMorador.Location = new System.Drawing.Point(7, 291);
             this.lblMsgMorador.Name = "lblMsgMorador";
-            this.lblMsgMorador.Size = new System.Drawing.Size(280, 25);
+            this.lblMsgMorador.Size = new System.Drawing.Size(479, 79);
             this.lblMsgMorador.TabIndex = 16;
             this.lblMsgMorador.Text = "labelMensagemEnvioMorador";
             this.lblMsgMorador.Visible = false;
@@ -554,7 +553,7 @@ namespace MeuCondominio
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.lstHistorico);
-            this.groupBox3.Location = new System.Drawing.Point(16, 505);
+            this.groupBox3.Location = new System.Drawing.Point(20, 510);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(784, 218);
             this.groupBox3.TabIndex = 27;
@@ -572,7 +571,7 @@ namespace MeuCondominio
             this.DataSms,
             this.CodigoBarrasProduto});
             this.lstHistorico.HideSelection = false;
-            this.lstHistorico.Location = new System.Drawing.Point(6, 19);
+            this.lstHistorico.Location = new System.Drawing.Point(6, 20);
             this.lstHistorico.MultiSelect = false;
             this.lstHistorico.Name = "lstHistorico";
             this.lstHistorico.Size = new System.Drawing.Size(767, 193);
@@ -667,6 +666,17 @@ namespace MeuCondominio
             this.grpBoxConfigTelegram.TabIndex = 30;
             this.grpBoxConfigTelegram.TabStop = false;
             this.grpBoxConfigTelegram.Text = "Configurações Telegram";
+            // 
+            // textBoxPhone
+            // 
+            this.textBoxPhone.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MeuCondominio.Properties.Settings.Default, "phone_number", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBoxPhone.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxPhone.Location = new System.Drawing.Point(186, 50);
+            this.textBoxPhone.Margin = new System.Windows.Forms.Padding(2);
+            this.textBoxPhone.Name = "textBoxPhone";
+            this.textBoxPhone.Size = new System.Drawing.Size(135, 19);
+            this.textBoxPhone.TabIndex = 23;
+            this.textBoxPhone.Text = global::MeuCondominio.Properties.Settings.Default.phone_number;
             // 
             // buttonSendCode
             // 
@@ -786,17 +796,6 @@ namespace MeuCondominio
             this.buttonLogin.Text = "Conectar/Login";
             this.buttonLogin.UseVisualStyleBackColor = true;
             this.buttonLogin.Click += new System.EventHandler(this.buttonLogin_Click);
-            // 
-            // textBoxPhone
-            // 
-            this.textBoxPhone.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MeuCondominio.Properties.Settings.Default, "phone_number", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBoxPhone.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxPhone.Location = new System.Drawing.Point(186, 50);
-            this.textBoxPhone.Margin = new System.Windows.Forms.Padding(2);
-            this.textBoxPhone.Name = "textBoxPhone";
-            this.textBoxPhone.Size = new System.Drawing.Size(135, 19);
-            this.textBoxPhone.TabIndex = 23;
-            this.textBoxPhone.Text = global::MeuCondominio.Properties.Settings.Default.phone_number;
             // 
             // FrmGestaoSedex
             // 
