@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using MeuCondominio.Model;
 using System.Data.SQLite;
 using System.IO;
 
@@ -76,6 +75,41 @@ namespace MeuCondominio.Model
 
         #region ACADEMIA
         /// <summary>
+        /// Grava registro de moradores cadastrados na academia
+        /// </summary>
+        /// <param name="academia"></param>
+        /// <returns></returns>
+         public static bool AdicionarMoradorCatraca(Academia academia)
+        {
+            bool sucesso = false;
+            try
+            {
+                using (var cmd = DbConnection().CreateCommand())
+                {
+                    var query = @"INSERT INTO ACADEMIA (MATRICULA, NOME, BLOCO, APARTAMENTO) VALUES (@MATRICULA, @NOME, @BLOCO, @APARTAMENTO );";
+
+                    cmd.CommandText = query;
+                    cmd.Parameters.AddWithValue("@MATRICULA", academia.Matricula);
+                    cmd.Parameters.AddWithValue("@NOME", academia.Nome);
+                    cmd.Parameters.AddWithValue("@BLOCO", academia.Bloco);
+                    cmd.Parameters.AddWithValue("@APARTAMENTO", academia.Apartamento);
+
+                    cmd.ExecuteNonQuery();
+
+                    sucesso = true;
+                }
+
+                return sucesso;
+            }
+            catch (Exception ex)
+            {
+                MeuCondominio.Model.HelperModel.GravaLog(string.Concat("Erro método AdicionarMoradorCatraca: ", ex.Message));
+                return sucesso;
+            }
+        }
+
+
+        /// <summary>
         /// Adiciona eventos da catraca
         /// </summary>
         /// <param name="pMatricula"></param>
@@ -104,10 +138,12 @@ namespace MeuCondominio.Model
             }
             catch (Exception ex)
             {
-                MeuCondominio.Model.HelperModel.GravaLog(string.Concat("Erro métodp Add: ", ex.Message));
+                MeuCondominio.Model.HelperModel.GravaLog(string.Concat("Erro método AdicionarEvento: ", ex.Message));
                 return sucesso;
             }
         }
+
+
 
         /// <summary>
         /// Lista eventos da catraca
@@ -904,8 +940,9 @@ namespace MeuCondominio.Model
                         Sedex 
                         INNER JOIN CONDOMINIO ON SEDEX.IdMorador = CONDOMINIO.IDCONDOMINIO
                         WHERE CODIGOBARRAETIQUETA IS NOT NULL
+                        AND EnviadoTelegram IS NULL
                         AND Enviadosms IS NULL
-                        AND DATAENVIOMENSAGEM IS NULL";
+                        AND EnviadoEmail IS NULL";
 
 
                 using (var cmd = DbConnection().CreateCommand())
@@ -1024,6 +1061,26 @@ namespace MeuCondominio.Model
             }
         }
 
+        public static bool RegistraEnvioTelegram(int IdSedex)
+        {
+            var rowsAffected = 0;
+            try
+            {
+                var query = @"UPDATE SEDEX SET EnviadoTelegram = 'S', DATAENVIOMENSAGEM = DATETIME('NOW') WHERE IdSedex = @IdSedex";
+                using (var cmd = new SQLiteCommand(DbConnection()))
+                {
+                    cmd.CommandText = query;
+                    cmd.Parameters.AddWithValue("@IdSedex", IdSedex);
+                    rowsAffected = cmd.ExecuteNonQuery();
+                    return rowsAffected > 0 ? true : false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         /// <summary>
         /// Registra envio de e-mail
         /// </summary>
@@ -1092,13 +1149,15 @@ namespace MeuCondominio.Model
             int resultado = 0;
 
             var query = @"INSERT INTO SedexHistorico (IdSedex, NomeTorre, Apartamento, IdMorador, NomeMorador, SobreNome, NumeroEnviado, EmailEnviado, DataEnvio,CodigoBarraEtiqueta)
-                         SELECT IdSedex, CONDOMINIO.BLOCO, CONDOMINIO.APTO, CONDOMINIO.IDCONDOMINIO, CONDOMINIO.NOME, NULL AS Sobrenome, CONDOMINIO.CELULAR, CONDOMINIO.EMAIL, DATETIME('now'), CodigoBarraEtiqueta
+                        SELECT IdSedex, CONDOMINIO.BLOCO, CONDOMINIO.APTO, CONDOMINIO.IDCONDOMINIO, CONDOMINIO.NOME, NULL AS Sobrenome, CONDOMINIO.CELULAR, CONDOMINIO.EMAIL, DATETIME('now'), CodigoBarraEtiqueta
                         FROM 
                         Sedex 
                         INNER JOIN CONDOMINIO ON SEDEX.IdMorador = CONDOMINIO.IDCONDOMINIO
                         WHERE 1 = 1
                         AND CODIGOBARRAETIQUETA IS NOT NULL
-                        AND Enviadosms IS NOT NULL
+                        AND EnviadoTelegram IS NOT NULL
+                        OR Enviadosms IS NOT NULL
+                        OR EnviadoEmail IS NOT NULL
                         AND DATAENVIOMENSAGEM IS NOT NULL";
 
             try
@@ -1114,7 +1173,7 @@ namespace MeuCondominio.Model
                 }
                 if (resultado > 0)
                 {
-                    var query2 = @"DELETE FROM SEDEX WHERE 1 = 1 AND CODIGOBARRAETIQUETA IS NOT NULL AND Enviadosms IS NOT NULL AND DATAENVIOMENSAGEM IS NOT NULL";
+                    var query2 = @"DELETE FROM SEDEX WHERE 1 = 1 AND CODIGOBARRAETIQUETA IS NOT NULL AND EnviadoTelegram IS NOT NULL OR Enviadosms IS NOT NULL OR EnviadoEmail IS NOT NULL AND DATAENVIOMENSAGEM IS NOT NULL";
 
                     try
                     {
@@ -1201,7 +1260,7 @@ namespace MeuCondominio.Model
         {
             List<SedexHistorico> HistoricoSedex;
 
-            var query = @"SELECT H.NomeTorre as Bloco, H.Apartamento, NomeMorador || ' ' || SobreNome as NomeMorador, H.EmailEnviado, H.NumeroEnviado, H.DataEnvio, H.CodigoBarraEtiqueta 
+            var query = @"SELECT H.NomeTorre as Bloco, H.Apartamento, H.NomeMorador, H.EmailEnviado, H.NumeroEnviado, H.DataEnvio, H.CodigoBarraEtiqueta 
                 FROM 
                     SedexHistorico H
                 WHERE H.ReciboImpresso = 'S' AND H.IdMorador = @IdMorador;";

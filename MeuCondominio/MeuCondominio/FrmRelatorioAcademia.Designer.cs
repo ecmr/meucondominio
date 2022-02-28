@@ -49,6 +49,8 @@ namespace MeuCondominio
             this.txtMatricula = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -219,11 +221,30 @@ namespace MeuCondominio
             this.label3.TabIndex = 0;
             this.label3.Text = "Matricula";
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(13, 263);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(11, 13);
+            this.label5.TabIndex = 9;
+            this.label5.Text = "*";
+            // 
+            // label6
+            // 
+            this.label6.Location = new System.Drawing.Point(13, 293);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(199, 23);
+            this.label6.TabIndex = 10;
+            this.label6.Text = "*";
+            // 
             // FrmRelatorioAcademia
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.btnCarregarEventos);
@@ -268,5 +289,7 @@ namespace MeuCondominio
         private System.Windows.Forms.TextBox txtMatricula;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
     }
 }

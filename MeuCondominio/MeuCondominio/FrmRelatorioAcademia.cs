@@ -41,10 +41,17 @@ namespace MeuCondominio
 
                     System.Console.WriteLine("Cartoes.txt = ");
 
+                    label5.Text = "Carregando matrículas";
+                    label5.Refresh();
+
                     foreach (string linhaCartao in Cartoes)
                     {
                         var linhaArray = linhaCartao.Split('[');
-                        Console.WriteLine(string.Concat("\t", "Matrícula: ", int.Parse(linhaArray[2]).ToString(), " Nome:", linhaArray[18]));
+                        label6.Text = (string.Concat("\t", "Matrícula: ", int.Parse(linhaArray[2]).ToString(), " Nome:", linhaArray[18]));
+                        //Console.WriteLine(string.Concat("\t", "Matrícula: ", int.Parse(linhaArray[2]).ToString(), " Nome:", linhaArray[18], " Bloco-Apto:", linhaArray[18].Substring(linhaArray[18].Length-5,2), "-", linhaArray[18].Substring(linhaArray[18].Length - 3, 3)));
+                        label6.Refresh();
+                        Academia academia = new Academia() { Matricula = int.Parse(linhaArray[2]).ToString(), Nome = linhaArray[18] };
+                        var retorno = sedexBus.AdionarCadastroMorador(academia);
                     }
                 }
 
@@ -52,13 +59,15 @@ namespace MeuCondominio
                 {
                     string[] Eventos = System.IO.File.ReadAllLines(txtEvento.Text);
 
-                    System.Console.WriteLine("Cartoes.txt = ");
+                    label5.Text = "Carregando Eventos";
+                    label5.Refresh();
 
                     foreach (string linhaEvento in Eventos)
                     {
                         var eventoArray = linhaEvento.Split('[');
-                        Console.WriteLine(string.Concat("\t", "Matrícula: ", int.Parse(eventoArray[2]).ToString(), " Horário: ", eventoArray[3]));
-                        Catraca evento = new Catraca() { Matricula = int.Parse(eventoArray[2]).ToString(), Registro = DateTime.Parse(eventoArray[3]) };
+                        label6.Text = (string.Concat("\t", int.Parse(eventoArray[2]).ToString(), " Horário: ", eventoArray[3]));
+                        label6.Refresh();
+                        Catraca evento = new Catraca() { Matricula = int.Parse(eventoArray[1]).ToString(), Registro = DateTime.Parse(eventoArray[2]) };
                         var retorno = sedexBus.AdionarEvento(evento);
                     }
                 }

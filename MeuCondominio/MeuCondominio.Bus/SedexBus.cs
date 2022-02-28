@@ -1,8 +1,6 @@
 ﻿using MeuCondominio.Model;
-using MeuCondominio.Model;
 using System;
 using System.Collections.Generic;
-using System.Data;
 
 namespace MeuCondominio.Bus
 {
@@ -10,6 +8,11 @@ namespace MeuCondominio.Bus
     {
 
         #region CATRACA
+        public bool AdionarCadastroMorador(Academia academia)
+        {
+            return DalHelper.AdicionarMoradorCatraca(academia);
+        }
+
         public bool AdionarEvento(Catraca evento)
         {
             return DalHelper.AdicionarEvento(evento);
@@ -143,6 +146,11 @@ namespace MeuCondominio.Bus
         public bool RegistrarEmvioEmail(int ChaveSedex)
         {
             return DalHelper.RegistraEnvioEmail(ChaveSedex);
+        }
+
+        public bool RegistraEnvioTelegram(int ChaveSedex)
+        {
+            return DalHelper.RegistraEnvioTelegram(ChaveSedex);
         }
 
         public bool AtualizarMorador(Morador morador)

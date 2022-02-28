@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31515.178
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeuCondominio", "MeuCondominio\MeuCondominio.csproj", "{E157649F-79C7-45B6-BC40-28576A6FE859}"
 EndProject
@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeuCondominio.Bus", "MeuCon
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeuCondominio.Model", "MeuCondominio.Model\MeuCondominio.Model.csproj", "{9064A975-A0D9-4C27-9500-E4C0DC022046}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SetupSendSedex", "SetupSendSedex\SetupSendSedex.vdproj", "{63ED488C-42DB-4143-A9F3-1C7EFFFFFDE4}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{FD8764C2-F98F-4BB9-947C-311948D1FD36}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,10 +53,10 @@ Global
 		{9064A975-A0D9-4C27-9500-E4C0DC022046}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9064A975-A0D9-4C27-9500-E4C0DC022046}.Release|x86.ActiveCfg = Release|Any CPU
 		{9064A975-A0D9-4C27-9500-E4C0DC022046}.Release|x86.Build.0 = Release|Any CPU
-		{63ED488C-42DB-4143-A9F3-1C7EFFFFFDE4}.Debug|Any CPU.ActiveCfg = Debug
-		{63ED488C-42DB-4143-A9F3-1C7EFFFFFDE4}.Debug|x86.ActiveCfg = Debug
-		{63ED488C-42DB-4143-A9F3-1C7EFFFFFDE4}.Release|Any CPU.ActiveCfg = Release
-		{63ED488C-42DB-4143-A9F3-1C7EFFFFFDE4}.Release|x86.ActiveCfg = Release
+		{FD8764C2-F98F-4BB9-947C-311948D1FD36}.Debug|Any CPU.ActiveCfg = Debug
+		{FD8764C2-F98F-4BB9-947C-311948D1FD36}.Debug|x86.ActiveCfg = Debug
+		{FD8764C2-F98F-4BB9-947C-311948D1FD36}.Release|Any CPU.ActiveCfg = Release
+		{FD8764C2-F98F-4BB9-947C-311948D1FD36}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

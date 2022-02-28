@@ -96,7 +96,8 @@ namespace MeuCondominio
         {
             client.BaseAddress = new Uri("https://api.zenvia.com/v2/channels/");
             client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Add("X-API-TOKEN", "1Ww0DECpl_Q3GqMMSXIo0EUGI3FL52G_ccrs");
+            // client.DefaultRequestHeaders.Add("ecm", "1Ww0DECpl_Q3GqMMSXIo0EUGI3FL52G_ccrs");
+            client.DefaultRequestHeaders.Add("admCondominio", "9quV1aE8-PDYVEP8N1UwNnAccdCpoZpPsjAQ");
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             
 

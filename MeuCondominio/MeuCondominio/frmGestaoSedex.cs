@@ -1,7 +1,6 @@
 ﻿using ClosedXML.Excel;
 using MeuCondominio.Bus;
 using MeuCondominio.Model;
-using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -276,6 +275,13 @@ namespace MeuCondominio
             this.Height = 706;
             Point point = new Point(20, 410);
             groupBox3.Location = point;
+
+
+            //this.Height = 778;
+            //this.grpBoxConfigTelegram.Visible = true;
+            //Point point = new Point(20, 510);
+            //groupBox3.Location = point;
+            //this.Refresh();
             #endregion
 
             // CarregarBlocos();
@@ -1818,6 +1824,9 @@ namespace MeuCondominio
                 return;
             }
 
+            if (buttonLogin.Enabled)
+                LogarTelegram();
+
             this.btnEnviarSms.Enabled = false;
            
             string pChaveDesenvi = rdbAdminstracao.Checked ? "Administração" : "Desenvolvedor";
@@ -1827,47 +1836,62 @@ namespace MeuCondominio
 
             LerXml("valorMensagem");
 
-            foreach ( SmsEnvio enviar in listSms)
+            foreach ( SmsEnvio enviarTelegram in listSms)
             {
-                var nome = enviar.NomeMorador.Split(' ');
+                var nome = enviarTelegram.NomeMorador.Split(' ');
                 var mensagemMorador = sMensagemParaSms.Replace("{Morador}", nome[0]);
-
-                EnvioWTelegramClient(enviar);
+                EnvioWTelegramClient(enviarTelegram);
                 lblMsgMorador.Visible = true;
-                lblMsgMorador.Text = $"Mensagem enviada para {enviar.NomeMorador} com sucesso!";
+                lblMsgMorador.Text = $"Telegram enviado para {enviarTelegram.NomeMorador} com sucesso!";
                 lblMsgMorador.Refresh();
-
+                sedexBus.RegistraEnvioTelegram(enviarTelegram.ChaveSedex);
             }
 
-            foreach (SmsEnvio enviar in listSms)
+            foreach (SmsEnvio enviarSms in listSms)
             {
-                string PrimeiroNome = PegaPrimeiroNome(enviar.NomeMorador);
+                var nome = enviarSms.NomeMorador.Split(' ');
+                var mensagemMorador = sMensagemParaSms.Replace("{Morador}", nome[0]);
 
-                var mensagemMorador = sMensagemParaEmail.Replace("{Morador}", PrimeiroNome);
+                //var retorno = (EnvioMensagem.ZenviaEnvioSms(new MoradorSms() { From = "5511969410446", To = enviarSms.Celular1, Text = mensagemMorador })).Wait(300);
+                var retorno = (EnvioMensagem.ZenviaEnvioSms(new MoradorSms() { From = "5511947971165", To = enviarSms.Celular1, Text = mensagemMorador })).Wait(300);
 
-                mensagemMorador = mensagemMorador.Replace("{codigoSedex}", enviar.CodigoBarras);  
-
-                if (!string.IsNullOrEmpty(enviar.Email1))
+                if (retorno)
                 {
-                    EnvioMensagem.EnvioEmail1(enviar.Email1, "Seu Sedex chegou!", mensagemMorador);
-
                     lblMsgMorador.Visible = true;
-                    lblMsgMorador.Text = $"E-mail enviado para {enviar.NomeMorador} com sucesso!";
+                    lblMsgMorador.Text = $"Sms enviado para {enviarSms.NomeMorador} com sucesso!";
                     lblMsgMorador.Refresh();
-                    sedexBus.RegistrarEmvioEmail(enviar.ChaveSedex);
+                    sedexBus.RegistrarEmvioSms(enviarSms.ChaveSedex);
                 }
             }
 
-            lblMsgMorador.Text = $"Enviado para {listSms.Count} moradores com sucesso!";
-            timer1.Enabled = true;
+
+            foreach (SmsEnvio enviarEmail in listSms)
+            {
+                string PrimeiroNome = PegaPrimeiroNome(enviarEmail.NomeMorador);
+
+                var mensagemMorador = sMensagemParaEmail.Replace("{Morador}", PrimeiroNome);
+
+                mensagemMorador = mensagemMorador.Replace("{codigoSedex}", enviarEmail.CodigoBarras);  
+
+                if (!string.IsNullOrEmpty(enviarEmail.Email1))
+                {
+                    EnvioMensagem.EnvioEmail1(enviarEmail.Email1, "Seu Sedex chegou!", mensagemMorador);
+
+                    lblMsgMorador.Visible = true;
+                    lblMsgMorador.Text = $"E-mail enviado para {enviarEmail.NomeMorador} com sucesso!";
+                    lblMsgMorador.Refresh();
+                    sedexBus.RegistrarEmvioEmail(enviarEmail.ChaveSedex);
+                }
+            }
+
 
             if (sedexBus.EnviarSmsParaHistorico())
             {
                 sedexBus.ExcluiHistoricoVelho();   
             }
             this.btnEnviarSms.Enabled = true;
+            timer1.Enabled = true;
             return;
-
         }
 
         private void btnSalvar_Click(object sender, EventArgs e)
@@ -2169,7 +2193,6 @@ namespace MeuCondominio
                 this.Refresh();
             }
 
-            //Envio
             var result = await _client.Contacts_GetContacts(_client.GetHashCode());
 
             foreach (User user in result.users.Values)
@@ -2218,14 +2241,47 @@ namespace MeuCondominio
         }
         #endregion
 
-        private async void buttonLogin_Click(object sender, EventArgs e)
+        private void buttonLogin_Click(object sender, EventArgs e)
         {
-            buttonLogin.Enabled = false;
-            lblMsgMorador.Text = ($"Conectando & logando no servidor Telegram...");
+            LogarTelegram();
+        }
+
+        private async void LogarTelegram()
+        {
+            lblConexaoTelegram.Text = String.Concat($"Conectando & logando", Environment.NewLine, " no servidor Telegram...");
             _client = new WTelegram.Client(Config);
             _user = await _client.LoginUserIfNeeded();
-            lblMsgMorador.Text = ($"Você está conectado como: {_user}");
-            lblMsgMorador.Visible = true;
+            if (_user.IsActive)
+                lblConexaoTelegram.Text = String.Concat($"Conectado ao telegram como: ", Environment.NewLine, _user.username);
+            else
+            {
+                lblConexaoTelegram.Text = String.Concat($"Erro na conexão com telegram");
+                lblConexaoTelegram.ForeColor = Color.Red;
+                MostrarConfigTelegram(true);
+                buttonLogin.Enabled = true;
+                return;
+            }
+            buttonLogin.Enabled = false;
+        }
+
+        private void MostrarConfigTelegram(Boolean mostrar)
+        {
+            if (!mostrar)
+            {
+                WTelegram.Helpers.Log = (l, s) => Debug.WriteLine(s);
+                grpBoxConfigTelegram.Visible = false;
+                this.Height = 706;
+                Point point = new Point(20, 410);
+                groupBox3.Location = point;
+            }
+            else
+            {
+                this.Height = 778;
+                this.grpBoxConfigTelegram.Visible = true;
+                Point point = new Point(20, 510);
+                groupBox3.Location = point;
+                this.Refresh();
+            }
         }
 
         private void buttonSendCode_Click(object sender, EventArgs e)

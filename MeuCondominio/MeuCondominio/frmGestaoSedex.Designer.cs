@@ -101,6 +101,7 @@ namespace MeuCondominio
             this.label12 = new System.Windows.Forms.Label();
             this.textBoxApiID = new System.Windows.Forms.TextBox();
             this.buttonLogin = new System.Windows.Forms.Button();
+            this.lblConexaoTelegram = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -454,14 +455,15 @@ namespace MeuCondominio
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.lblConexaoTelegram);
             this.groupBox2.Controls.Add(this.cknTodos);
             this.groupBox2.Controls.Add(this.btnEnviarSms);
             this.groupBox2.Controls.Add(this.ckbMail);
             this.groupBox2.Controls.Add(this.ckbZap);
             this.groupBox2.Controls.Add(this.ckbSms);
-            this.groupBox2.Location = new System.Drawing.Point(523, 278);
+            this.groupBox2.Location = new System.Drawing.Point(523, 264);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(277, 87);
+            this.groupBox2.Size = new System.Drawing.Size(277, 106);
             this.groupBox2.TabIndex = 25;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "ENVIO";
@@ -469,7 +471,7 @@ namespace MeuCondominio
             // cknTodos
             // 
             this.cknTodos.AutoSize = true;
-            this.cknTodos.Location = new System.Drawing.Point(36, 55);
+            this.cknTodos.Location = new System.Drawing.Point(5, 27);
             this.cknTodos.Name = "cknTodos";
             this.cknTodos.Size = new System.Drawing.Size(56, 17);
             this.cknTodos.TabIndex = 14;
@@ -480,9 +482,9 @@ namespace MeuCondominio
             // btnEnviarSms
             // 
             this.btnEnviarSms.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEnviarSms.Location = new System.Drawing.Point(122, 45);
+            this.btnEnviarSms.Location = new System.Drawing.Point(138, 10);
             this.btnEnviarSms.Name = "btnEnviarSms";
-            this.btnEnviarSms.Size = new System.Drawing.Size(149, 32);
+            this.btnEnviarSms.Size = new System.Drawing.Size(128, 32);
             this.btnEnviarSms.TabIndex = 26;
             this.btnEnviarSms.Text = "Enviar Mensagem";
             this.btnEnviarSms.UseVisualStyleBackColor = true;
@@ -493,17 +495,18 @@ namespace MeuCondominio
             this.ckbMail.AutoSize = true;
             this.ckbMail.Checked = true;
             this.ckbMail.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ckbMail.Location = new System.Drawing.Point(191, 22);
+            this.ckbMail.Location = new System.Drawing.Point(80, 10);
             this.ckbMail.Name = "ckbMail";
             this.ckbMail.Size = new System.Drawing.Size(55, 17);
             this.ckbMail.TabIndex = 13;
             this.ckbMail.Text = "E-Mail";
             this.ckbMail.UseVisualStyleBackColor = true;
+            this.ckbMail.Visible = false;
             // 
             // ckbZap
             // 
             this.ckbZap.AutoSize = true;
-            this.ckbZap.Location = new System.Drawing.Point(102, 22);
+            this.ckbZap.Location = new System.Drawing.Point(56, 27);
             this.ckbZap.Name = "ckbZap";
             this.ckbZap.Size = new System.Drawing.Size(76, 17);
             this.ckbZap.TabIndex = 12;
@@ -514,12 +517,13 @@ namespace MeuCondominio
             // ckbSms
             // 
             this.ckbSms.AutoSize = true;
-            this.ckbSms.Location = new System.Drawing.Point(36, 22);
+            this.ckbSms.Location = new System.Drawing.Point(6, 10);
             this.ckbSms.Name = "ckbSms";
             this.ckbSms.Size = new System.Drawing.Size(49, 17);
             this.ckbSms.TabIndex = 11;
             this.ckbSms.Text = "SMS";
             this.ckbSms.UseVisualStyleBackColor = true;
+            this.ckbSms.Visible = false;
             // 
             // btnSalvar
             // 
@@ -618,12 +622,13 @@ namespace MeuCondominio
             // 
             this.groupBox4.Controls.Add(this.rdbDesenvolvedor);
             this.groupBox4.Controls.Add(this.rdbAdminstracao);
-            this.groupBox4.Location = new System.Drawing.Point(528, 371);
+            this.groupBox4.Location = new System.Drawing.Point(528, 376);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(274, 33);
             this.groupBox4.TabIndex = 28;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Chave Sedex";
+            this.groupBox4.Visible = false;
             // 
             // rdbDesenvolvedor
             // 
@@ -639,7 +644,7 @@ namespace MeuCondominio
             // 
             this.rdbAdminstracao.AutoSize = true;
             this.rdbAdminstracao.Checked = true;
-            this.rdbAdminstracao.Location = new System.Drawing.Point(51, 11);
+            this.rdbAdminstracao.Location = new System.Drawing.Point(60, 10);
             this.rdbAdminstracao.Name = "rdbAdminstracao";
             this.rdbAdminstracao.Size = new System.Drawing.Size(91, 17);
             this.rdbAdminstracao.TabIndex = 0;
@@ -797,6 +802,15 @@ namespace MeuCondominio
             this.buttonLogin.UseVisualStyleBackColor = true;
             this.buttonLogin.Click += new System.EventHandler(this.buttonLogin_Click);
             // 
+            // lblConexaoTelegram
+            // 
+            this.lblConexaoTelegram.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblConexaoTelegram.Location = new System.Drawing.Point(6, 61);
+            this.lblConexaoTelegram.Name = "lblConexaoTelegram";
+            this.lblConexaoTelegram.Size = new System.Drawing.Size(260, 34);
+            this.lblConexaoTelegram.TabIndex = 27;
+            this.lblConexaoTelegram.Text = "Conexão com telegram";
+            // 
             // FrmGestaoSedex
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -921,6 +935,7 @@ namespace MeuCondominio
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.TextBox textBoxApiID;
         private System.Windows.Forms.Button buttonLogin;
+        private System.Windows.Forms.Label lblConexaoTelegram;
     }
 }
 
